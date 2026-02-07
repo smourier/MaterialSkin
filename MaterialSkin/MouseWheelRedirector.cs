@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
+﻿namespace MaterialSkin;
 
 public class MouseWheelRedirector : IMessageFilter
 {
-    private static MouseWheelRedirector instance = null;
+    private static MouseWheelRedirector? _instance = null;
+
     private static bool _active = false;
+#pragma warning disable IDE1006 // Naming Styles
+    private const int WM_MOUSEWHEEL = 0x20A;
+#pragma warning restore IDE1006 // Naming Styles
 
     public static bool Active
     {
@@ -27,12 +18,13 @@ public class MouseWheelRedirector : IMessageFilter
                 _active = value;
                 if (_active)
                 {
-                    if (instance == null)
-                        instance = new MouseWheelRedirector();
-                    Application.AddMessageFilter(instance);
+                    _instance ??= new MouseWheelRedirector();
+                    Application.AddMessageFilter(_instance);
                 }
-                else if (instance != null)
-                    Application.RemoveMessageFilter(instance);
+                else if (_instance != null)
+                {
+                    Application.RemoveMessageFilter(_instance);
+                }
             }
         }
         get
@@ -44,54 +36,65 @@ public class MouseWheelRedirector : IMessageFilter
     public static void Attach(Control control)
     {
         if (!_active)
+        {
             Active = true;
-        control.MouseEnter += instance.ControlMouseEnter;
-        control.MouseLeave += instance.ControlMouseLeaveOrDisposed;
-        control.Disposed += instance.ControlMouseLeaveOrDisposed;
+        }
+
+        control.MouseEnter += _instance!.ControlMouseEnter;
+        control.MouseLeave += _instance.ControlMouseLeaveOrDisposed;
+        control.Disposed += _instance.ControlMouseLeaveOrDisposed;
     }
 
     public static void Detach(Control control)
     {
-        if (instance == null)
+        if (_instance == null)
             return;
-        control.MouseEnter -= instance.ControlMouseEnter;
-        control.MouseLeave -= instance.ControlMouseLeaveOrDisposed;
-        control.Disposed -= instance.ControlMouseLeaveOrDisposed;
-        if (instance.currentControl == control)
-            instance.currentControl = null;
+
+        control.MouseEnter -= _instance.ControlMouseEnter;
+        control.MouseLeave -= _instance.ControlMouseLeaveOrDisposed;
+        control.Disposed -= _instance.ControlMouseLeaveOrDisposed;
+
+        if (_instance._currentControl == control)
+        {
+            _instance._currentControl = null;
+        }
     }
+
+    private Control? _currentControl;
 
     public MouseWheelRedirector()
     {
     }
 
-    private Control currentControl;
-
-    private void ControlMouseEnter(object sender, System.EventArgs e)
+    private void ControlMouseEnter(object? sender, EventArgs e)
     {
-        var control = (Control)sender;
+        var control = (Control)sender!;
         if (!control.Focused)
-            currentControl = control;
-        else
-            currentControl = null;
-    }
-
-    private void ControlMouseLeaveOrDisposed(object sender, System.EventArgs e)
-    {
-        if (currentControl == sender)
-            currentControl = null;
-    }
-
-    private const int WM_MOUSEWHEEL = 0x20A;
-    public bool PreFilterMessage(ref System.Windows.Forms.Message m)
-    {
-        if (currentControl != null && m.Msg == WM_MOUSEWHEEL)
         {
-            SendMessage(currentControl.Handle, m.Msg, m.WParam, m.LParam);
-            return true;
+            _currentControl = control;
         }
         else
-            return false;
+        {
+            _currentControl = null;
+        }
+    }
+
+    private void ControlMouseLeaveOrDisposed(object? sender, EventArgs e)
+    {
+        if (_currentControl == sender)
+        {
+            _currentControl = null;
+        }
+    }
+
+    public bool PreFilterMessage(ref Message m)
+    {
+        if (_currentControl != null && m.Msg == WM_MOUSEWHEEL)
+        {
+            SendMessage(_currentControl.Handle, m.Msg, m.WParam, m.LParam);
+            return true;
+        }
+        return false;
     }
 
     [DllImport("user32.dll", SetLastError = false)]

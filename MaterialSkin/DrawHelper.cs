@@ -31,10 +31,7 @@ internal static class DrawHelper
     /// <param name="rect">The rect<see cref="Rectangle"/></param>
     /// <param name="radius">The radius<see cref="float"/></param>
     /// <returns>The <see cref="GraphicsPath"/></returns>
-    public static GraphicsPath CreateRoundRect(Rectangle rect, float radius)
-    {
-        return CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
-    }
+    public static GraphicsPath CreateRoundRect(Rectangle rect, float radius) => CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
 
     /// <summary>
     /// The CreateRoundRect
@@ -42,10 +39,7 @@ internal static class DrawHelper
     /// <param name="rect">The rect<see cref="RectangleF"/></param>
     /// <param name="radius">The radius<see cref="float"/></param>
     /// <returns>The <see cref="GraphicsPath"/></returns>
-    public static GraphicsPath CreateRoundRect(RectangleF rect, float radius)
-    {
-        return CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
-    }
+    public static GraphicsPath CreateRoundRect(RectangleF rect, float radius) => CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
 
     /// <summary>
     /// The BlendColor
@@ -70,39 +64,32 @@ internal static class DrawHelper
     /// <param name="backgroundColor">The backgroundColor<see cref="Color"/></param>
     /// <param name="frontColor">The frontColor<see cref="Color"/></param>
     /// <returns>The <see cref="Color"/></returns>
-    public static Color BlendColor(Color backgroundColor, Color frontColor)
-    {
-        return BlendColor(backgroundColor, frontColor, frontColor.A);
-    }
+    public static Color BlendColor(Color backgroundColor, Color frontColor) => BlendColor(backgroundColor, frontColor, frontColor.A);
 
     public static void DrawSquareShadow(Graphics g, Rectangle bounds)
     {
-        using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0)))
-        {
-            GraphicsPath path;
-            path = CreateRoundRect(new RectangleF(bounds.X - 3.5f, bounds.Y - 1.5f, bounds.Width + 6, bounds.Height + 6), 8);
-            g.FillPath(shadowBrush, path);
-            path = CreateRoundRect(new RectangleF(bounds.X - 2.5f, bounds.Y - 1.5f, bounds.Width + 4, bounds.Height + 4), 6);
-            g.FillPath(shadowBrush, path);
-            path = CreateRoundRect(new RectangleF(bounds.X - 1.5f, bounds.Y - 0.5f, bounds.Width + 2, bounds.Height + 2), 4);
-            g.FillPath(shadowBrush, path);
-            path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 1.5f, bounds.Width + 0, bounds.Height + 0), 4);
-            g.FillPath(shadowBrush, path);
-            path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 2.5f, bounds.Width + 0, bounds.Height + 0), 4);
-            g.FillPath(shadowBrush, path);
-            path.Dispose();
-        }
+        using var shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0));
+        GraphicsPath path;
+        path = CreateRoundRect(new RectangleF(bounds.X - 3.5f, bounds.Y - 1.5f, bounds.Width + 6, bounds.Height + 6), 8);
+        g.FillPath(shadowBrush, path);
+        path = CreateRoundRect(new RectangleF(bounds.X - 2.5f, bounds.Y - 1.5f, bounds.Width + 4, bounds.Height + 4), 6);
+        g.FillPath(shadowBrush, path);
+        path = CreateRoundRect(new RectangleF(bounds.X - 1.5f, bounds.Y - 0.5f, bounds.Width + 2, bounds.Height + 2), 4);
+        g.FillPath(shadowBrush, path);
+        path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 1.5f, bounds.Width + 0, bounds.Height + 0), 4);
+        g.FillPath(shadowBrush, path);
+        path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 2.5f, bounds.Width + 0, bounds.Height + 0), 4);
+        g.FillPath(shadowBrush, path);
+        path.Dispose();
     }
 
     public static void DrawRoundShadow(Graphics g, Rectangle bounds)
     {
-        using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0)))
-        {
-            g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 2, bounds.Y - 1, bounds.Width + 4, bounds.Height + 6));
-            g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 1, bounds.Y - 1, bounds.Width + 2, bounds.Height + 4));
-            g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y - 0, bounds.Width + 0, bounds.Height + 2));
-            g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y + 2, bounds.Width + 0, bounds.Height + 0));
-            g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y + 1, bounds.Width + 0, bounds.Height + 0));
-        }
+        using var shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0));
+        g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 2, bounds.Y - 1, bounds.Width + 4, bounds.Height + 6));
+        g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 1, bounds.Y - 1, bounds.Width + 2, bounds.Height + 4));
+        g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y - 0, bounds.Width + 0, bounds.Height + 2));
+        g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y + 2, bounds.Width + 0, bounds.Height + 0));
+        g.FillEllipse(shadowBrush, new Rectangle(bounds.X - 0, bounds.Y + 1, bounds.Width + 0, bounds.Height + 0));
     }
 }

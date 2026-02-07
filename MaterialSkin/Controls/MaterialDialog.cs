@@ -10,13 +10,13 @@ public class MaterialDialog : MaterialForm
     private const int TEXT_BOTTOM_PADDING = 28;
     private int _header_Height = 40;
 
-    private MaterialButton _validationButton = new MaterialButton();
-    private MaterialButton _cancelButton = new MaterialButton();
+    private MaterialButton _validationButton = new();
+    private MaterialButton _cancelButton = new();
     private AnimationManager _AnimationManager;
     private bool CloseAnimation = false;
     private Form _formOverlay;
-    private String _text;
-    private String _title;
+    private string _text;
+    private string _title;
 
     /// <summary>
     /// The Collection for the Buttons
@@ -104,10 +104,10 @@ public class MaterialDialog : MaterialForm
             Controls.Add(_cancelButton);
 
         Width = 560;
-        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.getFontByType(MaterialSkinManager.fontType.Body1)).Width;
+        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
         int RectWidth = Width - (2 * LEFT_RIGHT_PADDING) - BUTTON_PADDING;
         int RectHeight = ((TextWidth / RectWidth) + 1) * 19;
-        Rectangle textRect = new Rectangle(
+        Rectangle textRect = new(
             LEFT_RIGHT_PADDING,
             _header_Height + TEXT_TOP_PADDING,
             RectWidth,
@@ -116,16 +116,16 @@ public class MaterialDialog : MaterialForm
         Height = _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_BOTTOM_PADDING + 52; //560;
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.getFontByType(MaterialSkinManager.fontType.Button))).Width + 32);
-        Rectangle _validationbuttonBounds = new Rectangle((Width) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
+        int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
+        Rectangle _validationbuttonBounds = new((Width) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
         _validationButton.Width = _validationbuttonBounds.Width;
         _validationButton.Height = _validationbuttonBounds.Height;
         _validationButton.Top = _validationbuttonBounds.Top;
         _validationButton.Left = _validationbuttonBounds.Left;  //Button minimum width management
         _validationButton.Visible = true;
 
-        _buttonWidth = ((TextRenderer.MeasureText(CancelButtonText, SkinManager.getFontByType(MaterialSkinManager.fontType.Button))).Width + 32);
-        Rectangle _cancelbuttonBounds = new Rectangle((_validationbuttonBounds.Left) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
+        _buttonWidth = ((TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
+        Rectangle _cancelbuttonBounds = new((_validationbuttonBounds.Left) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
         _cancelButton.Width = _cancelbuttonBounds.Width;
         _cancelButton.Height = _cancelbuttonBounds.Height;
         _cancelButton.Top = _cancelbuttonBounds.Top;
@@ -191,7 +191,7 @@ public class MaterialDialog : MaterialForm
     /// <summary>
     /// Ovverides the Paint to create the solid colored backcolor
     /// </summary>
-    protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+    protected override void OnPaint(PaintEventArgs e)
     {
 
         Graphics g = e.Graphics;
@@ -201,48 +201,48 @@ public class MaterialDialog : MaterialForm
 
 
         // Calc title Rect
-        Rectangle titleRect = new Rectangle(
+        Rectangle titleRect = new(
             LEFT_RIGHT_PADDING,
             0,
             Width - (2 * LEFT_RIGHT_PADDING),
             _header_Height);
 
         //Draw title
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+        using (NativeTextRenderer NativeText = new(g))
         {
             // Draw header text
             NativeText.DrawTransparentText(
                 _title,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.H6),
+                SkinManager.getLogFontByType(FontType.H6),
                 SkinManager.TextHighEmphasisColor,
                 titleRect.Location,
                 titleRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Bottom);
+                TextAlignFlags.Left | TextAlignFlags.Bottom);
         }
 
         // Calc text Rect
 
-        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.getFontByType(MaterialSkinManager.fontType.Body1)).Width;
+        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
         int RectWidth = Width - (2 * LEFT_RIGHT_PADDING) - BUTTON_PADDING;
         int RectHeight = ((TextWidth / RectWidth) + 1) * 19;
 
-        Rectangle textRect = new Rectangle(
+        Rectangle textRect = new(
             LEFT_RIGHT_PADDING,
             _header_Height + 17,
             RectWidth,
             RectHeight + 19);
 
         //Draw  Text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+        using (NativeTextRenderer NativeText = new(g))
         {
             // Draw header text
             NativeText.DrawMultilineTransparentText(
                 _text,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body1),
+                SkinManager.getLogFontByType(FontType.Body1),
                 SkinManager.TextHighEmphasisColor,
                 textRect.Location,
                 textRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
     }
@@ -250,7 +250,7 @@ public class MaterialDialog : MaterialForm
     /// <summary>
     /// Overrides the Closing Event to Animate the Slide Out
     /// </summary>
-    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    protected override void OnClosing(CancelEventArgs e)
     {
         _formOverlay.Visible = false;
         _formOverlay.Close();
@@ -282,7 +282,7 @@ public class MaterialDialog : MaterialForm
     private void InitializeComponent()
     {
         SuspendLayout();
-        ClientSize = new System.Drawing.Size(560, 182);
+        ClientSize = new Size(560, 182);
         Name = "Dialog";
         ResumeLayout(false);
 

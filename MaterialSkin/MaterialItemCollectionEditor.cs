@@ -4,20 +4,12 @@ namespace System.Windows.Forms;
 
 public class MaterialItemCollectionEditor : CollectionEditor
 {
-    public MaterialItemCollectionEditor() : base(typeof(MaterialItemCollection))
+    public MaterialItemCollectionEditor()
+        : base(typeof(MaterialItemCollection))
     {
 
     }
 
-    protected override Type CreateCollectionItemType()
-    {
-        return typeof(MaterialListBoxItem);
-    }
-
-    protected override Type[] CreateNewItemTypes()
-    {
-        return [
-        typeof(MaterialListBoxItem)
-     ];
-    }
+    protected override Type CreateCollectionItemType() => typeof(MaterialListBoxItem);
+    protected override Type[] CreateNewItemTypes() => [typeof(MaterialListBoxItem)];
 }

@@ -184,7 +184,7 @@ public class MaterialDrawer : Control, IMaterialControl
             return;
 
         // Calculate lightness and color
-        float l = UseColors ? SkinManager.ColorScheme.TextColor.R / 255 : SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? 0f : 1f;
+        float l = UseColors ? SkinManager.ColorScheme.TextColor.R / 255 : SkinManager.Theme == Themes.LIGHT ? 0f : 1f;
         float r = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.R : SkinManager.ColorScheme.PrimaryColor.R) / 255f;
         float g = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.G : SkinManager.ColorScheme.PrimaryColor.G) / 255f;
         float b = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.B : SkinManager.ColorScheme.PrimaryColor.B) / 255f;
@@ -204,11 +204,11 @@ public class MaterialDrawer : Control, IMaterialControl
                 [0,   0,   0,   1,  0], // alpha scale factor
                 [r,   g,   b,   0,  1]];// offset
 
-        ColorMatrix colorMatrixGray = new ColorMatrix(matrixGray);
-        ColorMatrix colorMatrixColor = new ColorMatrix(matrixColor);
+        ColorMatrix colorMatrixGray = new(matrixGray);
+        ColorMatrix colorMatrixColor = new(matrixColor);
 
-        ImageAttributes grayImageAttributes = new ImageAttributes();
-        ImageAttributes colorImageAttributes = new ImageAttributes();
+        ImageAttributes grayImageAttributes = new();
+        ImageAttributes colorImageAttributes = new();
 
         // Set color matrices
         grayImageAttributes.SetColorMatrix(colorMatrixGray, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
@@ -222,14 +222,14 @@ public class MaterialDrawer : Control, IMaterialControl
         foreach (TabPage tabPage in _baseTabControl.TabPages)
         {
             // skip items without image
-            if (String.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
+            if (string.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
                 continue;
 
             // Image Rect
-            Rectangle destRect = new Rectangle(0, 0, _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
+            Rectangle destRect = new(0, 0, _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
 
             // Create a pre-processed copy of the image (GRAY)
-            Bitmap bgray = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bgray = new(destRect.Width, destRect.Height);
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_baseTabControl.ImageList.Images[tabPage.ImageKey],
@@ -242,7 +242,7 @@ public class MaterialDrawer : Control, IMaterialControl
             }
 
             // Create a pre-processed copy of the image (PRIMARY COLOR)
-            Bitmap bcolor = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bcolor = new(destRect.Width, destRect.Height);
             using (Graphics gColor = Graphics.FromImage(bcolor))
             {
                 gColor.DrawImage(_baseTabControl.ImageList.Images[tabPage.ImageKey],
@@ -255,8 +255,8 @@ public class MaterialDrawer : Control, IMaterialControl
             }
 
             // added processed image to brush for drawing
-            TextureBrush textureBrushGray = new TextureBrush(bgray);
-            TextureBrush textureBrushColor = new TextureBrush(bcolor);
+            TextureBrush textureBrushGray = new(bgray);
+            TextureBrush textureBrushColor = new(bcolor);
 
             textureBrushGray.WrapMode = WrapMode.Clamp;
             textureBrushColor.WrapMode = WrapMode.Clamp;
@@ -264,7 +264,7 @@ public class MaterialDrawer : Control, IMaterialControl
             // Translate the brushes to the correct positions
             var currentTabIndex = _baseTabControl.TabPages.IndexOf(tabPage);
 
-            Rectangle iconRect = new Rectangle(
+            Rectangle iconRect = new(
                _drawerItemRects[currentTabIndex].X + (drawerItemHeight / 2) - (_baseTabControl.ImageList.Images[tabPage.ImageKey].Width / 2),
                _drawerItemRects[currentTabIndex].Y + (drawerItemHeight / 2) - (_baseTabControl.ImageList.Images[tabPage.ImageKey].Height / 2),
                _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
@@ -339,12 +339,12 @@ public class MaterialDrawer : Control, IMaterialControl
             }
         };
 
-        SkinManager.ColorSchemeChanged += sender =>
+        SkinManager.ColorSchemeChanged += (sender, e) =>
         {
             preProcessIcons();
         };
 
-        SkinManager.ThemeChanged += sender =>
+        SkinManager.ThemeChanged += (sender, e) =>
         {
             preProcessIcons();
         };
@@ -463,7 +463,7 @@ public class MaterialDrawer : Control, IMaterialControl
         {
             var rippleBrush = new SolidBrush(Color.FromArgb((int)(70 - (clickAnimProgress * 70)),
                 UseColors ? SkinManager.ColorScheme.AccentColor : // Using colors
-                SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // light theme
+                SkinManager.Theme == Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // light theme
                 SkinManager.ColorScheme.LightPrimaryColor)); // dark theme
 
             g.SetClip(_drawerItemPaths[_baseTabControl.SelectedIndex]);
@@ -481,7 +481,7 @@ public class MaterialDrawer : Control, IMaterialControl
             Brush bgBrush = new SolidBrush(Color.FromArgb(CalculateAlpha(60, 0, currentTabIndex, clickAnimProgress, 1 - showHideAnimProgress),
                 UseColors ? _backgroundWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.LightPrimaryColor : // using colors
                 _backgroundWithAccent ? SkinManager.ColorScheme.AccentColor : // defaul accent
-                SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // default light
+                SkinManager.Theme == Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // default light
                 SkinManager.ColorScheme.LightPrimaryColor)); // default dark
             g.FillPath(bgBrush, _drawerItemPaths[currentTabIndex]);
             bgBrush.Dispose();
@@ -493,22 +493,22 @@ public class MaterialDrawer : Control, IMaterialControl
                 (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) : // selected
                 SkinManager.TextHighEmphasisColor));
 
-            IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2);
+            IntPtr textFont = SkinManager.getLogFontByType(FontType.Subtitle2);
 
             Rectangle textRect = _drawerItemRects[currentTabIndex];
             textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)(SkinManager.FORM_PADDING * 0.75);
             textRect.Width -= SkinManager.FORM_PADDING << 2;
 
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+            using (var NativeText = new NativeTextRenderer(g))
             {
-                NativeText.DrawTransparentText(tabPage.Text, textFont, textColor, textRect.Location, textRect.Size, NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+                NativeText.DrawTransparentText(tabPage.Text, textFont, textColor, textRect.Location, textRect.Size, TextAlignFlags.Left | TextAlignFlags.Middle);
             }
 
             // Icons
-            if (_baseTabControl.ImageList != null && !String.IsNullOrEmpty(tabPage.ImageKey))
+            if (_baseTabControl.ImageList != null && !string.IsNullOrEmpty(tabPage.ImageKey))
             {
                 var ik = string.Concat(tabPage.ImageKey, "_", tabPage.Name);
-                Rectangle iconRect = new Rectangle(
+                Rectangle iconRect = new(
                     _drawerItemRects[currentTabIndex].X + (drawerItemHeight >> 1) - (iconsSize[ik].Width >> 1),
                     _drawerItemRects[currentTabIndex].Y + (drawerItemHeight >> 1) - (iconsSize[ik].Height >> 1),
                     iconsSize[ik].Width, iconsSize[ik].Height);
@@ -526,10 +526,8 @@ public class MaterialDrawer : Control, IMaterialControl
         // Draw divider if not using colors
         if (!UseColors)
         {
-            using (Pen dividerPen = new Pen(SkinManager.DividersColor, 1))
-            {
-                g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
-            }
+            using Pen dividerPen = new(SkinManager.DividersColor, 1);
+            g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
         }
 
         // Animate tab indicator

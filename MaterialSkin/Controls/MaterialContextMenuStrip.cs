@@ -109,14 +109,12 @@ internal class MaterialToolStripRender : ToolStripProfessionalRenderer, IMateria
         var itemRect = GetItemRect(e.Item);
         var textRect = new Rectangle(LEFT_PADDING, itemRect.Y, itemRect.Width - (LEFT_PADDING + RIGHT_PADDING), itemRect.Height);
 
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            NativeText.DrawTransparentText(e.Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body2),
-                e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                textRect.Location,
-                textRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-        }
+        using NativeTextRenderer NativeText = new(g);
+        NativeText.DrawTransparentText(e.Text, SkinManager.getLogFontByType(FontType.Body2),
+            e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            textRect.Location,
+            textRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
@@ -174,17 +172,15 @@ internal class MaterialToolStripRender : ToolStripProfessionalRenderer, IMateria
 
         var arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
         var arrowBrush = e.Item.Enabled ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
-        using (var arrowPath = new GraphicsPath())
-        {
-            arrowPath.AddLines(
-                [
-                    new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y - ARROW_SIZE),
+        using var arrowPath = new GraphicsPath();
+        arrowPath.AddLines(
+            [
+                new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y - ARROW_SIZE),
                     new Point(arrowMiddle.X, arrowMiddle.Y),
                     new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y + ARROW_SIZE) ]);
-            arrowPath.CloseFigure();
+        arrowPath.CloseFigure();
 
-            g.FillPath(arrowBrush, arrowPath);
-        }
+        g.FillPath(arrowBrush, arrowPath);
     }
 
     private Rectangle GetItemRect(ToolStripItem item)

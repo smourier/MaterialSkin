@@ -18,7 +18,7 @@ public partial class MainForm : MaterialForm
 
         // MaterialSkinManager properties
         _materialSkinManager.AddFormToManage(this);
-        _materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+        _materialSkinManager.Theme = Themes.LIGHT;
         _materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Pink200, TextShade.WHITE);
 
         // Add dummy data to the listview
@@ -45,6 +45,9 @@ public partial class MainForm : MaterialForm
 
         materialListBoxFormStyle.SelectedIndexChanged += (sender, args) =>
         {
+            if (args.Text == null)
+                return;
+
             var SelectedStyle = Enum.Parse<FormStyles>(args.Text);
             if (FormStyle != SelectedStyle)
             {
@@ -78,7 +81,7 @@ public partial class MainForm : MaterialForm
 
     private void MaterialButton7_Click(object sender, EventArgs e)
     {
-        _materialSkinManager.Theme = _materialSkinManager.Theme == MaterialSkinManager.Themes.DARK ? MaterialSkinManager.Themes.LIGHT : MaterialSkinManager.Themes.DARK;
+        _materialSkinManager.Theme = _materialSkinManager.Theme == Themes.DARK ? Themes.LIGHT : Themes.DARK;
         UpdateColor();
     }
 
@@ -97,9 +100,9 @@ public partial class MainForm : MaterialForm
         {
             case 0:
                 _materialSkinManager.ColorScheme = new ColorScheme(
-                    _materialSkinManager.Theme == MaterialSkinManager.Themes.DARK ? Primary.Teal500 : Primary.Indigo500,
-                    _materialSkinManager.Theme == MaterialSkinManager.Themes.DARK ? Primary.Teal700 : Primary.Indigo700,
-                    _materialSkinManager.Theme == MaterialSkinManager.Themes.DARK ? Primary.Teal200 : Primary.Indigo100,
+                    _materialSkinManager.Theme == Themes.DARK ? Primary.Teal500 : Primary.Indigo500,
+                    _materialSkinManager.Theme == Themes.DARK ? Primary.Teal700 : Primary.Indigo700,
+                    _materialSkinManager.Theme == Themes.DARK ? Primary.Teal200 : Primary.Indigo100,
                     Accent.Pink200,
                     TextShade.WHITE);
                 break;
@@ -177,15 +180,15 @@ public partial class MainForm : MaterialForm
     {
         if (materialComboBox7.SelectedIndex == 1)
         {
-            materialTextBox21.PrefixSuffix = MaterialTextBox.PrefixSuffixTypes.Prefix;
+            materialTextBox21.PrefixSuffix = PrefixSuffixTypes.Prefix;
         }
         else if (materialComboBox7.SelectedIndex == 2)
         {
-            materialTextBox21.PrefixSuffix = MaterialTextBox.PrefixSuffixTypes.Suffix;
+            materialTextBox21.PrefixSuffix = PrefixSuffixTypes.Suffix;
         }
         else
         {
-            materialTextBox21.PrefixSuffix = MaterialTextBox.PrefixSuffixTypes.None;
+            materialTextBox21.PrefixSuffix = PrefixSuffixTypes.None;
         }
     }
 

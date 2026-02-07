@@ -1,20 +1,12 @@
 namespace MaterialSkin;
 
-public sealed class NativeTextRenderer : IDisposable
+public sealed partial class NativeTextRenderer : IDisposable
 {
-    #region Fields and Consts
-
     private static readonly int[] _charFit = new int[1];
-
     private static readonly int[] _charFitWidth = new int[1000];
-
-    private static readonly Dictionary<string, Dictionary<float, Dictionary<FontStyle, IntPtr>>> _fontsCache = new Dictionary<string, Dictionary<float, Dictionary<FontStyle, IntPtr>>>(StringComparer.InvariantCultureIgnoreCase);
-
+    private static readonly Dictionary<string, Dictionary<float, Dictionary<FontStyle, IntPtr>>> _fontsCache = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly Graphics _g;
-
     private IntPtr _hdc;
-
-    #endregion Fields and Consts
 
     public NativeTextRenderer(Graphics g)
     {
@@ -61,7 +53,7 @@ public sealed class NativeTextRenderer : IDisposable
         return size;
     }
 
-    public void DrawString(String str, Font font, Color color, Point point)
+    public void DrawString(string str, Font font, Color color, Point point)
     {
         SetFont(font);
         SetTextColor(color);
@@ -69,7 +61,7 @@ public sealed class NativeTextRenderer : IDisposable
         TextOut(_hdc, point.X, point.Y, str, str.Length);
     }
 
-    public void DrawString(String str, Font font, Color color, Rectangle rect, TextFormatFlags flags)
+    public void DrawString(string str, Font font, Color color, Rectangle rect, TextFormatFlags flags)
     {
         SetFont(font);
         SetTextColor(color);
@@ -78,26 +70,10 @@ public sealed class NativeTextRenderer : IDisposable
         DrawText(_hdc, str, str.Length, ref rect2, (uint)flags);
     }
 
-    public void DrawTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags)
-    {
-        DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
-    }
-
-    public void DrawTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags)
-    {
-        DrawTransparentText(LogFont, str, color, point, size, flags, false);
-    }
-
-    public void DrawMultilineTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags)
-    {
-        DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
-    }
-
-    public void DrawMultilineTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags)
-    {
-        DrawTransparentText(LogFont, str, color, point, size, flags, true);
-    }
-
+    public void DrawTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
+    public void DrawTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
+    public void DrawMultilineTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
+    public void DrawMultilineTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
     private void DrawTransparentText(IntPtr fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
     {
         // Create a memory DC so we can work off-screen
@@ -125,12 +101,12 @@ public sealed class NativeTextRenderer : IDisposable
             SelectObject(memoryHdc, fontHandle);
             SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
 
-            Size strSize = new Size();
-            Point pos = new Point();
+            Size strSize = new();
+            Point pos = new();
 
             if (multilineSupport)
             {
-                TextFormatFlags fmtFlags = TextFormatFlags.WordBreak;
+                var fmtFlags = TextFormatFlags.WordBreak;
                 // Aligment
                 if (flags.HasFlag(TextAlignFlags.Center))
                     fmtFlags |= TextFormatFlags.Center;
@@ -138,7 +114,7 @@ public sealed class NativeTextRenderer : IDisposable
                     fmtFlags |= TextFormatFlags.Right;
 
                 // Calculate the string size
-                Rect strRect = new Rect(new Rectangle(point, size));
+                Rect strRect = new(new Rectangle(point, size));
                 DrawText(memoryHdc, str, str.Length, ref strRect, TextFormatFlags.CalcRect | fmtFlags);
 
                 if (flags.HasFlag(TextAlignFlags.Middle))
@@ -147,7 +123,7 @@ public sealed class NativeTextRenderer : IDisposable
                     pos.Y = (size.Height) - (strRect.Height);
 
                 // Draw Text for multiline format
-                Rect region = new Rect(new Rectangle(pos, size));
+                Rect region = new(new Rectangle(pos, size));
                 DrawText(memoryHdc, str, -1, ref region, fmtFlags);
             }
             else
@@ -189,12 +165,7 @@ public sealed class NativeTextRenderer : IDisposable
         }
     }
 
-    #region Private methods
-
-    private void SetFont(Font font)
-    {
-        SelectObject(_hdc, GetCachedHFont(font));
-    }
+    private void SetFont(Font font) => SelectObject(_hdc, GetCachedHFont(font));
 
     private static IntPtr GetCachedHFont(Font font)
     {
@@ -269,7 +240,7 @@ public sealed class NativeTextRenderer : IDisposable
     public static extern bool DeleteDC(IntPtr hdc);
 
     [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LogFont lplf);
+    internal static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LogFont lplf);
 
     [DllImport("gdi32.dll", ExactSpelling = true)]
     public static extern IntPtr AddFontMemResourceEx(byte[] pbFont, int cbFont, IntPtr pdv, out uint pcFonts);
@@ -288,7 +259,7 @@ public sealed class NativeTextRenderer : IDisposable
     private static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BitMapInfo pbmi, uint iUsage, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public class LogFont
+    internal class LogFont
     {
         public int lfHeight = 0;
         public int lfWidth = 0;
@@ -308,23 +279,12 @@ public sealed class NativeTextRenderer : IDisposable
         public string lfFaceName = string.Empty;
     }
 
-    // ReSharper disable NotAccessedField.Local
-    // ReSharper disable MemberCanBePrivate.Local
-    // ReSharper disable FieldCanBeMadeReadOnly.Local
-    private struct Rect
+    private struct Rect(Rectangle r)
     {
-        private int _left;
-        private int _top;
-        private int _right;
-        private int _bottom;
-
-        public Rect(Rectangle r)
-        {
-            _left = r.Left;
-            _top = r.Top;
-            _bottom = r.Bottom;
-            _right = r.Right;
-        }
+        private int _left = r.Left;
+        private int _top = r.Top;
+        private int _right = r.Right;
+        private int _bottom = r.Bottom;
 
         public int Height
         {
@@ -335,25 +295,15 @@ public sealed class NativeTextRenderer : IDisposable
         }
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct BlendFunction
+    private struct BlendFunction(byte alpha)
     {
-        public byte BlendOp;
-        public byte BlendFlags;
-        public byte SourceConstantAlpha;
-        public byte AlphaFormat;
-
-        public BlendFunction(byte alpha)
-        {
-            BlendOp = 0;
-            BlendFlags = 0;
-            AlphaFormat = 0;
-            SourceConstantAlpha = alpha;
-        }
+        public byte BlendOp = 0;
+        public byte BlendFlags = 0;
+        public byte SourceConstantAlpha = alpha;
+        public byte AlphaFormat = 0;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct BitMapInfo
+    private struct BitMapInfo
     {
         public int biSize;
         public int biWidth;
@@ -371,113 +321,4 @@ public sealed class NativeTextRenderer : IDisposable
         public byte bmiColors_rgbRed;
         public byte bmiColors_rgbReserved;
     }
-
-    [Flags]
-    public enum TextFormatFlags : uint
-    {
-        Default = 0x00000000,
-        Center = 0x00000001,
-        Right = 0x00000002,
-        VCenter = 0x00000004,
-        Bottom = 0x00000008,
-        WordBreak = 0x00000010,
-        SingleLine = 0x00000020,
-        ExpandTabs = 0x00000040,
-        TabStop = 0x00000080,
-        NoClip = 0x00000100,
-        ExternalLeading = 0x00000200,
-        CalcRect = 0x00000400,
-        NoPrefix = 0x00000800,
-        Internal = 0x00001000,
-        EditControl = 0x00002000,
-        PathEllipsis = 0x00004000,
-        EndEllipsis = 0x00008000,
-        ModifyString = 0x00010000,
-        RtlReading = 0x00020000,
-        WordEllipsis = 0x00040000,
-        NoFullWidthCharBreak = 0x00080000,
-        HidePrefix = 0x00100000,
-        ProfixOnly = 0x00200000,
-    }
-
-    private const int DT_TOP = 0x00000000;
-
-    private const int DT_LEFT = 0x00000000;
-
-    private const int DT_CENTER = 0x00000001;
-
-    private const int DT_RIGHT = 0x00000002;
-
-    private const int DT_VCENTER = 0x00000004;
-
-    private const int DT_BOTTOM = 0x00000008;
-
-    private const int DT_WORDBREAK = 0x00000010;
-
-    private const int DT_SINGLELINE = 0x00000020;
-
-    private const int DT_EXPANDTABS = 0x00000040;
-
-    private const int DT_TABSTOP = 0x00000080;
-
-    private const int DT_NOCLIP = 0x00000100;
-
-    private const int DT_EXTERNALLEADING = 0x00000200;
-
-    private const int DT_CALCRECT = 0x00000400;
-
-    private const int DT_NOPREFIX = 0x00000800;
-
-    private const int DT_INTERNAL = 0x00001000;
-
-    private const int DT_EDITCONTROL = 0x00002000;
-
-    private const int DT_PATH_ELLIPSIS = 0x00004000;
-
-    private const int DT_END_ELLIPSIS = 0x00008000;
-
-    private const int DT_MODIFYSTRING = 0x00010000;
-
-    private const int DT_RTLREADING = 0x00020000;
-
-    private const int DT_WORD_ELLIPSIS = 0x00040000;
-
-    private const int DT_NOFULLWIDTHCHARBREAK = 0x00080000;
-
-    private const int DT_HIDEPREFIX = 0x00100000;
-
-    private const int DT_PREFIXONLY = 0x00200000;
-
-    // Text Alignment Options
-    [Flags]
-    public enum TextAlignFlags : uint
-    {
-        Left = 1 << 0,
-        Center = 1 << 1,
-        Right = 1 << 2,
-        Top = 1 << 3,
-        Middle = 1 << 4,
-        Bottom = 1 << 5
-    }
-
-    public enum logFontWeight : int
-    {
-        FW_DONTCARE = 0,
-        FW_THIN = 100,
-        FW_EXTRALIGHT = 200,
-        FW_ULTRALIGHT = 200,
-        FW_LIGHT = 300,
-        FW_NORMAL = 400,
-        FW_REGULAR = 400,
-        FW_MEDIUM = 500,
-        FW_SEMIBOLD = 600,
-        FW_DEMIBOLD = 600,
-        FW_BOLD = 700,
-        FW_EXTRABOLD = 800,
-        FW_ULTRABOLD = 800,
-        FW_HEAVY = 900,
-        FW_BLACK = 900,
-    }
-
-    #endregion Private methods
 }

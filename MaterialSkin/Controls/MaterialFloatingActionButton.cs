@@ -17,7 +17,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     private const int FAB_MINI_ICON_MARGIN = 8;
     private const int FAB_ICON_SIZE = 24;
 
-    private Boolean _mouseHover = false;
+    private bool _mouseHover = false;
 
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Draw Shadows")]
@@ -162,7 +162,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
         // paint shadow on parent
         Graphics gp = e.Graphics;
-        Rectangle rect = new Rectangle(Location, fabBounds.Size);
+        Rectangle rect = new(Location, fabBounds.Size);
         gp.SmoothingMode = SmoothingMode.AntiAlias;
         DrawHelper.DrawRoundShadow(gp, rect);
     }
@@ -188,9 +188,9 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
         if (_animationManager.IsAnimating())
         {
-            GraphicsPath regionPath = new GraphicsPath();
+            GraphicsPath regionPath = new();
             regionPath.AddEllipse(new Rectangle(fabBounds.X - 1, fabBounds.Y - 1, fabBounds.Width + 3, fabBounds.Height + 2));
-            Region fabRegion = new Region(regionPath);
+            Region fabRegion = new(regionPath);
 
             GraphicsContainer gcont = g.BeginContainer();
             g.SetClip(fabRegion, CombineMode.Replace);
@@ -222,7 +222,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         }
 
         // Clip to a round shape with a 1px padding
-        GraphicsPath clipPath = new GraphicsPath();
+        GraphicsPath clipPath = new();
         clipPath.AddEllipse(new Rectangle(fabBounds.X - 1, fabBounds.Y - 1, fabBounds.Width + 3, fabBounds.Height + 3));
         Region = new Region(clipPath);
     }

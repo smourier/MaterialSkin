@@ -91,16 +91,14 @@ public class MaterialListView : ListView, IMaterialControl
 
         g.FillRectangle(new SolidBrush(BackColor), e.Bounds);
         // Draw Text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            NativeText.DrawTransparentText(
-                e.Header.Text,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2),
-                Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
-                new Point(e.Bounds.Location.X + PAD, e.Bounds.Location.Y),
-                new Size(e.Bounds.Size.Width - PAD * 2, e.Bounds.Size.Height),
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-        }
+        using NativeTextRenderer NativeText = new(g);
+        NativeText.DrawTransparentText(
+            e.Header.Text,
+            SkinManager.getLogFontByType(FontType.Subtitle2),
+            Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
+            new Point(e.Bounds.Location.X + PAD, e.Bounds.Location.Y),
+            new Size(e.Bounds.Size.Width - PAD * 2, e.Bounds.Size.Height),
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     protected override void OnDrawItem(DrawListViewItemEventArgs e)
@@ -129,16 +127,14 @@ public class MaterialListView : ListView, IMaterialControl
         foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
         {
             // Draw Text
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                NativeText.DrawTransparentText(
-                    subItem.Text,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body2),
-                    Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
-                    new Point(subItem.Bounds.X + PAD, subItem.Bounds.Y),
-                    new Size(subItem.Bounds.Width - PAD * 2, subItem.Bounds.Height),
-                    NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+                subItem.Text,
+                SkinManager.getLogFontByType(FontType.Body2),
+                Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
+                new Point(subItem.Bounds.X + PAD, subItem.Bounds.Y),
+                new Size(subItem.Bounds.Width - PAD * 2, subItem.Bounds.Height),
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
     }
 

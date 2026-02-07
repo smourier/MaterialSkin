@@ -85,7 +85,7 @@ internal class AnimationManager
     /// <summary>
     /// Defines the _animationTimer
     /// </summary>
-    private readonly Timer _animationTimer = new Timer { Interval = 5, Enabled = false };
+    private readonly Timer _animationTimer = new() { Interval = 5, Enabled = false };
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AnimationManager"/> class.

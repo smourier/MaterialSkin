@@ -11,7 +11,7 @@ public static class ColorHelper
     public static Color Lighten(this Color color, float percent)
     {
         var lighting = color.GetBrightness();
-        lighting = lighting + lighting * percent;
+        lighting += lighting * percent;
         if (lighting > 1.0)
         {
             lighting = 1;
@@ -20,8 +20,8 @@ public static class ColorHelper
         {
             lighting = 0.1f;
         }
-        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
 
+        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
         return tintedColor;
     }
 
@@ -34,7 +34,7 @@ public static class ColorHelper
     public static Color Darken(this Color color, float percent)
     {
         var lighting = color.GetBrightness();
-        lighting = lighting - lighting * percent;
+        lighting -= lighting * percent;
         if (lighting > 1.0)
         {
             lighting = 1;
@@ -43,8 +43,8 @@ public static class ColorHelper
         {
             lighting = 0;
         }
-        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
 
+        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
         return tintedColor;
     }
 
@@ -59,26 +59,19 @@ public static class ColorHelper
     public static Color FromHsl(int alpha, float hue, float saturation, float lighting)
     {
         if (0 > alpha || 255 < alpha)
-        {
-            throw new ArgumentOutOfRangeException("alpha");
-        }
-        if (0f > hue || 360f < hue)
-        {
-            throw new ArgumentOutOfRangeException("hue");
-        }
-        if (0f > saturation || 1f < saturation)
-        {
-            throw new ArgumentOutOfRangeException("saturation");
-        }
-        if (0f > lighting || 1f < lighting)
-        {
-            throw new ArgumentOutOfRangeException("lighting");
-        }
+            throw new ArgumentOutOfRangeException(nameof(alpha));
+
+        if (0 > hue || 360 < hue)
+            throw new ArgumentOutOfRangeException(nameof(hue));
+
+        if (0 > saturation || 1 < saturation)
+            throw new ArgumentOutOfRangeException(nameof(saturation));
+
+        if (0 > lighting || 1 < lighting)
+            throw new ArgumentOutOfRangeException(nameof(lighting));
 
         if (0 == saturation)
-        {
             return Color.FromArgb(alpha, Convert.ToInt32(lighting * 255), Convert.ToInt32(lighting * 255), Convert.ToInt32(lighting * 255));
-        }
 
         float fMax, fMid, fMin;
         int iSextant, iMax, iMid, iMin;
@@ -99,6 +92,7 @@ public static class ColorHelper
         {
             hue -= 360f;
         }
+
         hue /= 60f;
         hue -= 2f * (float)Math.Floor(((iSextant + 1f) % 6f) / 2f);
         if (0 == iSextant % 2)
@@ -114,26 +108,15 @@ public static class ColorHelper
         iMid = Convert.ToInt32(fMid * 255);
         iMin = Convert.ToInt32(fMin * 255);
 
-        switch (iSextant)
+        return iSextant switch
         {
-            case 1:
-                return Color.FromArgb(alpha, iMid, iMax, iMin);
-
-            case 2:
-                return Color.FromArgb(alpha, iMin, iMax, iMid);
-
-            case 3:
-                return Color.FromArgb(alpha, iMin, iMid, iMax);
-
-            case 4:
-                return Color.FromArgb(alpha, iMid, iMin, iMax);
-
-            case 5:
-                return Color.FromArgb(alpha, iMax, iMin, iMid);
-
-            default:
-                return Color.FromArgb(alpha, iMax, iMid, iMin);
-        }
+            1 => Color.FromArgb(alpha, iMid, iMax, iMin),
+            2 => Color.FromArgb(alpha, iMin, iMax, iMid),
+            3 => Color.FromArgb(alpha, iMin, iMid, iMax),
+            4 => Color.FromArgb(alpha, iMid, iMin, iMax),
+            5 => Color.FromArgb(alpha, iMax, iMin, iMid),
+            _ => Color.FromArgb(alpha, iMax, iMid, iMin),
+        };
     }
 
     /// <summary>
@@ -148,7 +131,7 @@ public static class ColorHelper
             return foreground;
 
         var alpha = foreground.A / 255.0;
-        var diff = 1.0 - alpha;
+        var diff = 1 - alpha;
         return Color.FromArgb(255,
             (byte)(foreground.R * alpha + background.R * diff),
             (byte)(foreground.G * alpha + background.G * diff),

@@ -8,8 +8,8 @@ public class MaterialSnackBar : MaterialForm
     private const int BUTTON_PADDING = 8;
     private const int BUTTON_HEIGHT = 36;
 
-    private MaterialButton _actionButton = new MaterialButton();
-    private Timer _duration = new Timer();      // Timer that checks when the drop down is fully visible
+    private MaterialButton _actionButton = new();
+    private Timer _duration = new();      // Timer that checks when the drop down is fully visible
 
     private AnimationManager _AnimationManager;
     private bool _closingAnimationDone = false;
@@ -49,12 +49,12 @@ public class MaterialSnackBar : MaterialForm
         }
     }
 
-    private String _text;
+    private string _text;
     /// <summary>
     /// The Text which gets displayed as the Content
     /// </summary>
     [Category("Material Skin"), DefaultValue("SnackBar text")]
-    public new String Text
+    public new string Text
     {
         get
         {
@@ -76,12 +76,12 @@ public class MaterialSnackBar : MaterialForm
         set { _showActionButton = value; UpdateRects(); Invalidate(); }
     }
 
-    private String _actionButtonText;
+    private string _actionButtonText;
     /// <summary>
     /// The Text which gets displayed as the Content
     /// </summary>
     [Category("Material Skin"), DefaultValue("OK")]
-    public String ActionButtonText
+    public string ActionButtonText
     {
         get
         {
@@ -127,8 +127,8 @@ public class MaterialSnackBar : MaterialForm
         this.ActionButtonText = ActionButtonText;
         this.UseAccentColor = UseAccentColor;
         Height = 48;
-        MinimumSize = new System.Drawing.Size(344, 48);
-        MaximumSize = new System.Drawing.Size(568, 48);
+        MinimumSize = new Size(344, 48);
+        MaximumSize = new Size(568, 48);
 
         this.ShowActionButton = ShowActionButton;
 
@@ -199,8 +199,8 @@ public class MaterialSnackBar : MaterialForm
     {
         if (_showActionButton == true)
         {
-            int _buttonWidth = ((TextRenderer.MeasureText(ActionButtonText, SkinManager.getFontByType(MaterialSkinManager.fontType.Button))).Width + 32);
-            Rectangle _actionbuttonBounds = new Rectangle((Width) - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
+            int _buttonWidth = ((TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
+            Rectangle _actionbuttonBounds = new((Width) - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
             _actionButton.Text = _actionButtonText;
@@ -214,7 +214,7 @@ public class MaterialSnackBar : MaterialForm
         _actionButton.Left = Width - BUTTON_PADDING - _actionButton.Width;  //Button minimum width management
         _actionButton.Visible = _showActionButton;
 
-        Width = TextRenderer.MeasureText(_text, SkinManager.getFontByType(MaterialSkinManager.fontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
+        Width = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
     }
@@ -258,7 +258,7 @@ public class MaterialSnackBar : MaterialForm
     /// <summary>
     /// Ovverides the Paint to create the solid colored backcolor
     /// </summary>
-    protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+    protected override void OnPaint(PaintEventArgs e)
     {
 
         Graphics g = e.Graphics;
@@ -268,31 +268,29 @@ public class MaterialSnackBar : MaterialForm
 
 
         // Calc text Rect
-        Rectangle textRect = new Rectangle(
+        Rectangle textRect = new(
             LEFT_RIGHT_PADDING,
             0,
             Width - (2 * LEFT_RIGHT_PADDING) - _actionButton.Width,
             Height);
 
         //Draw  Text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            // Draw header text
-            NativeText.DrawTransparentText(
-                _text,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body2),
-                SkinManager.SnackBarTextHighEmphasisColor,
-                textRect.Location,
-                textRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-        }
+        using NativeTextRenderer NativeText = new(g);
+        // Draw header text
+        NativeText.DrawTransparentText(
+            _text,
+            SkinManager.getLogFontByType(FontType.Body2),
+            SkinManager.SnackBarTextHighEmphasisColor,
+            textRect.Location,
+            textRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
 
     }
 
     /// <summary>
     /// Overrides the Closing Event to Animate the Slide Out
     /// </summary>
-    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    protected override void OnClosing(CancelEventArgs e)
     {
         e.Cancel = !_closingAnimationDone;
         if (!_closingAnimationDone)
@@ -324,7 +322,7 @@ public class MaterialSnackBar : MaterialForm
     private void InitializeComponent()
     {
         SuspendLayout();
-        ClientSize = new System.Drawing.Size(344, 48);
+        ClientSize = new Size(344, 48);
         Name = "SnackBar";
         ResumeLayout(false);
 

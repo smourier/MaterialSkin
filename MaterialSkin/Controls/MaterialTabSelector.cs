@@ -1,6 +1,6 @@
 ﻿namespace MaterialSkin.Controls;
 
-public class MaterialTabSelector : Control, IMaterialControl
+public partial class MaterialTabSelector : Control, IMaterialControl
 {
     [Browsable(false)]
     public int Depth { get; set; }
@@ -10,19 +10,6 @@ public class MaterialTabSelector : Control, IMaterialControl
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
-
-    //[Browsable(false)]
-    public enum CustomCharacterCasing
-    {
-        [Description("Text will be used as user inserted, no alteration")]
-        Normal,
-        [Description("Text will be converted to UPPER case")]
-        Upper,
-        [Description("Text will be converted to lower case")]
-        Lower,
-        [Description("Text will be converted to Proper case (aka Title case)")]
-        Proper
-    }
 
     TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
 
@@ -151,7 +138,7 @@ public class MaterialTabSelector : Control, IMaterialControl
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-        Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+        Font = SkinManager.GetFontByType(FontType.Body1);
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -194,55 +181,53 @@ public class MaterialTabSelector : Control, IMaterialControl
             if (_tabLabel != TabLabelStyle.Icon)
             {
                 // Text
-                using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-                {
-                    Size textSize = TextRenderer.MeasureText(_baseTabControl.TabPages[currentTabIndex].Text, Font);
-                    Rectangle textLocation = new Rectangle(_tabRects[currentTabIndex].X + (TAB_HEADER_PADDING / 2), _tabRects[currentTabIndex].Y, _tabRects[currentTabIndex].Width - (TAB_HEADER_PADDING), _tabRects[currentTabIndex].Height);
+                using NativeTextRenderer NativeText = new(g);
+                Size textSize = TextRenderer.MeasureText(_baseTabControl.TabPages[currentTabIndex].Text, Font);
+                Rectangle textLocation = new(_tabRects[currentTabIndex].X + (TAB_HEADER_PADDING / 2), _tabRects[currentTabIndex].Y, _tabRects[currentTabIndex].Width - (TAB_HEADER_PADDING), _tabRects[currentTabIndex].Height);
 
+                if (_tabLabel == TabLabelStyle.IconAndText)
+                {
+                    textLocation.Y = 46;
+                    textLocation.Height = 10;
+                }
+
+                if (((TAB_HEADER_PADDING * 2) + textSize.Width < TAB_WIDTH_MAX))
+                {
+                    NativeText.DrawTransparentText(
+                    CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
+                    CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
+                    CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                    Font,
+                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
+                    textLocation.Location,
+                    textLocation.Size,
+                    TextAlignFlags.Center | TextAlignFlags.Middle);
+                }
+                else
+                {
                     if (_tabLabel == TabLabelStyle.IconAndText)
                     {
-                        textLocation.Y = 46;
-                        textLocation.Height = 10;
+                        textLocation.Y = 40;
+                        textLocation.Height = 26;
                     }
-
-                    if (((TAB_HEADER_PADDING * 2) + textSize.Width < TAB_WIDTH_MAX))
-                    {
-                        NativeText.DrawTransparentText(
-                        CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
-                        CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                        CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
-                        Font,
-                        Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
-                        textLocation.Location,
-                        textLocation.Size,
-                        NativeTextRenderer.TextAlignFlags.Center | NativeTextRenderer.TextAlignFlags.Middle);
-                    }
-                    else
-                    {
-                        if (_tabLabel == TabLabelStyle.IconAndText)
-                        {
-                            textLocation.Y = 40;
-                            textLocation.Height = 26;
-                        }
-                        NativeText.DrawMultilineTransparentText(
-                        CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
-                        CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                        CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
-                        SkinManager.getFontByType(MaterialSkinManager.fontType.Body2),
-                        Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
-                        textLocation.Location,
-                        textLocation.Size,
-                        NativeTextRenderer.TextAlignFlags.Center | NativeTextRenderer.TextAlignFlags.Middle);
-                    }
+                    NativeText.DrawMultilineTransparentText(
+                    CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
+                    CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
+                    CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                    SkinManager.GetFontByType(FontType.Body2),
+                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
+                    textLocation.Location,
+                    textLocation.Size,
+                    TextAlignFlags.Center | TextAlignFlags.Middle);
                 }
             }
 
             if (_tabLabel != TabLabelStyle.Text)
             {
                 // Icons
-                if (_baseTabControl.ImageList != null && (!String.IsNullOrEmpty(tabPage.ImageKey) | tabPage.ImageIndex > -1))
+                if (_baseTabControl.ImageList != null && (!string.IsNullOrEmpty(tabPage.ImageKey) | tabPage.ImageIndex > -1))
                 {
-                    Rectangle iconRect = new Rectangle(
+                    Rectangle iconRect = new(
                         _tabRects[currentTabIndex].X + (_tabRects[currentTabIndex].Width / 2) - (ICON_SIZE / 2),
                         _tabRects[currentTabIndex].Y + (_tabRects[currentTabIndex].Height / 2) - (ICON_SIZE / 2),
                         ICON_SIZE, ICON_SIZE);
@@ -250,7 +235,7 @@ public class MaterialTabSelector : Control, IMaterialControl
                     {
                         iconRect.Y = 12;
                     }
-                    g.DrawImage(!String.IsNullOrEmpty(tabPage.ImageKey) ? _baseTabControl.ImageList.Images[tabPage.ImageKey] : _baseTabControl.ImageList.Images[tabPage.ImageIndex], iconRect);
+                    g.DrawImage(!string.IsNullOrEmpty(tabPage.ImageKey) ? _baseTabControl.ImageList.Images[tabPage.ImageKey] : _baseTabControl.ImageList.Images[tabPage.ImageIndex], iconRect);
                 }
             }
         }
@@ -353,30 +338,24 @@ public class MaterialTabSelector : Control, IMaterialControl
         if (_baseTabControl == null || _baseTabControl.TabCount == 0) return;
 
         //Calculate the bounds of each tab header specified in the base tab control
-        using (var b = new Bitmap(1, 1))
+        using var b = new Bitmap(1, 1);
+        using var g = Graphics.FromImage(b);
+        using NativeTextRenderer NativeText = new(g);
+        for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
         {
-            using (var g = Graphics.FromImage(b))
-            {
-                using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-                {
-                    for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
-                    {
-                        Size textSize = TextRenderer.MeasureText(_baseTabControl.TabPages[i].Text, Font);
-                        if (_tabLabel == TabLabelStyle.Icon) textSize.Width = ICON_SIZE;
+            Size textSize = TextRenderer.MeasureText(_baseTabControl.TabPages[i].Text, Font);
+            if (_tabLabel == TabLabelStyle.Icon) textSize.Width = ICON_SIZE;
 
-                        int TabWidth = (TAB_HEADER_PADDING * 2) + textSize.Width;
-                        if (TabWidth > TAB_WIDTH_MAX)
-                            TabWidth = TAB_WIDTH_MAX;
-                        else if (TabWidth < TAB_WIDTH_MIN)
-                            TabWidth = TAB_WIDTH_MIN;
+            int TabWidth = (TAB_HEADER_PADDING * 2) + textSize.Width;
+            if (TabWidth > TAB_WIDTH_MAX)
+                TabWidth = TAB_WIDTH_MAX;
+            else if (TabWidth < TAB_WIDTH_MIN)
+                TabWidth = TAB_WIDTH_MIN;
 
-                        if (i == 0)
-                            _tabRects.Add(new Rectangle(FIRST_TAB_PADDING - (TAB_HEADER_PADDING), 0, TabWidth, Height));
-                        else
-                            _tabRects.Add(new Rectangle(_tabRects[i - 1].Right, 0, TabWidth, Height));
-                    }
-                }
-            }
+            if (i == 0)
+                _tabRects.Add(new Rectangle(FIRST_TAB_PADDING - (TAB_HEADER_PADDING), 0, TabWidth, Height));
+            else
+                _tabRects.Add(new Rectangle(_tabRects[i - 1].Right, 0, TabWidth, Height));
         }
     }
 }

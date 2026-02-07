@@ -2,10 +2,8 @@
 
 public class MaterialSlider : Control, IMaterialControl
 {
-    #region "Private members"
     private bool _mousePressed;
     private int _mouseX;
-    //private int _indicatorSize;
     private bool _hovered = false;
     private Rectangle _indicatorRectangle;
     private Rectangle _indicatorRectangleNormal;
@@ -18,11 +16,8 @@ public class MaterialSlider : Control, IMaterialControl
     private const int _inactiveTrack = 4;
     private const int _thumbRadius = 20;
     private const int _thumbRadiusHoverPressed = 40;
+    private FontType _fontType = MaterialSkin.FontType.Body1;
 
-
-    #endregion
-
-    #region "Public Properties"
     [Browsable(false)]
     public int Depth { get; set; }
     [Browsable(false)]
@@ -130,7 +125,7 @@ public class MaterialSlider : Control, IMaterialControl
         }
     }
 
-    private Boolean _showText;
+    private bool _showText;
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show text")]
     [Description("Show text")]
@@ -140,7 +135,7 @@ public class MaterialSlider : Control, IMaterialControl
         set { _showText = value; UpdateRects(); Invalidate(); }
     }
 
-    private Boolean _showValue;
+    private bool _showValue;
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show value")]
     [Description("Show value")]
@@ -158,11 +153,9 @@ public class MaterialSlider : Control, IMaterialControl
         set { _useAccentColor = value; Invalidate(); }
     }
 
-    private MaterialSkinManager.fontType _fontType = MaterialSkinManager.fontType.Body1;
-
     [Category("Material Skin"),
-    DefaultValue(typeof(MaterialSkinManager.fontType), "Body1")]
-    public MaterialSkinManager.fontType FontType
+    DefaultValue(typeof(FontType), "Body1")]
+    public FontType FontType
     {
         get
         {
@@ -171,22 +164,15 @@ public class MaterialSlider : Control, IMaterialControl
         set
         {
             _fontType = value;
-            Font = SkinManager.getFontByType(_fontType);
+            Font = SkinManager.GetFontByType(_fontType);
             Refresh();
         }
     }
-
-
-    #endregion
-
-    #region "Events"
 
     [Category("Behavior")]
     [Description("Occurs when value change.")]
     public delegate void ValueChanged(object sender, int newValue);
     public event ValueChanged onValueChanged;
-
-    #endregion
 
     public MaterialSlider()
     {
@@ -327,7 +313,7 @@ public class MaterialSlider : Control, IMaterialControl
     {
         Size textSize;
         Size valueSize;
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
+        using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
             textSize = NativeText.MeasureLogString(_showText ? Text : "", SkinManager.getLogFontByType(_fontType));
             valueSize = NativeText.MeasureLogString(_showValue ? RangeMax.ToString() + _valueSuffix : "", SkinManager.getLogFontByType(_fontType));
@@ -370,7 +356,7 @@ public class MaterialSlider : Control, IMaterialControl
         _accentBrush = new SolidBrush(_accentColor);
         _disabledBrush = new SolidBrush(Color.FromArgb(255, 158, 158, 158));
 
-        if (SkinManager.Theme == MaterialSkinManager.Themes.DARK)
+        if (SkinManager.Theme == Themes.DARK)
         {
             _disabledColor = Color.FromArgb((int)(2.55 * 30), 255, 255, 255);
             _inactiveTrackColor = _accentColor.Darken(0.25f);
@@ -434,28 +420,26 @@ public class MaterialSlider : Control, IMaterialControl
             g.FillEllipse(_disabledBrush, _indicatorRectangleNormal);
         }
 
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            if (_showText == true)
-                // Draw text
-                NativeText.DrawTransparentText(
-                Text,
+        using NativeTextRenderer NativeText = new(g);
+        if (_showText == true)
+            // Draw text
+            NativeText.DrawTransparentText(
+            Text,
+            SkinManager.getLogFontByType(_fontType),
+            Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            _textRectangle.Location,
+            _textRectangle.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
+
+        if (_showValue == true)
+            // Draw value
+            NativeText.DrawTransparentText(
+                Value.ToString() + ValueSuffix,
                 SkinManager.getLogFontByType(_fontType),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                _textRectangle.Location,
-                _textRectangle.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-
-            if (_showValue == true)
-                // Draw value
-                NativeText.DrawTransparentText(
-                    Value.ToString() + ValueSuffix,
-                    SkinManager.getLogFontByType(_fontType),
-                    Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                    _valueRectangle.Location,
-                    _valueRectangle.Size,
-                    NativeTextRenderer.TextAlignFlags.Right | NativeTextRenderer.TextAlignFlags.Middle);
-        }
+                _valueRectangle.Location,
+                _valueRectangle.Size,
+                TextAlignFlags.Right | TextAlignFlags.Middle);
 
     }
 }

@@ -100,9 +100,9 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     {
         Size strSize;
 
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
+        using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(FontType.Body1));
         }
 
         int w = _boxOffset + TEXT_OFFSET + strSize.Width;
@@ -119,15 +119,15 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         g.Clear(Parent.BackColor);
 
         int CHECKBOX_CENTER = _boxOffset + CHECKBOX_SIZE_HALF - 1;
-        Point animationSource = new Point(CHECKBOX_CENTER, CHECKBOX_CENTER);
+        Point animationSource = new(CHECKBOX_CENTER, CHECKBOX_CENTER);
         double animationProgress = _checkAM.GetProgress();
 
         int colorAlpha = Enabled ? (int)(animationProgress * 255.0) : SkinManager.CheckBoxOffDisabledColor.A;
         int backgroundAlpha = Enabled ? (int)(SkinManager.CheckboxOffColor.A * (1.0 - animationProgress)) : SkinManager.CheckBoxOffDisabledColor.A;
         int rippleHeight = (HEIGHT_RIPPLE % 2 == 0) ? HEIGHT_RIPPLE - 3 : HEIGHT_RIPPLE - 2;
 
-        SolidBrush brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor));
-        Pen pen = new Pen(brush.Color, 2);
+        SolidBrush brush = new(Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor));
+        Pen pen = new(brush.Color, 2);
 
         // draw hover animation
         if (Ripple)
@@ -135,11 +135,9 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             double animationValue = _hoverAM.IsAnimating() ? _hoverAM.GetProgress() : hovered ? 1 : 0;
             int rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
 
-            using (SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * animationValue),
-                !Checked ? (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? Color.Black : Color.White) : brush.Color))) // no animation
-            {
-                g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
-            }
+            using SolidBrush rippleBrush = new(Color.FromArgb((int)(40 * animationValue),
+                !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color)); // no animation
+            g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
         }
 
         // draw ripple animation
@@ -150,19 +148,17 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
                 double animationValue = _rippleAM.GetProgress(i);
                 int rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using (SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)((animationValue * 40)), !Checked ? (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? Color.Black : Color.White) : brush.Color)))
-                {
-                    g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
-                }
+                using SolidBrush rippleBrush = new(Color.FromArgb((int)((animationValue * 40)), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
+                g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }
         }
 
-        Rectangle checkMarkLineFill = new Rectangle(_boxOffset, _boxOffset, (int)(CHECKBOX_SIZE * animationProgress), CHECKBOX_SIZE);
+        Rectangle checkMarkLineFill = new(_boxOffset, _boxOffset, (int)(CHECKBOX_SIZE * animationProgress), CHECKBOX_SIZE);
         using (GraphicsPath checkmarkPath = DrawHelper.CreateRoundRect(_boxOffset - 0.5f, _boxOffset - 0.5f, CHECKBOX_SIZE, CHECKBOX_SIZE, 1))
         {
             if (Enabled)
             {
-                using (Pen pen2 = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2))
+                using (Pen pen2 = new(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2))
                 {
                     g.DrawPath(pen2, checkmarkPath);
                 }
@@ -182,14 +178,14 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         }
 
         // draw checkbox text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+        using (NativeTextRenderer NativeText = new(g))
         {
-            Rectangle textLocation = new Rectangle(_boxOffset + TEXT_OFFSET, 0, Width - (_boxOffset + TEXT_OFFSET), HEIGHT_RIPPLE);
-            NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body1),
+            Rectangle textLocation = new(_boxOffset + TEXT_OFFSET, 0, Width - (_boxOffset + TEXT_OFFSET), HEIGHT_RIPPLE);
+            NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(FontType.Body1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 textLocation.Location,
                 textLocation.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // dispose used paint objects
@@ -312,14 +308,14 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     #region Private events and methods
     private Bitmap DrawCheckMarkBitmap()
     {
-        Bitmap checkMark = new Bitmap(CHECKBOX_SIZE, CHECKBOX_SIZE);
+        Bitmap checkMark = new(CHECKBOX_SIZE, CHECKBOX_SIZE);
         Graphics g = Graphics.FromImage(checkMark);
 
         // clear everything, transparent
         g.Clear(Color.Transparent);
 
         // draw the checkmark lines
-        using (Pen pen = new Pen(Parent.BackColor, 2))
+        using (Pen pen = new(Parent.BackColor, 2))
         {
             g.DrawLines(pen, CheckmarkLine);
         }

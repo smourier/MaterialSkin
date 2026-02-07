@@ -2,6 +2,10 @@
 
 public class MaterialLabel : Label, IMaterialControl
 {
+    private TextAlignFlags _alignment;
+    private ContentAlignment _textAlign = ContentAlignment.TopLeft;
+    private FontType _fontType = FontType.Body1;
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -11,19 +15,14 @@ public class MaterialLabel : Label, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    private ContentAlignment _TextAlign = ContentAlignment.TopLeft;
-
     [DefaultValue(typeof(ContentAlignment), "TopLeft")]
     public override ContentAlignment TextAlign
     {
-        get
-        {
-            return _TextAlign;
-        }
+        get => _textAlign;
         set
         {
-            _TextAlign = value;
-            updateAligment();
+            _textAlign = value;
+            UpdateAligment();
             Invalidate();
         }
     }
@@ -36,11 +35,9 @@ public class MaterialLabel : Label, IMaterialControl
     DefaultValue(false)]
     public bool UseAccent { get; set; }
 
-    private MaterialSkinManager.fontType _fontType = MaterialSkinManager.fontType.Body1;
-
     [Category("Material Skin"),
-    DefaultValue(typeof(MaterialSkinManager.fontType), "Body1")]
-    public MaterialSkinManager.fontType FontType
+    DefaultValue(typeof(FontType), "Body1")]
+    public FontType FontType
     {
         get
         {
@@ -49,14 +46,14 @@ public class MaterialLabel : Label, IMaterialControl
         set
         {
             _fontType = value;
-            Font = SkinManager.getFontByType(_fontType);
+            Font = SkinManager.GetFontByType(_fontType);
             Refresh();
         }
     }
 
     public MaterialLabel()
     {
-        FontType = MaterialSkinManager.fontType.Body1;
+        FontType = FontType.Body1;
         TextAlign = ContentAlignment.TopLeft;
     }
 
@@ -65,7 +62,7 @@ public class MaterialLabel : Label, IMaterialControl
         if (AutoSize)
         {
             Size strSize;
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
+            using (NativeTextRenderer NativeText = new(CreateGraphics()))
             {
                 strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(_fontType));
                 strSize.Width += 1; // necessary to avoid a bug when autosize = true
@@ -78,52 +75,21 @@ public class MaterialLabel : Label, IMaterialControl
         }
     }
 
-    private NativeTextRenderer.TextAlignFlags Alignment;
-
-    private void updateAligment()
+    private void UpdateAligment()
     {
-        switch (_TextAlign)
+        _alignment = _textAlign switch
         {
-            case ContentAlignment.TopLeft:
-                Alignment = NativeTextRenderer.TextAlignFlags.Top | NativeTextRenderer.TextAlignFlags.Left;
-                break;
-
-            case ContentAlignment.TopCenter:
-                Alignment = NativeTextRenderer.TextAlignFlags.Top | NativeTextRenderer.TextAlignFlags.Center;
-                break;
-
-            case ContentAlignment.TopRight:
-                Alignment = NativeTextRenderer.TextAlignFlags.Top | NativeTextRenderer.TextAlignFlags.Right;
-                break;
-
-            case ContentAlignment.MiddleLeft:
-                Alignment = NativeTextRenderer.TextAlignFlags.Middle | NativeTextRenderer.TextAlignFlags.Left;
-                break;
-
-            case ContentAlignment.MiddleCenter:
-                Alignment = NativeTextRenderer.TextAlignFlags.Middle | NativeTextRenderer.TextAlignFlags.Center;
-                break;
-
-            case ContentAlignment.MiddleRight:
-                Alignment = NativeTextRenderer.TextAlignFlags.Middle | NativeTextRenderer.TextAlignFlags.Right;
-                break;
-
-            case ContentAlignment.BottomLeft:
-                Alignment = NativeTextRenderer.TextAlignFlags.Bottom | NativeTextRenderer.TextAlignFlags.Left;
-                break;
-
-            case ContentAlignment.BottomCenter:
-                Alignment = NativeTextRenderer.TextAlignFlags.Bottom | NativeTextRenderer.TextAlignFlags.Center;
-                break;
-
-            case ContentAlignment.BottomRight:
-                Alignment = NativeTextRenderer.TextAlignFlags.Bottom | NativeTextRenderer.TextAlignFlags.Right;
-                break;
-
-            default:
-                Alignment = NativeTextRenderer.TextAlignFlags.Top | NativeTextRenderer.TextAlignFlags.Left;
-                break;
-        }
+            ContentAlignment.TopLeft => TextAlignFlags.Top | TextAlignFlags.Left,
+            ContentAlignment.TopCenter => TextAlignFlags.Top | TextAlignFlags.Center,
+            ContentAlignment.TopRight => TextAlignFlags.Top | TextAlignFlags.Right,
+            ContentAlignment.MiddleLeft => TextAlignFlags.Middle | TextAlignFlags.Left,
+            ContentAlignment.MiddleCenter => TextAlignFlags.Middle | TextAlignFlags.Center,
+            ContentAlignment.MiddleRight => TextAlignFlags.Middle | TextAlignFlags.Right,
+            ContentAlignment.BottomLeft => TextAlignFlags.Bottom | TextAlignFlags.Left,
+            ContentAlignment.BottomCenter => TextAlignFlags.Bottom | TextAlignFlags.Center,
+            ContentAlignment.BottomRight => TextAlignFlags.Bottom | TextAlignFlags.Right,
+            _ => TextAlignFlags.Top | TextAlignFlags.Left,
+        };
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -132,26 +98,24 @@ public class MaterialLabel : Label, IMaterialControl
         g.Clear(Parent.BackColor);
 
         // Draw Text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            NativeText.DrawMultilineTransparentText(
-                Text,
-                SkinManager.getLogFontByType(_fontType),
-                Enabled ? HighEmphasis ? UseAccent ?
-                SkinManager.ColorScheme.AccentColor : // High emphasis, accent
-                (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT) ?
-                SkinManager.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
-                SkinManager.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
-                SkinManager.TextHighEmphasisColor : // Normal
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                ClientRectangle.Location,
-                ClientRectangle.Size,
-                Alignment);
-        }
+        using NativeTextRenderer NativeText = new(g);
+        NativeText.DrawMultilineTransparentText(
+            Text,
+            SkinManager.getLogFontByType(_fontType),
+            Enabled ? HighEmphasis ? UseAccent ?
+            SkinManager.ColorScheme.AccentColor : // High emphasis, accent
+            (SkinManager.Theme == Themes.LIGHT) ?
+            SkinManager.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
+            SkinManager.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
+            SkinManager.TextHighEmphasisColor : // Normal
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            ClientRectangle.Location,
+            ClientRectangle.Size,
+            _alignment);
     }
 
     protected override void InitLayout()
     {
-        Font = SkinManager.getFontByType(_fontType);
+        Font = SkinManager.GetFontByType(_fontType);
     }
 }

@@ -90,7 +90,7 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         Multiline = true;
 
         BorderStyle = BorderStyle.None;
-        Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+        Font = SkinManager.GetFontByType(FontType.Body1);
         BackColor = SkinManager.BackgroundColor;
         ForeColor = SkinManager.TextHighEmphasisColor;
         BackColorChanged += (sender, args) => BackColor = SkinManager.BackgroundColor;

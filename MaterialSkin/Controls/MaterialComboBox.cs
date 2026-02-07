@@ -52,7 +52,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         set
         {
             _hint = value;
-            hasHint = !String.IsNullOrEmpty(Hint);
+            hasHint = !string.IsNullOrEmpty(Hint);
             Invalidate();
         }
     }
@@ -98,7 +98,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         UseTallSize = true;
         MaxDropDownItems = 4;
 
-        Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle2);
+        Font = SkinManager.GetFontByType(FontType.Subtitle2);
         BackColor = SkinManager.BackgroundColor;
         ForeColor = SkinManager.TextHighEmphasisColor;
         DrawMode = DrawMode.OwnerDrawVariable;
@@ -170,18 +170,18 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             , ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, LINE_Y);
 
         //Set color and brush
-        Color SelectedColor = new Color();
+        Color SelectedColor = new();
         if (UseAccent)
             SelectedColor = SkinManager.ColorScheme.AccentColor;
         else
             SelectedColor = SkinManager.ColorScheme.PrimaryColor;
-        SolidBrush SelectedBrush = new SolidBrush(SelectedColor);
+        SolidBrush SelectedBrush = new(SelectedColor);
 
         // Create and Draw the arrow
-        System.Drawing.Drawing2D.GraphicsPath pth = new System.Drawing.Drawing2D.GraphicsPath();
-        PointF TopRight = new PointF(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
-        PointF MidBottom = new PointF(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
-        PointF TopLeft = new PointF(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        GraphicsPath pth = new();
+        PointF TopRight = new(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        PointF MidBottom = new(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
+        PointF TopLeft = new(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
         pth.AddLine(TopLeft, TopRight);
         pth.AddLine(TopRight, MidBottom);
 
@@ -195,7 +195,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         // HintText
         bool userTextPresent = SelectedIndex >= 0;
-        Rectangle hintRect = new Rectangle(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, LINE_Y);
+        Rectangle hintRect = new(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, LINE_Y);
         int hintTextSize = 16;
 
         // bottom line base
@@ -240,7 +240,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         }
 
         // Calc text Rect
-        Rectangle textRect = new Rectangle(
+        Rectangle textRect = new(
             SkinManager.FORM_PADDING,
             hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
             ClientRectangle.Width - SkinManager.FORM_PADDING * 3 - 8,
@@ -248,45 +248,43 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         g.Clip = new Region(textRect);
 
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+        using (NativeTextRenderer NativeText = new(g))
         {
             // Draw user text
             NativeText.DrawTransparentText(
                 Text,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                SkinManager.getLogFontByType(FontType.Subtitle1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 textRect.Location,
                 textRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         g.ResetClip();
 
         // Draw hint text
-        if (hasHint && (UseTallSize || String.IsNullOrEmpty(Text)))
+        if (hasHint && (UseTallSize || string.IsNullOrEmpty(Text)))
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                NativeText.DrawTransparentText(
-                Hint,
-                SkinManager.getTextBoxFontBySize(hintTextSize),
-                Enabled ? DroppedDown || Focused ?
-                SelectedColor : // Focus 
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                hintRect.Location,
-                hintRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+            Hint,
+            SkinManager.getTextBoxFontBySize(hintTextSize),
+            Enabled ? DroppedDown || Focused ?
+            SelectedColor : // Focus 
+            SkinManager.TextMediumEmphasisColor : // not focused
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            hintRect.Location,
+            hintRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
         }
     }
 
-    private void CustomMeasureItem(object sender, System.Windows.Forms.MeasureItemEventArgs e)
+    private void CustomMeasureItem(object sender, MeasureItemEventArgs e)
     {
         e.ItemHeight = HEIGHT - 7;
     }
 
-    private void CustomDrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
+    private void CustomDrawItem(object sender, DrawItemEventArgs e)
     {
         if (e.Index < 0 || e.Index > Items.Count || !Focused) return;
 
@@ -320,16 +318,14 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             Text = Items[e.Index].ToString();
         }
 
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            NativeText.DrawTransparentText(
-            Text,
-            SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1),
-            SkinManager.TextHighEmphasisNoAlphaColor,
-            new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
-            new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
-            NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle); ;
-        }
+        using NativeTextRenderer NativeText = new(g);
+        NativeText.DrawTransparentText(
+        Text,
+        SkinManager.GetFontByType(FontType.Subtitle1),
+        SkinManager.TextHighEmphasisNoAlphaColor,
+        new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
+        new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
+        TextAlignFlags.Left | TextAlignFlags.Middle); ;
     }
 
     protected override void OnCreateControl()
@@ -369,12 +365,12 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         int vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
 
         Graphics g = CreateGraphics();
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+        using (NativeTextRenderer NativeText = new(g))
         {
             var itemsList = Items.Cast<object>().Select(item => item.ToString());
             foreach (string s in itemsList)
             {
-                int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+                int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
                 if (w < newWidth) w = newWidth;
             }
         }

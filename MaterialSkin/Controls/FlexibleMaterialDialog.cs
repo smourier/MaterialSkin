@@ -60,7 +60,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <summary>
     /// Erforderliche Designervariable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Verwendete Ressourcen bereinigen.
@@ -81,46 +81,46 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// </summary>
     private void InitializeComponent()
     {
-        components = new System.ComponentModel.Container();
-        FlexibleMaterialFormBindingSource = new System.Windows.Forms.BindingSource(components);
-        messageContainer = new System.Windows.Forms.Panel();
-        materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
-        pictureBoxForIcon = new System.Windows.Forms.PictureBox();
-        richTextBoxMessage = new MaterialSkin.Controls.MaterialMultiLineTextBox();
-        leftButton = new MaterialSkin.Controls.MaterialButton();
-        middleButton = new MaterialSkin.Controls.MaterialButton();
-        rightButton = new MaterialSkin.Controls.MaterialButton();
-        ((System.ComponentModel.ISupportInitialize)(FlexibleMaterialFormBindingSource)).BeginInit();
+        components = new Container();
+        FlexibleMaterialFormBindingSource = new BindingSource(components);
+        messageContainer = new Panel();
+        materialLabel1 = new MaterialLabel();
+        pictureBoxForIcon = new PictureBox();
+        richTextBoxMessage = new MaterialMultiLineTextBox();
+        leftButton = new MaterialButton();
+        middleButton = new MaterialButton();
+        rightButton = new MaterialButton();
+        ((ISupportInitialize)(FlexibleMaterialFormBindingSource)).BeginInit();
         messageContainer.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)(pictureBoxForIcon)).BeginInit();
+        ((ISupportInitialize)(pictureBoxForIcon)).BeginInit();
         SuspendLayout();
         // 
         // messageContainer
         // 
-        messageContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        messageContainer.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
         | AnchorStyles.Right)));
         messageContainer.BackColor = Color.White;
         messageContainer.Controls.Add(materialLabel1);
         messageContainer.Controls.Add(pictureBoxForIcon);
         messageContainer.Controls.Add(richTextBoxMessage);
-        messageContainer.Location = new System.Drawing.Point(1, 65);
+        messageContainer.Location = new Point(1, 65);
         messageContainer.Name = "messageContainer";
-        messageContainer.Size = new System.Drawing.Size(382, 89);
+        messageContainer.Size = new Size(382, 89);
         messageContainer.TabIndex = 1;
         // 
         // materialLabel1
         // 
-        materialLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        materialLabel1.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
         | AnchorStyles.Right)));
-        materialLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         materialLabel1.Depth = 0;
-        materialLabel1.Font = new System.Drawing.Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-        materialLabel1.Location = new System.Drawing.Point(56, 12);
+        materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+        materialLabel1.Location = new Point(56, 12);
         materialLabel1.MouseState = MouseState.HOVER;
         materialLabel1.Name = "materialLabel1";
-        materialLabel1.Size = new System.Drawing.Size(314, 65);
+        materialLabel1.Size = new Size(314, 65);
         materialLabel1.TabIndex = 9;
         materialLabel1.Text = "<Message>";
         materialLabel1.Visible = false;
@@ -128,34 +128,34 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // pictureBoxForIcon
         // 
         pictureBoxForIcon.BackColor = Color.Transparent;
-        pictureBoxForIcon.Location = new System.Drawing.Point(12, 12);
+        pictureBoxForIcon.Location = new Point(12, 12);
         pictureBoxForIcon.Name = "pictureBoxForIcon";
-        pictureBoxForIcon.Size = new System.Drawing.Size(32, 32);
+        pictureBoxForIcon.Size = new Size(32, 32);
         pictureBoxForIcon.TabIndex = 8;
         pictureBoxForIcon.TabStop = false;
         // 
         // richTextBoxMessage
         // 
-        richTextBoxMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        richTextBoxMessage.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
         | AnchorStyles.Right)));
         richTextBoxMessage.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
         richTextBoxMessage.BorderStyle = BorderStyle.None;
-        richTextBoxMessage.DataBindings.Add(new System.Windows.Forms.Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         richTextBoxMessage.Depth = 0;
-        richTextBoxMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+        richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         richTextBoxMessage.ForeColor = Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-        richTextBoxMessage.Location = new System.Drawing.Point(56, 12);
-        richTextBoxMessage.Margin = new System.Windows.Forms.Padding(0);
+        richTextBoxMessage.Location = new Point(56, 12);
+        richTextBoxMessage.Margin = new Padding(0);
         richTextBoxMessage.MouseState = MouseState.HOVER;
         richTextBoxMessage.Name = "richTextBoxMessage";
         richTextBoxMessage.ReadOnly = true;
         richTextBoxMessage.ScrollBars = RichTextBoxScrollBars.Vertical;
-        richTextBoxMessage.Size = new System.Drawing.Size(314, 65);
+        richTextBoxMessage.Size = new Size(314, 65);
         richTextBoxMessage.TabIndex = 0;
         richTextBoxMessage.TabStop = false;
         richTextBoxMessage.Text = "<Message>";
-        richTextBoxMessage.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(richTextBoxMessage_LinkClicked);
+        richTextBoxMessage.LinkClicked += new LinkClickedEventHandler(richTextBoxMessage_LinkClicked);
         // 
         // leftButton
         // 
@@ -167,12 +167,12 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         leftButton.DialogResult = DialogResult.OK;
         leftButton.HighEmphasis = false;
         leftButton.Icon = null;
-        leftButton.Location = new System.Drawing.Point(32, 163);
-        leftButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-        leftButton.MinimumSize = new System.Drawing.Size(0, 24);
+        leftButton.Location = new Point(32, 163);
+        leftButton.Margin = new Padding(4, 6, 4, 6);
+        leftButton.MinimumSize = new Size(0, 24);
         leftButton.MouseState = MouseState.HOVER;
         leftButton.Name = "leftButton";
-        leftButton.Size = new System.Drawing.Size(108, 36);
+        leftButton.Size = new Size(108, 36);
         leftButton.TabIndex = 14;
         leftButton.Text = "OK";
         leftButton.Type = MaterialButton.MaterialButtonType.Text;
@@ -190,12 +190,12 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         middleButton.DialogResult = DialogResult.OK;
         middleButton.HighEmphasis = true;
         middleButton.Icon = null;
-        middleButton.Location = new System.Drawing.Point(148, 163);
-        middleButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-        middleButton.MinimumSize = new System.Drawing.Size(0, 24);
+        middleButton.Location = new Point(148, 163);
+        middleButton.Margin = new Padding(4, 6, 4, 6);
+        middleButton.MinimumSize = new Size(0, 24);
         middleButton.MouseState = MouseState.HOVER;
         middleButton.Name = "middleButton";
-        middleButton.Size = new System.Drawing.Size(102, 36);
+        middleButton.Size = new Size(102, 36);
         middleButton.TabIndex = 15;
         middleButton.Text = "OK";
         middleButton.Type = MaterialButton.MaterialButtonType.Text;
@@ -213,12 +213,12 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         rightButton.DialogResult = DialogResult.OK;
         rightButton.HighEmphasis = true;
         rightButton.Icon = null;
-        rightButton.Location = new System.Drawing.Point(258, 163);
-        rightButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-        rightButton.MinimumSize = new System.Drawing.Size(0, 24);
+        rightButton.Location = new Point(258, 163);
+        rightButton.Margin = new Padding(4, 6, 4, 6);
+        rightButton.MinimumSize = new Size(0, 24);
         rightButton.MouseState = MouseState.HOVER;
         rightButton.Name = "rightButton";
-        rightButton.Size = new System.Drawing.Size(106, 36);
+        rightButton.Size = new Size(106, 36);
         rightButton.TabIndex = 13;
         rightButton.Text = "OK";
         rightButton.Type = MaterialButton.MaterialButtonType.Contained;
@@ -229,25 +229,25 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // FlexibleMaterialForm
         // 
         BackColor = Color.White;
-        ClientSize = new System.Drawing.Size(384, 208);
+        ClientSize = new Size(384, 208);
         Controls.Add(leftButton);
         Controls.Add(middleButton);
         Controls.Add(rightButton);
         Controls.Add(messageContainer);
-        DataBindings.Add(new System.Windows.Forms.Binding("Text", FlexibleMaterialFormBindingSource, "CaptionText", true));
+        DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "CaptionText", true));
         MaximizeBox = false;
         MinimizeBox = false;
-        MinimumSize = new System.Drawing.Size(276, 140);
+        MinimumSize = new Size(276, 140);
         Name = "FlexibleMaterialForm";
         ShowIcon = false;
         SizeGripStyle = SizeGripStyle.Show;
         StartPosition = FormStartPosition.CenterParent;
         Text = "<Caption>";
-        Load += new System.EventHandler(FlexibleMaterialForm_Load);
-        Shown += new System.EventHandler(FlexibleMaterialForm_Shown);
-        ((System.ComponentModel.ISupportInitialize)(FlexibleMaterialFormBindingSource)).EndInit();
+        Load += new EventHandler(FlexibleMaterialForm_Load);
+        Shown += new EventHandler(FlexibleMaterialForm_Shown);
+        ((ISupportInitialize)(FlexibleMaterialFormBindingSource)).EndInit();
         messageContainer.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(pictureBoxForIcon)).EndInit();
+        ((ISupportInitialize)(pictureBoxForIcon)).EndInit();
         ResumeLayout(false);
 
     }
@@ -255,28 +255,28 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <summary>
     /// Defines the FlexibleMaterialFormBindingSource
     /// </summary>
-    private System.Windows.Forms.BindingSource FlexibleMaterialFormBindingSource;
+    private BindingSource FlexibleMaterialFormBindingSource;
 
     /// <summary>
     /// Defines the panel1
     /// </summary>
-    private System.Windows.Forms.Panel messageContainer;
+    private Panel messageContainer;
 
     /// <summary>
     /// Defines the pictureBoxForIcon
     /// </summary>
-    private System.Windows.Forms.PictureBox pictureBoxForIcon;
+    private PictureBox pictureBoxForIcon;
 
     //These separators are used for the "copy to clipboard" standard operation, triggered by Ctrl + C (behavior and clipboard format is like in a standard MessageBox)
     /// <summary>
     /// Defines the STANDARD_MESSAGEBOX_SEPARATOR_LINES
     /// </summary>
-    private static readonly String STANDARD_MESSAGEBOX_SEPARATOR_LINES = "---------------------------\n";
+    private static readonly string STANDARD_MESSAGEBOX_SEPARATOR_LINES = "---------------------------\n";
 
     /// <summary>
     /// Defines the STANDARD_MESSAGEBOX_SEPARATOR_SPACES
     /// </summary>
-    private static readonly String STANDARD_MESSAGEBOX_SEPARATOR_SPACES = "   ";
+    private static readonly string STANDARD_MESSAGEBOX_SEPARATOR_SPACES = "   ";
 
     //These are the possible buttons (in a standard MessageBox)
     private enum ButtonID
@@ -358,37 +358,37 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <summary>
     /// Defines the BUTTON_TEXTS_ENGLISH_EN
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
+    private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_GERMAN_DE
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
+    private static readonly string[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_SPANISH_ES
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
+    private static readonly string[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_ITALIAN_IT
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_ITALIAN_IT = ["OK", "Annulla", "&Sì", "&No", "&Interrompi", "&Riprova", "&Ignora"];
+    private static readonly string[] BUTTON_TEXTS_ITALIAN_IT = ["OK", "Annulla", "&Sì", "&No", "&Interrompi", "&Riprova", "&Ignora"];
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_FRENCH_FR
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
+    private static readonly string[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_ROMANIAN_RO
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
+    private static readonly string[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
 
     /// <summary>
     /// Defines the BUTTON_TEXTS_ROMANIAN_PL
     /// </summary>
-    private static readonly String[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
+    private static readonly string[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
 
     /// <summary>
     /// Defines the defaultButton
@@ -413,14 +413,14 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         InitializeComponent();
 
         //Try to evaluate the language. If this fails, the fallback language English will be used
-        Enum.TryParse<TwoLetterISOLanguageID>(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out languageID);
+        Enum.TryParse(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out languageID);
 
         KeyPreview = true;
         KeyUp += FlexibleMaterialForm_KeyUp;
 
         materialSkinManager = MaterialSkinManager.Instance;
         materialSkinManager.AddFormToManage(this);
-        FONT = materialSkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+        FONT = materialSkinManager.GetFontByType(FontType.Body1);
         messageContainer.BackColor = BackColor;
     }
 
@@ -694,7 +694,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// Handles the Shown event of the FlexibleMaterialForm control.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void FlexibleMaterialForm_Shown(object sender, EventArgs e)
     {
         int buttonIndexToFocus = 1;
@@ -742,7 +742,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// Handles the LinkClicked event of the richTextBoxMessage control.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.Windows.Forms.LinkClickedEventArgs"/> instance containing the event data.</param>
+    /// <param name="e">The <see cref="LinkClickedEventArgs"/> instance containing the event data.</param>
     private void richTextBoxMessage_LinkClicked(object sender, LinkClickedEventArgs e)
     {
         try
@@ -765,7 +765,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// Handles the KeyUp event of the richTextBoxMessage control.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.Windows.Forms.KeyEventArgs"/> instance containing the event data.</param>
+    /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
     internal void FlexibleMaterialForm_KeyUp(object sender, KeyEventArgs e)
     {
         //Handle standard key strikes for clipboard copy: "Ctrl + C" and "Ctrl + Insert"

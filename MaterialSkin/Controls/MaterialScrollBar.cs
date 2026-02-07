@@ -105,7 +105,7 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     private int trackPosition;
 
-    private readonly Timer progressTimer = new Timer();
+    private readonly Timer progressTimer = new();
 
     private int mouseWheelBarPartitions = 10;
     [DefaultValue(10)]
@@ -120,7 +120,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             }
             else
             {
-                throw new ArgumentOutOfRangeException("value", "MouseWheelBarPartitions has to be greather than zero");
+                throw new ArgumentOutOfRangeException(nameof(value), "MouseWheelBarPartitions has to be greather than zero");
             }
         }
     }
@@ -434,19 +434,17 @@ public class MaterialScrollBar : Control, IMaterialControl
     {
         if (useBarColor)
         {
-            using (SolidBrush b = new SolidBrush(barColor))
-            {
-                g.FillRectangle(b, ClientRectangle);
-            }
+            using SolidBrush b = new(barColor);
+            g.FillRectangle(b, ClientRectangle);
         }
 
-        using (SolidBrush b = new SolidBrush(backColor))
+        using (SolidBrush b = new(backColor))
         {
-            Rectangle thumbRect = new Rectangle(thumbRectangle.X - 1, thumbRectangle.Y - 1, thumbRectangle.Width + 2, thumbRectangle.Height + 2);
+            Rectangle thumbRect = new(thumbRectangle.X - 1, thumbRectangle.Y - 1, thumbRectangle.Width + 2, thumbRectangle.Height + 2);
             g.FillRectangle(b, thumbRect);
         }
 
-        using (SolidBrush b = new SolidBrush(isHovered ? barColor : thumbColor))
+        using (SolidBrush b = new(isHovered ? barColor : thumbColor))
         {
             g.FillRectangle(b, thumbRectangle);
         }

@@ -4,7 +4,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 {
 
     MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
-    ContextMenuStrip _lastContextMenuStrip = new ContextMenuStrip();
+    ContextMenuStrip _lastContextMenuStrip = new();
 
     //Properties for managing the material design properties
 
@@ -20,10 +20,10 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     //Unused properties
 
     [Browsable(false)]
-    public override System.Drawing.Image BackgroundImage { get; set; }
+    public override Image BackgroundImage { get; set; }
 
     [Browsable(false)]
-    public override System.Windows.Forms.ImageLayout BackgroundImageLayout { get; set; }
+    public override ImageLayout BackgroundImageLayout { get; set; }
 
     [Browsable(false)]
     public string SelectedText { get { return baseTextBox.SelectedText; } set { baseTextBox.SelectedText = value; } }
@@ -36,7 +36,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     public int TextLength { get { return baseTextBox.TextLength; } }
 
     [Browsable(false)]
-    public override System.Drawing.Color ForeColor { get; set; }
+    public override Color ForeColor { get; set; }
 
     //Material Skin properties
 
@@ -48,7 +48,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         set
         {
             baseTextBox.Hint = value;
-            hasHint = !String.IsNullOrEmpty(baseTextBox.Hint);
+            hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
             Invalidate();
         }
     }
@@ -1119,7 +1119,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     private readonly int SB_LINEUP = 0;
     private readonly int SB_LINEDOWN = 1;
     private readonly uint WM_VSCROLL = 277;
-    private readonly IntPtr ptrLparam = new IntPtr(0);
+    private readonly IntPtr ptrLparam = new(0);
 
     protected readonly BaseTextBox baseTextBox;
     public MaterialMultiLineTextBox2()
@@ -1143,7 +1143,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         baseTextBox = new BaseTextBox
         {
             BorderStyle = BorderStyle.None,
-            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1),
+            Font = SkinManager.GetFontByType(FontType.Subtitle1),
             ForeColor = SkinManager.TextHighEmphasisColor,
             Multiline = true
         };
@@ -1199,7 +1199,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         var g = pevent.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
-        SolidBrush backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
+        SolidBrush backBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(

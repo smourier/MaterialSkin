@@ -112,9 +112,9 @@ public class MaterialSwitch : CheckBox, IMaterialControl
     public override Size GetPreferredSize(Size proposedSize)
     {
         Size strSize;
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
+        using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(FontType.Body1));
         }
         var w = TRACK_SIZE_WIDTH + THUMB_SIZE + strSize.Width;
         return Ripple ? new Size(w, RIPPLE_DIAMETER) : new Size(w, THUMB_SIZE);
@@ -142,16 +142,14 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
         using (var path = DrawHelper.CreateRoundRect(new Rectangle(TRACK_CENTER_X_BEGIN - TRACK_RADIUS, TRACK_CENTER_Y - TRACK_SIZE_HEIGHT / 2, TRACK_SIZE_WIDTH, TRACK_SIZE_HEIGHT), TRACK_RADIUS))
         {
-            using (SolidBrush trackBrush = new SolidBrush(
+            using SolidBrush trackBrush = new(
                 Color.FromArgb(Enabled ? SkinManager.SwitchOffTrackColor.A : SkinManager.BackgroundDisabledColor.A, // Track alpha
                 DrawHelper.BlendColor( // animate color
                     (Enabled ? SkinManager.SwitchOffTrackColor : SkinManager.BackgroundDisabledColor), // Off color
                     SkinManager.ColorScheme.AccentColor, // On color
                     animationProgress * 255) // Blend amount
-                    .RemoveAlpha())))
-            {
-                g.FillPath(trackBrush, path);
-            }
+                    .RemoveAlpha()));
+            g.FillPath(trackBrush, path);
         }
 
         // Calculate animation movement X position
@@ -162,7 +160,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
         Color rippleColor = Color.FromArgb(40, // color alpha
             Checked ? SkinManager.ColorScheme.AccentColor : // On color
-            (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? Color.Black : Color.White)); // Off color
+            (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White)); // Off color
 
         if (Ripple && _rippleAM.IsAnimating())
         {
@@ -171,10 +169,8 @@ public class MaterialSwitch : CheckBox, IMaterialControl
                 double rippleAnimProgress = _rippleAM.GetProgress(i);
                 int rippleAnimatedDiameter = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress))) : rippleSize;
 
-                using (SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * rippleAnimProgress), rippleColor.RemoveAlpha())))
-                {
-                    g.FillEllipse(rippleBrush, new Rectangle(TRACK_CENTER_X_BEGIN + OffsetX - rippleAnimatedDiameter / 2, TRACK_CENTER_Y - rippleAnimatedDiameter / 2, rippleAnimatedDiameter, rippleAnimatedDiameter));
-                }
+                using SolidBrush rippleBrush = new(Color.FromArgb((int)(40 * rippleAnimProgress), rippleColor.RemoveAlpha()));
+                g.FillEllipse(rippleBrush, new Rectangle(TRACK_CENTER_X_BEGIN + OffsetX - rippleAnimatedDiameter / 2, TRACK_CENTER_Y - rippleAnimatedDiameter / 2, rippleAnimatedDiameter, rippleAnimatedDiameter));
             }
         }
 
@@ -184,15 +180,13 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             double rippleAnimProgress = _hoverAM.GetProgress();
             int rippleAnimatedDiameter = (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress)));
 
-            using (SolidBrush rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * rippleAnimProgress), rippleColor.RemoveAlpha())))
-            {
-                g.FillEllipse(rippleBrush, new Rectangle(TRACK_CENTER_X_BEGIN + OffsetX - rippleAnimatedDiameter / 2, TRACK_CENTER_Y - rippleAnimatedDiameter / 2, rippleAnimatedDiameter, rippleAnimatedDiameter));
-            }
+            using SolidBrush rippleBrush = new(Color.FromArgb((int)(40 * rippleAnimProgress), rippleColor.RemoveAlpha()));
+            g.FillEllipse(rippleBrush, new Rectangle(TRACK_CENTER_X_BEGIN + OffsetX - rippleAnimatedDiameter / 2, TRACK_CENTER_Y - rippleAnimatedDiameter / 2, rippleAnimatedDiameter, rippleAnimatedDiameter));
         }
 
         // draw Thumb Shadow
-        RectangleF thumbBounds = new RectangleF(TRACK_CENTER_X_BEGIN + OffsetX - THUMB_SIZE_HALF, TRACK_CENTER_Y - THUMB_SIZE_HALF, THUMB_SIZE, THUMB_SIZE);
-        using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0)))
+        RectangleF thumbBounds = new(TRACK_CENTER_X_BEGIN + OffsetX - THUMB_SIZE_HALF, TRACK_CENTER_Y - THUMB_SIZE_HALF, THUMB_SIZE, THUMB_SIZE);
+        using (SolidBrush shadowBrush = new(Color.FromArgb(12, 0, 0, 0)))
         {
             g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 2, thumbBounds.Y - 1, thumbBounds.Width + 4, thumbBounds.Height + 6));
             g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 1, thumbBounds.Y - 1, thumbBounds.Width + 2, thumbBounds.Height + 4));
@@ -202,23 +196,21 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         }
 
         // draw Thumb
-        using (SolidBrush thumbBrush = new SolidBrush(thumbColor))
+        using (SolidBrush thumbBrush = new(thumbColor))
         {
             g.FillEllipse(thumbBrush, thumbBounds);
         }
 
         // draw text
-        using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-        {
-            Rectangle textLocation = new Rectangle(TEXT_OFFSET + TRACK_SIZE_WIDTH, 0, Width - (TEXT_OFFSET + TRACK_SIZE_WIDTH), Height);
-            NativeText.DrawTransparentText(
-                Text,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body1),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                textLocation.Location,
-                textLocation.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-        }
+        using NativeTextRenderer NativeText = new(g);
+        Rectangle textLocation = new(TEXT_OFFSET + TRACK_SIZE_WIDTH, 0, Width - (TEXT_OFFSET + TRACK_SIZE_WIDTH), Height);
+        NativeText.DrawTransparentText(
+            Text,
+            SkinManager.getLogFontByType(FontType.Body1),
+            Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            textLocation.Location,
+            textLocation.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     private Bitmap DrawCheckMarkBitmap()

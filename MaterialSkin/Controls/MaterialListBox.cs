@@ -10,7 +10,7 @@ public class MaterialListBox : Control, IMaterialControl
 {
     #region Internal Vars
 
-    private ObservableCollection<MaterialListBoxItem> _items = new ObservableCollection<MaterialListBoxItem>();
+    private ObservableCollection<MaterialListBoxItem> _items = new();
     private List<object> _selectedItems;
     private List<object> _indicates;
     private bool _multiSelect;
@@ -243,8 +243,8 @@ public class MaterialListBox : Control, IMaterialControl
         );
         UpdateStyles();
         base.BackColor = Color.Transparent;
-        base.Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
-        _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+        base.Font = SkinManager.GetFontByType(FontType.Subtitle1);
+        _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
         SetDefaults();
         ShowBorder = true;
         ShowScrollBar = false;
@@ -305,16 +305,16 @@ public class MaterialListBox : Control, IMaterialControl
                 _itemHeight = 60;
                 _secondaryTextBottomPadding = 10;
                 _primaryTextBottomPadding = 2;
-                _primaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
-                _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body2);
+                _primaryFont = SkinManager.GetFontByType(FontType.Body1);
+                _secondaryFont = SkinManager.GetFontByType(FontType.Body2);
             }
             else
             {
                 _itemHeight = 72;
                 _secondaryTextBottomPadding = 16;
                 _primaryTextBottomPadding = 4;
-                _primaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
-                _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+                _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
+                _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
             }
         }
         else if (_style == ListBoxStyle.ThreeLine)
@@ -325,15 +325,15 @@ public class MaterialListBox : Control, IMaterialControl
             {
                 _itemHeight = 76;
                 _secondaryTextBottomPadding = 16;
-                _primaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
-                _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body2);
+                _primaryFont = SkinManager.GetFontByType(FontType.Body1);
+                _secondaryFont = SkinManager.GetFontByType(FontType.Body2);
             }
             else
             {
                 _itemHeight = 88;
                 _secondaryTextBottomPadding = 12;
-                _primaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
-                _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+                _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
+                _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
             }
         }
         else
@@ -343,8 +343,8 @@ public class MaterialListBox : Control, IMaterialControl
                 _itemHeight = 40;
             else
                 _itemHeight = 48;
-            _primaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
-            _secondaryFont = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+            _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
+            _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
         }
 
     }
@@ -359,7 +359,7 @@ public class MaterialListBox : Control, IMaterialControl
 
         Graphics g = e.Graphics;
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-        Rectangle mainRect = new Rectangle(0, 0, Width - (ShowBorder ? 1 : 0), Height - (ShowBorder ? 1 : 0));
+        Rectangle mainRect = new(0, 0, Width - (ShowBorder ? 1 : 0), Height - (ShowBorder ? 1 : 0));
 
         int lastItem = (_scrollBar.Value / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (_scrollBar.Value / _itemHeight) + (Height / _itemHeight) + 1;
         int firstItem = _scrollBar.Value / _itemHeight < 0 ? 0 : (_scrollBar.Value / _itemHeight);
@@ -367,25 +367,25 @@ public class MaterialListBox : Control, IMaterialControl
         g.FillRectangle(Enabled ? SkinManager.BackgroundBrush : SkinManager.BackgroundDisabledBrush, mainRect);
 
         //Set TextAlignFlags
-        NativeTextRenderer.TextAlignFlags primaryTextAlignFlags;
-        NativeTextRenderer.TextAlignFlags secondaryTextAlignFlags = NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Top;
+        TextAlignFlags primaryTextAlignFlags;
+        var secondaryTextAlignFlags = TextAlignFlags.Left | TextAlignFlags.Top;
         if (_style == ListBoxStyle.TwoLine || _style == ListBoxStyle.ThreeLine)
         {
-            primaryTextAlignFlags = NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Bottom;
+            primaryTextAlignFlags = TextAlignFlags.Left | TextAlignFlags.Bottom;
         }
         else
         {
             //SingleLine
-            primaryTextAlignFlags = NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle;
+            primaryTextAlignFlags = TextAlignFlags.Left | TextAlignFlags.Middle;
         }
 
         //Set color and brush
-        Color SelectedColor = new Color();
+        Color SelectedColor = new();
         if (UseAccentColor)
             SelectedColor = SkinManager.ColorScheme.AccentColor;
         else
             SelectedColor = SkinManager.ColorScheme.PrimaryColor;
-        SolidBrush SelectedBrush = new SolidBrush(SelectedColor);
+        SolidBrush SelectedBrush = new(SelectedColor);
 
         //Draw items
         for (int i = firstItem; i < lastItem; i++)
@@ -393,7 +393,7 @@ public class MaterialListBox : Control, IMaterialControl
             string itemText = Items[i].Text;
             string itemSecondaryText = Items[i].SecondaryText;
 
-            Rectangle itemRect = new Rectangle(0, (i - firstItem) * _itemHeight, Width - (_showScrollBar && _scrollBar.Visible ? _scrollBar.Width : 0), _itemHeight);
+            Rectangle itemRect = new(0, (i - firstItem) * _itemHeight, Width - (_showScrollBar && _scrollBar.Visible ? _scrollBar.Width : 0), _itemHeight);
 
             if (MultiSelect && _indicates.Count != 0)
             {
@@ -425,8 +425,8 @@ public class MaterialListBox : Control, IMaterialControl
             }
 
             //Define primary & secondary Text Rect
-            Rectangle primaryTextRect = new Rectangle(itemRect.X + _leftrightPadding, itemRect.Y, itemRect.Width - (2 * _leftrightPadding), itemRect.Height);
-            Rectangle secondaryTextRect = new Rectangle();
+            Rectangle primaryTextRect = new(itemRect.X + _leftrightPadding, itemRect.Y, itemRect.Width - (2 * _leftrightPadding), itemRect.Height);
+            Rectangle secondaryTextRect = new();
 
             if (_style == ListBoxStyle.TwoLine)
             {
@@ -445,44 +445,42 @@ public class MaterialListBox : Control, IMaterialControl
             }
             secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + (_primaryTextBottomPadding + _secondaryTextTopPadding), primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
 
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+            itemText,
+            _primaryFont,
+            Enabled ? (i != SelectedIndex || UseAccentColor) ?
+            SkinManager.TextHighEmphasisColor :
+            SkinManager.ColorScheme.TextColor :
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            primaryTextRect.Location,
+            primaryTextRect.Size,
+            primaryTextAlignFlags);
+            if (_style == ListBoxStyle.TwoLine)
             {
                 NativeText.DrawTransparentText(
-                itemText,
-                _primaryFont,
+                itemSecondaryText,
+                _secondaryFont,
                 Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                SkinManager.TextHighEmphasisColor :
-                SkinManager.ColorScheme.TextColor :
+                SkinManager.TextDisabledOrHintColor :
+                SkinManager.ColorScheme.TextColor.Darken(0.25f) :
                 SkinManager.TextDisabledOrHintColor, // Disabled
-                primaryTextRect.Location,
-                primaryTextRect.Size,
-                primaryTextAlignFlags);
-                if (_style == ListBoxStyle.TwoLine)
-                {
-                    NativeText.DrawTransparentText(
-                    itemSecondaryText,
-                    _secondaryFont,
-                    Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                    SkinManager.TextDisabledOrHintColor :
-                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                    SkinManager.TextDisabledOrHintColor, // Disabled
-                    secondaryTextRect.Location,
-                    secondaryTextRect.Size,
-                    secondaryTextAlignFlags);
-                }
-                else if (_style == ListBoxStyle.ThreeLine)
-                {
-                    NativeText.DrawMultilineTransparentText(
-                    itemSecondaryText,
-                    _secondaryFont,
-                    Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                    SkinManager.TextDisabledOrHintColor :
-                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                    SkinManager.TextDisabledOrHintColor, // Disabled
-                    secondaryTextRect.Location,
-                    secondaryTextRect.Size,
-                    secondaryTextAlignFlags);
-                }
+                secondaryTextRect.Location,
+                secondaryTextRect.Size,
+                secondaryTextAlignFlags);
+            }
+            else if (_style == ListBoxStyle.ThreeLine)
+            {
+                NativeText.DrawMultilineTransparentText(
+                itemSecondaryText,
+                _secondaryFont,
+                Enabled ? (i != SelectedIndex || UseAccentColor) ?
+                SkinManager.TextDisabledOrHintColor :
+                SkinManager.ColorScheme.TextColor.Darken(0.25f) :
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                secondaryTextRect.Location,
+                secondaryTextRect.Size,
+                secondaryTextAlignFlags);
             }
 
         }
@@ -505,7 +503,7 @@ public class MaterialListBox : Control, IMaterialControl
 
     public void AddItem(string newItem)
     {
-        MaterialListBoxItem _newitemMLBI = new MaterialListBoxItem(newItem);
+        MaterialListBoxItem _newitemMLBI = new(newItem);
         _items.Add(_newitemMLBI);
         InvalidateScroll(this, null);
         ItemsCountChanged?.Invoke(this, new EventArgs());

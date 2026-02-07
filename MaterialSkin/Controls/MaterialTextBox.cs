@@ -1,10 +1,10 @@
 namespace MaterialSkin.Controls;
 
-public class MaterialTextBox : Control, IMaterialControl
+public partial class MaterialTextBox : Control, IMaterialControl
 {
 
     MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
-    ContextMenuStrip _lastContextMenuStrip = new ContextMenuStrip();
+    ContextMenuStrip _lastContextMenuStrip = new();
 
     //Properties for managing the material design properties
     [Browsable(false)]
@@ -18,10 +18,10 @@ public class MaterialTextBox : Control, IMaterialControl
 
     //Unused properties
     [Browsable(false)]
-    public override System.Drawing.Image BackgroundImage { get; set; }
+    public override Image BackgroundImage { get; set; }
 
     [Browsable(false)]
-    public override System.Windows.Forms.ImageLayout BackgroundImageLayout { get; set; }
+    public override ImageLayout BackgroundImageLayout { get; set; }
 
     [Browsable(false)]
     public string SelectedText { get { return baseTextBox.SelectedText; } set { baseTextBox.SelectedText = value; } }
@@ -36,7 +36,7 @@ public class MaterialTextBox : Control, IMaterialControl
     public int TextLength { get { return baseTextBox.TextLength; } }
 
     [Browsable(false)]
-    public override System.Drawing.Color ForeColor { get; set; }
+    public override Color ForeColor { get; set; }
 
 
     //Material Skin properties
@@ -107,7 +107,7 @@ public class MaterialTextBox : Control, IMaterialControl
         set
         {
             baseTextBox.Hint = value;
-            hasHint = !String.IsNullOrEmpty(baseTextBox.Hint);
+            hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
             UpdateRects();
             Invalidate();
         }
@@ -150,13 +150,6 @@ public class MaterialTextBox : Control, IMaterialControl
             preProcessIcons();
             Invalidate();
         }
-    }
-
-    public enum PrefixSuffixTypes
-    {
-        None,
-        Prefix,
-        Suffix,
     }
 
     private PrefixSuffixTypes _prefixsuffix;
@@ -1295,17 +1288,17 @@ public class MaterialTextBox : Control, IMaterialControl
         };
         _animationManager.OnAnimationProgress += sender => Invalidate();
 
-        SkinManager.ColorSchemeChanged += sender =>
+        SkinManager.ColorSchemeChanged += (sender, e) =>
         {
             preProcessIcons();
         };
 
-        SkinManager.ThemeChanged += sender =>
+        SkinManager.ThemeChanged += (sender, e) =>
         {
             preProcessIcons();
         };
 
-        Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
+        Font = SkinManager.GetFontByType(FontType.Subtitle1);
 
         baseTextBox = new BaseTextBox
         {
@@ -1374,7 +1367,7 @@ public class MaterialTextBox : Control, IMaterialControl
         var g = pevent.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
-        SolidBrush backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
+        SolidBrush backBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(
@@ -1408,9 +1401,9 @@ public class MaterialTextBox : Control, IMaterialControl
         }
 
         // HintText
-        bool userTextPresent = !String.IsNullOrEmpty(Text);
-        Rectangle helperTextRect = new Rectangle(LEFT_PADDING - _prefix_padding, LINE_Y + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
-        Rectangle hintRect = new Rectangle(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
+        bool userTextPresent = !string.IsNullOrEmpty(Text);
+        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, LINE_Y + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
+        Rectangle hintRect = new(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
         int hintTextSize = 12;
 
         // bottom line base
@@ -1443,104 +1436,94 @@ public class MaterialTextBox : Control, IMaterialControl
         // Prefix:
         if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                Rectangle prefixRect = new Rectangle(
-                    _left_padding - _prefix_padding,
-                    hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
-                    //                        NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width,
-                    _prefix_padding,
-                    hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+            using NativeTextRenderer NativeText = new(g);
+            Rectangle prefixRect = new(
+                _left_padding - _prefix_padding,
+                hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
+                //                        NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width,
+                _prefix_padding,
+                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
 
-                // Draw Prefix text 
-                NativeText.DrawTransparentText(
-                _prefixsuffixText,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
-                Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                prefixRect.Location,
-                prefixRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            // Draw Prefix text 
+            NativeText.DrawTransparentText(
+            _prefixsuffixText,
+            SkinManager.getLogFontByType(FontType.Subtitle1),
+            Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            prefixRect.Location,
+            prefixRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // Suffix:
         if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                Rectangle suffixRect = new Rectangle(
-                    Width - _right_padding,
-                    hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
-                    //NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING,
-                    _suffix_padding,
-                    hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+            using NativeTextRenderer NativeText = new(g);
+            Rectangle suffixRect = new(
+                Width - _right_padding,
+                hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
+                //NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING,
+                _suffix_padding,
+                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
 
-                // Draw Suffix text 
-                NativeText.DrawTransparentText(
-                _prefixsuffixText,
-                SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
-                Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
-                suffixRect.Location,
-                suffixRect.Size,
-                NativeTextRenderer.TextAlignFlags.Right | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            // Draw Suffix text 
+            NativeText.DrawTransparentText(
+            _prefixsuffixText,
+            SkinManager.getLogFontByType(FontType.Subtitle1),
+            Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            suffixRect.Location,
+            suffixRect.Size,
+            TextAlignFlags.Right | TextAlignFlags.Middle);
         }
 
         // Draw hint text
         if (hasHint && UseTallSize && (isFocused || userTextPresent))
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                NativeText.DrawTransparentText(
-                Hint,
-                SkinManager.getTextBoxFontBySize(hintTextSize),
-                Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
-                SkinManager.ColorScheme.AccentColor : // Focus Accent
-                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                hintRect.Location,
-                hintRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+            Hint,
+            SkinManager.getTextBoxFontBySize(hintTextSize),
+            Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
+            SkinManager.ColorScheme.AccentColor : // Focus Accent
+            SkinManager.ColorScheme.PrimaryColor : // Focus Primary
+            SkinManager.TextMediumEmphasisColor : // not focused
+            SkinManager.BackgroundHoverRedColor : // error state
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            hintRect.Location,
+            hintRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // Draw helper text
         if (_showAssistiveText && isFocused && !_errorState)
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                NativeText.DrawTransparentText(
-                HelperText,
-                SkinManager.getTextBoxFontBySize(hintTextSize),
-                Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
-                SkinManager.ColorScheme.AccentColor : // Focus Accent
-                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                helperTextRect.Location,
-                helperTextRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+            HelperText,
+            SkinManager.getTextBoxFontBySize(hintTextSize),
+            Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
+            SkinManager.ColorScheme.AccentColor : // Focus Accent
+            SkinManager.ColorScheme.PrimaryColor : // Focus Primary
+            SkinManager.TextMediumEmphasisColor : // not focused
+            SkinManager.BackgroundHoverRedColor : // error state
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            helperTextRect.Location,
+            helperTextRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // Draw error message
         if (_showAssistiveText && _errorState && ErrorMessage != null)
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
-            {
-                NativeText.DrawTransparentText(
-                ErrorMessage,
-                SkinManager.getTextBoxFontBySize(hintTextSize),
-                Enabled ?
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                helperTextRect.Location,
-                helperTextRect.Size,
-                NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
-            }
+            using NativeTextRenderer NativeText = new(g);
+            NativeText.DrawTransparentText(
+            ErrorMessage,
+            SkinManager.getTextBoxFontBySize(hintTextSize),
+            Enabled ?
+            SkinManager.BackgroundHoverRedColor : // error state
+            SkinManager.TextDisabledOrHintColor, // Disabled
+            helperTextRect.Location,
+            helperTextRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
     }
@@ -1682,7 +1665,7 @@ public class MaterialTextBox : Control, IMaterialControl
         if (_trailingIcon == null && _leadingIcon == null) return;
 
         // Calculate lightness and color
-        float l = (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT) ? 0f : 1f;
+        float l = (SkinManager.Theme == Themes.LIGHT) ? 0f : 1f;
 
         // Create matrices
         float[][] matrixGray = [
@@ -1699,11 +1682,11 @@ public class MaterialTextBox : Control, IMaterialControl
                 [0,   0,   0,   1,  0], // alpha scale factor
                 [1,   0,   0,   0,  1]];// offset
 
-        ColorMatrix colorMatrixGray = new ColorMatrix(matrixGray);
-        ColorMatrix colorMatrixRed = new ColorMatrix(matrixRed);
+        ColorMatrix colorMatrixGray = new(matrixGray);
+        ColorMatrix colorMatrixRed = new(matrixRed);
 
-        ImageAttributes grayImageAttributes = new ImageAttributes();
-        ImageAttributes redImageAttributes = new ImageAttributes();
+        ImageAttributes grayImageAttributes = new();
+        ImageAttributes redImageAttributes = new();
 
         // Set color matrices
         grayImageAttributes.SetColorMatrix(colorMatrixGray, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
@@ -1714,7 +1697,7 @@ public class MaterialTextBox : Control, IMaterialControl
         iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
 
         // Image Rect
-        Rectangle destRect = new Rectangle(0, 0, ICON_SIZE, ICON_SIZE);
+        Rectangle destRect = new(0, 0, ICON_SIZE, ICON_SIZE);
 
         if (_leadingIcon != null)
         {
@@ -1724,10 +1707,10 @@ public class MaterialTextBox : Control, IMaterialControl
 
             //Resize icon if greater than ICON_SIZE
             Size newSize_leadingIcon = ResizeIcon(_leadingIcon);
-            Bitmap _leadingIconIconResized = new Bitmap(_leadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
+            Bitmap _leadingIconIconResized = new(_leadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
-            Bitmap bgray = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bgray = new(destRect.Width, destRect.Height);
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_leadingIconIconResized,
@@ -1740,7 +1723,7 @@ public class MaterialTextBox : Control, IMaterialControl
             }
 
             //Create a pre - processed copy of the image(RED)
-            Bitmap bred = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bred = new(destRect.Width, destRect.Height);
             using (Graphics gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_leadingIconIconResized,
@@ -1753,8 +1736,8 @@ public class MaterialTextBox : Control, IMaterialControl
             }
 
             // added processed image to brush for drawing
-            TextureBrush textureBrushGray = new TextureBrush(bgray);
-            TextureBrush textureBrushRed = new TextureBrush(bred);
+            TextureBrush textureBrushGray = new(bgray);
+            TextureBrush textureBrushRed = new(bred);
 
             textureBrushGray.WrapMode = WrapMode.Clamp;
             textureBrushRed.WrapMode = WrapMode.Clamp;
@@ -1781,10 +1764,10 @@ public class MaterialTextBox : Control, IMaterialControl
 
             //Resize icon if greater than ICON_SIZE
             Size newSize_trailingIcon = ResizeIcon(_trailingIcon);
-            Bitmap _trailingIconResized = new Bitmap(_trailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
+            Bitmap _trailingIconResized = new(_trailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
-            Bitmap bgray = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bgray = new(destRect.Width, destRect.Height);
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_trailingIconResized,
@@ -1797,7 +1780,7 @@ public class MaterialTextBox : Control, IMaterialControl
             }
 
             //Create a pre - processed copy of the image(RED)
-            Bitmap bred = new Bitmap(destRect.Width, destRect.Height);
+            Bitmap bred = new(destRect.Width, destRect.Height);
             using (Graphics gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_trailingIconResized,
@@ -1811,8 +1794,8 @@ public class MaterialTextBox : Control, IMaterialControl
 
 
             // added processed image to brush for drawing
-            TextureBrush textureBrushGray = new TextureBrush(bgray);
-            TextureBrush textureBrushRed = new TextureBrush(bred);
+            TextureBrush textureBrushGray = new(bgray);
+            TextureBrush textureBrushRed = new(bred);
 
             textureBrushGray.WrapMode = WrapMode.Clamp;
             textureBrushRed.WrapMode = WrapMode.Clamp;
@@ -1854,27 +1837,23 @@ public class MaterialTextBox : Control, IMaterialControl
 
         if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
-            {
-                _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
-                _left_padding += _prefix_padding;
-            }
+            using NativeTextRenderer NativeText = new(CreateGraphics());
+            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _left_padding += _prefix_padding;
         }
         else
             _prefix_padding = 0;
 
         if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
-            using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
-            {
-                _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
-                _right_padding += _suffix_padding;
-            }
+            using NativeTextRenderer NativeText = new(CreateGraphics());
+            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _right_padding += _suffix_padding;
         }
         else
             _suffix_padding = 0;
 
-        if (hasHint && UseTallSize && (isFocused || !String.IsNullOrEmpty(Text)))
+        if (hasHint && UseTallSize && (isFocused || !string.IsNullOrEmpty(Text)))
         {
             baseTextBox.Location = new Point(_left_padding, 22);
             baseTextBox.Width = Width - (_left_padding + _right_padding);
