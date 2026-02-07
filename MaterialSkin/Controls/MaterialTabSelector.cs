@@ -18,7 +18,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     [Category("Material Skin"), Browsable(true)]
     public MaterialTabControl BaseTabControl
     {
-        get { return _baseTabControl; }
+        get => _baseTabControl;
         set
         {
             _baseTabControl = value;
@@ -81,7 +81,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     [Category("Material Skin"), Browsable(true), DisplayName("Tab Indicator Height"), DefaultValue(2)]
     public int TabIndicatorHeight
     {
-        get { return _tab_indicator_height; }
+        get => _tab_indicator_height;
         set
         {
             if (value < 1)
@@ -105,7 +105,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     [Category("Material Skin"), Browsable(true), DisplayName("Tab Label"), DefaultValue(TabLabelStyle.Text)]
     public TabLabelStyle TabLabel
     {
-        get { return _tabLabel; }
+        get => _tabLabel;
         set
         {
             _tabLabel = value;
@@ -132,7 +132,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
             AnimationType = AnimationType.EaseOut,
             Increment = 0.04
         };
-        _animationManager.OnAnimationProgress += sender => Invalidate();
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
     }
 
     protected override void OnCreateControl()
@@ -183,7 +183,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                 // Text
                 using NativeTextRenderer NativeText = new(g);
                 Size textSize = TextRenderer.MeasureText(_baseTabControl.TabPages[currentTabIndex].Text, Font);
-                Rectangle textLocation = new(_tabRects[currentTabIndex].X + (TAB_HEADER_PADDING / 2), _tabRects[currentTabIndex].Y, _tabRects[currentTabIndex].Width - (TAB_HEADER_PADDING), _tabRects[currentTabIndex].Height);
+                Rectangle textLocation = new(_tabRects[currentTabIndex].X + (TAB_HEADER_PADDING / 2), _tabRects[currentTabIndex].Y, _tabRects[currentTabIndex].Width - TAB_HEADER_PADDING, _tabRects[currentTabIndex].Height);
 
                 if (_tabLabel == TabLabelStyle.IconAndText)
                 {
@@ -191,7 +191,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                     textLocation.Height = 10;
                 }
 
-                if (((TAB_HEADER_PADDING * 2) + textSize.Width < TAB_WIDTH_MAX))
+                if ((TAB_HEADER_PADDING * 2) + textSize.Width < TAB_WIDTH_MAX)
                 {
                     NativeText.DrawTransparentText(
                     CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
@@ -331,7 +331,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
 
     private void UpdateTabRects()
     {
-        _tabRects = new List<Rectangle>();
+        _tabRects = [];
 
         //If there isn't a base tab control, the rects shouldn't be calculated
         //If there aren't tab pages in the base tab control, the list should just be empty which has been set already; exit the void
@@ -353,7 +353,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                 TabWidth = TAB_WIDTH_MIN;
 
             if (i == 0)
-                _tabRects.Add(new Rectangle(FIRST_TAB_PADDING - (TAB_HEADER_PADDING), 0, TabWidth, Height));
+                _tabRects.Add(new Rectangle(FIRST_TAB_PADDING - TAB_HEADER_PADDING, 0, TabWidth, Height));
             else
                 _tabRects.Add(new Rectangle(_tabRects[i - 1].Right, 0, TabWidth, Height));
         }

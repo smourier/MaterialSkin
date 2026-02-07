@@ -367,14 +367,14 @@ public partial class MaterialSkinManager
         }
 
         // Other Material Skin control
-        else if (controlToUpdate.IsMaterialControl())
+        else if (controlToUpdate is IMaterialControl)
         {
             controlToUpdate.BackColor = newBackColor;
             controlToUpdate.ForeColor = TextHighEmphasisColor;
         }
 
         // Other Generic control not part of material skin
-        else if (EnforceBackcolorOnAllComponents && controlToUpdate.HasProperty("BackColor") && !controlToUpdate.IsMaterialControl() && controlToUpdate.Parent != null)
+        else if (EnforceBackcolorOnAllComponents && controlToUpdate is not IMaterialControl && controlToUpdate.Parent != null)
         {
             controlToUpdate.BackColor = controlToUpdate.Parent.BackColor;
             controlToUpdate.ForeColor = TextHighEmphasisColor;

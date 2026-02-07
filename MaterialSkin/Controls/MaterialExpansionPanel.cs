@@ -60,7 +60,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get { return _useAccentColor; }
+        get => _useAccentColor;
         set { _useAccentColor = value; UpdateRects(); Invalidate(); }
     }
 
@@ -69,7 +69,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Category("Material Skin")]
     public bool Collapse
     {
-        get { return _collapse; }
+        get => _collapse;
         set
         {
             _collapse = value;
@@ -83,7 +83,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Title to show in expansion panel's header")]
     public string Title
     {
-        get { return _titleHeader; }
+        get => _titleHeader;
         set
         {
             _titleHeader = value;
@@ -96,7 +96,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Description to show in expansion panel's header")]
     public string Description
     {
-        get { return _descriptionHeader; }
+        get => _descriptionHeader;
         set
         {
             _descriptionHeader = value;
@@ -109,7 +109,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Draw Shadows around control")]
     public bool DrawShadows
     {
-        get { return _drawShadows; }
+        get => _drawShadows;
         set { _drawShadows = value; Invalidate(); }
     }
 
@@ -118,7 +118,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Define control height when expanded")]
     public int ExpandHeight
     {
-        get { return _expandHeight; }
+        get => _expandHeight;
         set { if (value < _minHeight) value = _minHeight; _expandHeight = value; Invalidate(); }
     }
 
@@ -127,7 +127,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Show collapse/expand indicator")]
     public bool ShowCollapseExpand
     {
-        get { return _showCollapseExpand; }
+        get => _showCollapseExpand;
         set { _showCollapseExpand = value; Invalidate(); }
     }
 
@@ -136,7 +136,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Show save/cancel button")]
     public bool ShowValidationButtons
     {
-        get { return _showValidationButtons; }
+        get => _showValidationButtons;
         set { _showValidationButtons = value; UpdateRects(); Invalidate(); }
     }
 
@@ -145,7 +145,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Set Validation button text")]
     public string ValidationButtonText
     {
-        get { return _validationButtonText; }
+        get => _validationButtonText;
         set { _validationButtonText = value; UpdateRects(); Invalidate(); }
     }
 
@@ -154,7 +154,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Set Cancel button text")]
     public string CancelButtonText
     {
-        get { return _cancelButtonText; }
+        get => _cancelButtonText;
         set { _cancelButtonText = value; UpdateRects(); Invalidate(); }
     }
 
@@ -163,7 +163,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Enable validation button")]
     public bool ValidationButtonEnable
     {
-        get { return _savebuttonEnable; }
+        get => _savebuttonEnable;
         set { _savebuttonEnable = value; UpdateRects(); Invalidate(); }
     }
 
@@ -349,7 +349,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         base.OnResize(e);
 
         _headerBounds = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _headerHeight);
-        _expandcollapseBounds = new Rectangle((Width) - _leftrightPadding - _expandcollapsbuttonsize, (_headerHeight - _expandcollapsbuttonsize) / 2, _expandcollapsbuttonsize, _expandcollapsbuttonsize);
+        _expandcollapseBounds = new Rectangle(Width - _leftrightPadding - _expandcollapsbuttonsize, (_headerHeight - _expandcollapsbuttonsize) / 2, _expandcollapsbuttonsize, _expandcollapsbuttonsize);
 
         UpdateRects();
 
@@ -572,9 +572,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     {
         if (!_collapse && _showValidationButtons)
         {
-            int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
-            _savebuttonBounds = new Rectangle((Width) - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
-            _buttonWidth = ((TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
+            int _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            _savebuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
+            _buttonWidth = TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
             _cancelbuttonBounds = new Rectangle(_savebuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
 
             if (_validationButton != null)

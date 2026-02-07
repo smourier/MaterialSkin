@@ -39,10 +39,7 @@ public class MaterialLabel : Label, IMaterialControl
     DefaultValue(typeof(FontType), "Body1")]
     public FontType FontType
     {
-        get
-        {
-            return _fontType;
-        }
+        get => _fontType;
         set
         {
             _fontType = value;

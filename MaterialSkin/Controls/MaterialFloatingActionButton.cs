@@ -29,12 +29,12 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     [Description("Set control size to default or mini")]
     public bool Mini
     {
-        get { return _mini; }
+        get => _mini;
         set
         {
             if (Parent != null)
                 Parent.Invalidate();
-            setSize(value);
+            SetSize(value);
         }
     }
 
@@ -44,7 +44,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     [Category("Material Skin"), DisplayName("Animate Show HideButton")]
     public bool AnimateShowHideButton
     {
-        get { return _animateShowButton; }
+        get => _animateShowButton;
         set { _animateShowButton = value; Refresh(); }
     }
 
@@ -55,7 +55,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     [Description("Define icon to display")]
     public Image Icon
     {
-        get { return _icon; }
+        get => _icon;
         set { _icon = value; Refresh(); }
     }
 
@@ -80,15 +80,15 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
             Increment = 0.03,
             AnimationType = AnimationType.EaseOut
         };
-        _animationManager.OnAnimationProgress += sender => Invalidate();
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
 
         _showAnimationManager = new AnimationManager(true)
         {
             Increment = 0.1,
             AnimationType = AnimationType.EaseOut
         };
-        _showAnimationManager.OnAnimationProgress += sender => Invalidate();
-        _showAnimationManager.OnAnimationFinished += _showAnimationManager_OnAnimationFinished;
+        _showAnimationManager.OnAnimationProgress += (sender, e) => Invalidate();
+        _showAnimationManager.OnAnimationFinished += ShowAnimationManager_OnAnimationFinished;
     }
 
     protected override void InitLayout()
@@ -99,28 +99,30 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     protected override void OnParentChanged(EventArgs e)
     {
         base.OnParentChanged(e);
-        if (DrawShadows && Parent != null) AddShadowPaintEvent(Parent, drawShadowOnParent);
-        if (_oldParent != null) RemoveShadowPaintEvent(_oldParent, drawShadowOnParent);
+        if (DrawShadows && Parent != null) AddShadowPaintEvent(Parent, DrawShadowOnParent);
+        if (_oldParent != null) RemoveShadowPaintEvent(_oldParent, DrawShadowOnParent);
         _oldParent = Parent;
     }
 
-    private Control _oldParent;
+    private Control? _oldParent;
 
     protected override void OnVisibleChanged(EventArgs e)
     {
         base.OnVisibleChanged(e);
         if (Parent == null) return;
         if (Visible)
-            AddShadowPaintEvent(Parent, drawShadowOnParent);
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
         else
-            RemoveShadowPaintEvent(Parent, drawShadowOnParent);
+            RemoveShadowPaintEvent(Parent, DrawShadowOnParent);
     }
 
     private bool _shadowDrawEventSubscribed = false;
 
     private void AddShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (_shadowDrawEventSubscribed) return;
+        if (_shadowDrawEventSubscribed)
+            return;
+
         control.Paint += shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = true;
@@ -128,13 +130,15 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
     private void RemoveShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (!_shadowDrawEventSubscribed) return;
+        if (!_shadowDrawEventSubscribed)
+            return;
+
         control.Paint -= shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = false;
     }
 
-    private void setSize(bool mini)
+    private void SetSize(bool mini)
     {
         _mini = mini;
         Size = _mini ? new Size(FAB_MINI_SIZE, FAB_MINI_SIZE) : new Size(FAB_SIZE, FAB_SIZE);
@@ -143,7 +147,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         fabBounds.Height -= 1;
     }
 
-    private void _showAnimationManager_OnAnimationFinished(object sender)
+    private void ShowAnimationManager_OnAnimationFinished(object sender, EventArgs e)
     {
         if (_isHiding)
         {
@@ -152,11 +156,11 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         }
     }
 
-    private void drawShadowOnParent(object sender, PaintEventArgs e)
+    private void DrawShadowOnParent(object sender, PaintEventArgs e)
     {
         if (Parent == null)
         {
-            RemoveShadowPaintEvent((Control)sender, drawShadowOnParent);
+            RemoveShadowPaintEvent((Control)sender, DrawShadowOnParent);
             return;
         }
 
@@ -217,8 +221,8 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
             int target = Convert.ToInt32((_mini ? FAB_MINI_SIZE : FAB_SIZE) * _showAnimationManager.GetProgress());
             fabBounds.Width = target == 0 ? 1 : target;
             fabBounds.Height = target == 0 ? 1 : target;
-            fabBounds.X = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - (((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) * _showAnimationManager.GetProgress()));
-            fabBounds.Y = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - (((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) * _showAnimationManager.GetProgress()));
+            fabBounds.X = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - ((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2 * _showAnimationManager.GetProgress()));
+            fabBounds.Y = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - ((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2 * _showAnimationManager.GetProgress()));
         }
 
         // Clip to a round shape with a 1px padding
@@ -260,8 +264,8 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
         if (DrawShadows && Parent != null)
         {
-            RemoveShadowPaintEvent(Parent, drawShadowOnParent);
-            AddShadowPaintEvent(Parent, drawShadowOnParent);
+            RemoveShadowPaintEvent(Parent, DrawShadowOnParent);
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
         }
     }
 

@@ -35,7 +35,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     [Category("Behavior")]
     public bool Ripple
     {
-        get { return _ripple; }
+        get => _ripple;
         set
         {
             _ripple = value;
@@ -71,9 +71,9 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             SecondaryIncrement = 0.08
         };
 
-        _checkAM.OnAnimationProgress += sender => Invalidate();
-        _hoverAM.OnAnimationProgress += sender => Invalidate();
-        _rippleAM.OnAnimationProgress += sender => Invalidate();
+        _checkAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _hoverAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _rippleAM.OnAnimationProgress += (sender, e) => Invalidate();
 
         TabStopChanged += (sender, e) => TabStop = true;
 
@@ -144,7 +144,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
                 double animationValue = _rippleAM.GetProgress(i);
                 int rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using SolidBrush rippleBrush = new(Color.FromArgb((int)((animationValue * 40)), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
+                using SolidBrush rippleBrush = new(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize - 1, rippleSize - 1));
             }
         }

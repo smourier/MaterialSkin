@@ -138,20 +138,18 @@ public partial class MaterialForm : Form, IMaterialControl
 
     public override string Text
     {
-        get { return base.Text; }
+        get => base.Text;
         set { base.Text = value; Invalidate(); }
     }
 
     public new FormWindowState WindowState
     {
-        get { return base.WindowState; }
-        set { base.WindowState = value; }
+        get => base.WindowState; set => base.WindowState = value;
     }
 
     public new FormBorderStyle FormBorderStyle
     {
-        get { return base.FormBorderStyle; }
-        set { base.FormBorderStyle = value; }
+        get => base.FormBorderStyle; set => base.FormBorderStyle = value;
     }
 
     public Rectangle UserArea
@@ -403,7 +401,7 @@ public partial class MaterialForm : Form, IMaterialControl
             AnimationType = AnimationType.EaseOut,
             Increment = 0.04
         };
-        _clickAnimManager.OnAnimationProgress += sender => Invalidate();
+        _clickAnimManager.OnAnimationProgress += (sender, e) => Invalidate();
 
         // Drawer
         Shown += (sender, e) =>
@@ -426,7 +424,7 @@ public partial class MaterialForm : Form, IMaterialControl
             Increment = 0.04
         };
 
-        _drawerShowHideAnimManager.OnAnimationProgress += (sender) =>
+        _drawerShowHideAnimManager.OnAnimationProgress += (sender, e) =>
         {
             drawerOverlay.Opacity = (float)(_drawerShowHideAnimManager.GetProgress() * 0.55f);
         };
@@ -470,7 +468,7 @@ public partial class MaterialForm : Form, IMaterialControl
         drawerForm.Controls.Add(drawerControl);
         drawerControl.Location = new Point(0, 0);
         drawerControl.Size = new Size(DrawerWidth, H);
-        drawerControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
+        drawerControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
         drawerControl.BaseTabControl = DrawerTabControl;
         drawerControl.ShowIconsWhenHidden = true;
 
@@ -558,7 +556,7 @@ public partial class MaterialForm : Form, IMaterialControl
         // Form Padding corrections
 
         if (Padding.Top < (_statusBarBounds.Height + _actionBarBounds.Height))
-            Padding = new Padding(Padding.Left, (_statusBarBounds.Height + _actionBarBounds.Height), Padding.Right, Padding.Bottom);
+            Padding = new Padding(Padding.Left, _statusBarBounds.Height + _actionBarBounds.Height, Padding.Right, Padding.Bottom);
 
         originalPadding = Padding;
 

@@ -27,10 +27,8 @@ public class MouseWheelRedirector : IMessageFilter
                 }
             }
         }
-        get
-        {
-            return _active;
-        }
+
+        get => _active;
     }
 
     public static void Attach(Control control)

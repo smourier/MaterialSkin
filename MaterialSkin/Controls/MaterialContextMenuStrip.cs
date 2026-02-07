@@ -3,6 +3,30 @@
 [ToolboxItem(false)]
 public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
 {
+    internal AnimationManager _animationManager;
+    internal Point _animationSource;
+    private ToolStripItemClickedEventArgs _delayesArgs;
+
+    public delegate void ItemClickStart(object sender, ToolStripItemClickedEventArgs e);
+
+    public event ItemClickStart OnItemClickStart;
+
+    public MaterialContextMenuStrip()
+    {
+        Renderer = new MaterialToolStripRender();
+
+        _animationManager = new AnimationManager(false)
+        {
+            Increment = 0.07,
+            AnimationType = AnimationType.Linear
+        };
+
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
+        _animationManager.OnAnimationFinished += (sender, e) => OnItemClicked(_delayesArgs);
+
+        BackColor = SkinManager.BackdropColor;
+    }
+
     //Properties for managing the material design properties
     [Browsable(false)]
     public int Depth { get; set; }
@@ -13,37 +37,12 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    internal AnimationManager AnimationManager;
-
-    internal Point AnimationSource;
-
-    public delegate void ItemClickStart(object sender, ToolStripItemClickedEventArgs e);
-
-    public event ItemClickStart OnItemClickStart;
-
-    public MaterialContextMenuStrip()
-    {
-        Renderer = new MaterialToolStripRender();
-
-        AnimationManager = new AnimationManager(false)
-        {
-            Increment = 0.07,
-            AnimationType = AnimationType.Linear
-        };
-        AnimationManager.OnAnimationProgress += sender => Invalidate();
-        AnimationManager.OnAnimationFinished += sender => OnItemClicked(_delayesArgs);
-
-        BackColor = SkinManager.BackdropColor;
-    }
-
     protected override void OnMouseUp(MouseEventArgs mea)
     {
         base.OnMouseUp(mea);
 
-        AnimationSource = mea.Location;
+        _animationSource = mea.Location;
     }
-
-    private ToolStripItemClickedEventArgs _delayesArgs;
 
     protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
     {
@@ -63,7 +62,7 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
                 OnItemClickStart?.Invoke(this, e);
 
                 //Start animation
-                AnimationManager.StartNewAnimation(AnimationDirection.In);
+                _animationManager.StartNewAnimation(AnimationDirection.In);
             }
         }
     }
@@ -91,14 +90,12 @@ public class MaterialToolStripMenuItem : ToolStripMenuItem
 
 internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, IMaterialControl
 {
-    private const int LEFT_PADDING = 16;
-    private const int RIGHT_PADDING = 8;
+    private const int _leftPadding = 16;
+    private const int _rightPadding = 8;
 
     //Properties for managing the material design properties
     public int Depth { get; set; }
-
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
     public MouseState MouseState { get; set; }
 
     protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
@@ -107,9 +104,9 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
         var itemRect = GetItemRect(e.Item);
-        var textRect = new Rectangle(LEFT_PADDING, itemRect.Y, itemRect.Width - (LEFT_PADDING + RIGHT_PADDING), itemRect.Height);
+        var textRect = new Rectangle(_leftPadding, itemRect.Y, itemRect.Width - (_leftPadding + _rightPadding), itemRect.Height);
 
-        using NativeTextRenderer NativeText = new(g);
+        using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(e.Text, SkinManager.GetLogFontByType(FontType.Body2),
             e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             textRect.Location,
@@ -129,11 +126,11 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         //Ripple animation
         if (e.ToolStrip is MaterialContextMenuStrip toolStrip)
         {
-            var animationManager = toolStrip.AnimationManager;
-            var animationSource = toolStrip.AnimationSource;
-            if (toolStrip.AnimationManager.IsAnimating() && e.Item.Bounds.Contains(animationSource))
+            var animationManager = toolStrip._animationManager;
+            var animationSource = toolStrip._animationSource;
+            if (toolStrip._animationManager.IsAnimating() && e.Item.Bounds.Contains(animationSource))
             {
-                for (int i = 0; i < animationManager.GetAnimationCount(); i++)
+                for (var i = 0; i < animationManager.GetAnimationCount(); i++)
                 {
                     var animationValue = animationManager.GetProgress(i);
                     var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationValue * 50)), Color.Black));
@@ -159,11 +156,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
             new Point(e.Item.Bounds.Right, e.Item.Bounds.Height / 2));
     }
 
-    protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
-    {
-        e.ToolStrip.BackColor = SkinManager.BackgroundColor;
-    }
-
+    protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e) => e.ToolStrip.BackColor = SkinManager.BackgroundColor;
     protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
     {
         var g = e.Graphics;
@@ -182,8 +175,5 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         g.FillPath(arrowBrush, arrowPath);
     }
 
-    private static Rectangle GetItemRect(ToolStripItem item)
-    {
-        return new Rectangle(0, item.ContentRectangle.Y, item.ContentRectangle.Width, item.ContentRectangle.Height);
-    }
+    private static Rectangle GetItemRect(ToolStripItem item) => new Rectangle(0, item.ContentRectangle.Y, item.ContentRectangle.Width, item.ContentRectangle.Height);
 }

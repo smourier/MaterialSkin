@@ -19,7 +19,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
     [Category("Appearance")]
     public bool Ripple
     {
-        get { return _ripple; }
+        get => _ripple;
         set
         {
             _ripple = value;
@@ -66,20 +66,23 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             AnimationType = AnimationType.EaseInOut,
             Increment = 0.05
         };
+
         _hoverAM = new AnimationManager(true)
         {
             AnimationType = AnimationType.Linear,
             Increment = 0.10
         };
+
         _rippleAM = new AnimationManager(false)
         {
             AnimationType = AnimationType.Linear,
             Increment = 0.10,
             SecondaryIncrement = 0.08
         };
-        _checkAM.OnAnimationProgress += sender => Invalidate();
-        _rippleAM.OnAnimationProgress += sender => Invalidate();
-        _hoverAM.OnAnimationProgress += sender => Invalidate();
+
+        _checkAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _rippleAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _hoverAM.OnAnimationProgress += (sender, e) => Invalidate();
 
         CheckedChanged += (sender, args) =>
         {
@@ -136,8 +139,8 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
         // Draw Track
         Color thumbColor = DrawHelper.BlendColor(
-                    (Enabled ? SkinManager.SwitchOffThumbColor : SkinManager.SwitchOffDisabledThumbColor), // Off color
-                    (Enabled ? SkinManager.ColorScheme.AccentColor : DrawHelper.BlendColor(SkinManager.ColorScheme.AccentColor, SkinManager.SwitchOffDisabledThumbColor, 197)), // On color
+                    Enabled ? SkinManager.SwitchOffThumbColor : SkinManager.SwitchOffDisabledThumbColor, // Off color
+                    Enabled ? SkinManager.ColorScheme.AccentColor : DrawHelper.BlendColor(SkinManager.ColorScheme.AccentColor, SkinManager.SwitchOffDisabledThumbColor, 197), // On color
                     animationProgress * 255); // Blend amount
 
         using (var path = DrawHelper.CreateRoundRect(new Rectangle(TRACK_CENTER_X_BEGIN - TRACK_RADIUS, TRACK_CENTER_Y - TRACK_SIZE_HEIGHT / 2, TRACK_SIZE_WIDTH, TRACK_SIZE_HEIGHT), TRACK_RADIUS))
@@ -145,7 +148,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             using SolidBrush trackBrush = new(
                 Color.FromArgb(Enabled ? SkinManager.SwitchOffTrackColor.A : SkinManager.BackgroundDisabledColor.A, // Track alpha
                 DrawHelper.BlendColor( // animate color
-                    (Enabled ? SkinManager.SwitchOffTrackColor : SkinManager.BackgroundDisabledColor), // Off color
+                    Enabled ? SkinManager.SwitchOffTrackColor : SkinManager.BackgroundDisabledColor, // Off color
                     SkinManager.ColorScheme.AccentColor, // On color
                     animationProgress * 255) // Blend amount
                     .RemoveAlpha()));
@@ -232,7 +235,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
     public override bool AutoSize
     {
-        get { return base.AutoSize; }
+        get => base.AutoSize;
         set
         {
             base.AutoSize = value;

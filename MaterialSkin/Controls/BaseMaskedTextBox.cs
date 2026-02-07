@@ -16,7 +16,7 @@ public class BaseMaskedTextBox : MaskedTextBox, IMaterialControl
     private string hint = string.Empty;
     public string Hint
     {
-        get { return hint; }
+        get => hint;
         set
         {
             hint = value;
@@ -53,7 +53,7 @@ public class BaseMaskedTextBox : MaskedTextBox, IMaterialControl
     private const int WM_ENABLE = 0x0A;
     private const int WM_PAINT = 0xF;
     private const uint WM_USER = 0x0400;
-    private const uint EM_SETBKGNDCOLOR = (WM_USER + 67);
+    private const uint EM_SETBKGNDCOLOR = WM_USER + 67;
     private const uint WM_KILLFOCUS = 0x0008;
     protected override void WndProc(ref Message m)
     {

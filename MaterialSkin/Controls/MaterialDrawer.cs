@@ -9,10 +9,7 @@ public class MaterialDrawer : Control, IMaterialControl
     [Category("Drawer")]
     public bool ShowIconsWhenHidden
     {
-        get
-        {
-            return _showIconsWhenHidden;
-        }
+        get => _showIconsWhenHidden;
         set
         {
             if (_showIconsWhenHidden != value)
@@ -32,10 +29,7 @@ public class MaterialDrawer : Control, IMaterialControl
     [Category("Drawer")]
     public bool IsOpen
     {
-        get
-        {
-            return _isOpen;
-        }
+        get => _isOpen;
         set
         {
             _isOpen = value;
@@ -57,10 +51,7 @@ public class MaterialDrawer : Control, IMaterialControl
 
     public bool UseColors
     {
-        get
-        {
-            return _useColors;
-        }
+        get => _useColors;
         set
         {
             _useColors = value;
@@ -74,10 +65,7 @@ public class MaterialDrawer : Control, IMaterialControl
 
     public bool HighlightWithAccent
     {
-        get
-        {
-            return _highlightWithAccent;
-        }
+        get => _highlightWithAccent;
         set
         {
             _highlightWithAccent = value;
@@ -91,10 +79,7 @@ public class MaterialDrawer : Control, IMaterialControl
 
     public bool BackgroundWithAccent
     {
-        get
-        {
-            return _backgroundWithAccent;
-        }
+        get => _backgroundWithAccent;
         set
         {
             _backgroundWithAccent = value;
@@ -144,7 +129,7 @@ public class MaterialDrawer : Control, IMaterialControl
     [Category("Behavior")]
     public MaterialTabControl BaseTabControl
     {
-        get { return _baseTabControl; }
+        get => _baseTabControl;
         set
         {
             _baseTabControl = value;
@@ -320,12 +305,14 @@ public class MaterialDrawer : Control, IMaterialControl
             AnimationType = AnimationType.EaseInOut,
             Increment = 0.04
         };
-        _showHideAnimManager.OnAnimationProgress += sender =>
+
+        _showHideAnimManager.OnAnimationProgress += (sender, e) =>
         {
             Invalidate();
             showHideAnimation();
         };
-        _showHideAnimManager.OnAnimationFinished += sender =>
+
+        _showHideAnimManager.OnAnimationFinished += (sender, e) =>
         {
             if (_baseTabControl != null && _drawerItemRects.Count > 0)
                 rippleSize = _drawerItemRects[_baseTabControl.SelectedIndex].Width;
@@ -354,14 +341,15 @@ public class MaterialDrawer : Control, IMaterialControl
             AnimationType = AnimationType.EaseOut,
             Increment = 0.04
         };
-        _clickAnimManager.OnAnimationProgress += sender => Invalidate();
+
+        _clickAnimManager.OnAnimationProgress += (sender, e) => Invalidate();
 
         MouseWheel += MaterialDrawer_MouseWheel;
     }
 
-    private void MaterialDrawer_MouseWheel(object sender, MouseEventArgs e)
+    private void MaterialDrawer_MouseWheel(object? sender, MouseEventArgs e)
     {
-        int step = 20;
+        var step = 20;
         if (e.Delta > 0)
         {
             if (Location.Y < 0)
@@ -693,7 +681,7 @@ public class MaterialDrawer : Control, IMaterialControl
         }
         else
         {
-            if (e.Location.Y < _drawerItemRects[_drawerItemRects.Count - 1].Bottom && (e.Location.X + Location.X) >= BORDER_WIDTH)
+            if (e.Location.Y < _drawerItemRects[^1].Bottom && (e.Location.X + Location.X) >= BORDER_WIDTH)
                 Cursor = Cursors.Hand;
             else
                 Cursor = Cursors.Default;
@@ -734,8 +722,8 @@ public class MaterialDrawer : Control, IMaterialControl
         //or if there aren't tab pages in the base tab control, the list should just be empty
         if (_baseTabControl == null || _baseTabControl.TabCount == 0 || SkinManager == null || _drawerItemRects == null)
         {
-            _drawerItemRects = new List<Rectangle>();
-            _drawerItemPaths = new List<GraphicsPath>();
+            _drawerItemRects = [];
+            _drawerItemPaths = [];
             return;
         }
 
@@ -754,11 +742,11 @@ public class MaterialDrawer : Control, IMaterialControl
         //Calculate the bounds of each tab header specified in the base tab control
         for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
         {
-            _drawerItemRects[i] = (new Rectangle(
+            _drawerItemRects[i] = new Rectangle(
                 (int)(SkinManager.FORM_PADDING * 0.75) - (ShowIconsWhenHidden ? Location.X : 0),
-                (TAB_HEADER_PADDING * 2) * i + (SkinManager.FORM_PADDING >> 1),
-                (Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5) - 1,
-                drawerItemHeight));
+                TAB_HEADER_PADDING * 2 * i + (SkinManager.FORM_PADDING >> 1),
+                Width + (ShowIconsWhenHidden ? Location.X : 0) - (int)(SkinManager.FORM_PADDING * 1.5) - 1,
+                drawerItemHeight);
 
             _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(_drawerItemRects[i].X - 0.5f, _drawerItemRects[i].Y - 0.5f, _drawerItemRects[i].Width, _drawerItemRects[i].Height), 4);
         }

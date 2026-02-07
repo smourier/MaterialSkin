@@ -22,7 +22,7 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get { return _useAccentColor; }
+        get => _useAccentColor;
         set { _useAccentColor = value; Invalidate(); }
     }
 
@@ -33,14 +33,7 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue(2000)]
     public int Duration
     {
-        get
-        {
-            return _duration.Interval;
-        }
-        set
-        {
-            _duration.Interval = value;
-        }
+        get => _duration.Interval; set => _duration.Interval = value;
     }
 
     private string _text;
@@ -50,10 +43,7 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue("SnackBar text")]
     public new string Text
     {
-        get
-        {
-            return _text;
-        }
+        get => _text;
         set
         {
             _text = value;
@@ -66,7 +56,7 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue(false), DisplayName("Show Action Button")]
     public bool ShowActionButton
     {
-        get { return _showActionButton; }
+        get => _showActionButton;
         set { _showActionButton = value; UpdateRects(); Invalidate(); }
     }
 
@@ -77,10 +67,7 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue("OK")]
     public string ActionButtonText
     {
-        get
-        {
-            return _actionButtonText;
-        }
+        get => _actionButtonText;
         set
         {
             _actionButtonText = value;
@@ -133,7 +120,7 @@ public class MaterialSnackBar : MaterialForm
             AnimationType = AnimationType.EaseOut,
             Increment = 0.03
         };
-        _AnimationManager.OnAnimationProgress += _AnimationManager_OnAnimationProgress;
+        _AnimationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
 
         _duration.Tick += new EventHandler(duration_Tick);
 
@@ -195,8 +182,8 @@ public class MaterialSnackBar : MaterialForm
     {
         if (_showActionButton == true)
         {
-            int _buttonWidth = ((TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
-            Rectangle _actionbuttonBounds = new((Width) - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
+            int _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            Rectangle _actionbuttonBounds = new(Width - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
             _actionButton.Text = _actionButtonText;
@@ -243,7 +230,7 @@ public class MaterialSnackBar : MaterialForm
     /// <summary>
     /// Animates the Form slides
     /// </summary>
-    void _AnimationManager_OnAnimationProgress(object sender)
+    void AnimationManager_OnAnimationProgress(object sender, EventArgs e)
     {
         if (CloseAnimation)
         {
@@ -256,12 +243,9 @@ public class MaterialSnackBar : MaterialForm
     /// </summary>
     protected override void OnPaint(PaintEventArgs e)
     {
-
-        Graphics g = e.Graphics;
+        var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-
         e.Graphics.Clear(BackColor);
-
 
         // Calc text Rect
         Rectangle textRect = new(
@@ -293,7 +277,7 @@ public class MaterialSnackBar : MaterialForm
         {
             CloseAnimation = true;
             _AnimationManager.Increment = 0.06;
-            _AnimationManager.OnAnimationFinished += _AnimationManager_OnAnimationFinished;
+            _AnimationManager.OnAnimationFinished += AnimationManager_OnAnimationFinished;
             _AnimationManager.StartNewAnimation(AnimationDirection.Out);
         }
         base.OnClosing(e);
@@ -302,7 +286,7 @@ public class MaterialSnackBar : MaterialForm
     /// <summary>
     /// Closes the Form after the pull out animation
     /// </summary>
-    void _AnimationManager_OnAnimationFinished(object sender)
+    void AnimationManager_OnAnimationFinished(object sender, EventArgs e)
     {
         _closingAnimationDone = true;
         Close();

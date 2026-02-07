@@ -78,16 +78,16 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         leftButton = new MaterialButton();
         middleButton = new MaterialButton();
         rightButton = new MaterialButton();
-        ((ISupportInitialize)(FlexibleMaterialFormBindingSource)).BeginInit();
+        ((ISupportInitialize)FlexibleMaterialFormBindingSource).BeginInit();
         messageContainer.SuspendLayout();
-        ((ISupportInitialize)(pictureBoxForIcon)).BeginInit();
+        ((ISupportInitialize)pictureBoxForIcon).BeginInit();
         SuspendLayout();
         // 
         // messageContainer
         // 
-        messageContainer.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
-        | AnchorStyles.Left)
-        | AnchorStyles.Right);
+        messageContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        | AnchorStyles.Left
+        | AnchorStyles.Right;
         messageContainer.BackColor = Color.White;
         messageContainer.Controls.Add(materialLabel1);
         messageContainer.Controls.Add(pictureBoxForIcon);
@@ -99,9 +99,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // materialLabel1
         // 
-        materialLabel1.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
-        | AnchorStyles.Left)
-        | AnchorStyles.Right);
+        materialLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        | AnchorStyles.Left
+        | AnchorStyles.Right;
         materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         materialLabel1.Depth = 0;
         materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -124,15 +124,15 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // richTextBoxMessage
         // 
-        richTextBoxMessage.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
-        | AnchorStyles.Left)
-        | AnchorStyles.Right);
-        richTextBoxMessage.BackColor = Color.FromArgb(((byte)(255)), ((byte)(255)), ((byte)(255)));
+        richTextBoxMessage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        | AnchorStyles.Left
+        | AnchorStyles.Right;
+        richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
         richTextBoxMessage.BorderStyle = BorderStyle.None;
         richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         richTextBoxMessage.Depth = 0;
         richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        richTextBoxMessage.ForeColor = Color.FromArgb(((byte)(222)), ((byte)(0)), ((byte)(0)), ((byte)(0)));
+        richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
         richTextBoxMessage.Location = new Point(56, 12);
         richTextBoxMessage.Margin = new Padding(0);
         richTextBoxMessage.MouseState = MouseState.HOVER;
@@ -233,9 +233,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         Text = "<Caption>";
         Load += new EventHandler(FlexibleMaterialForm_Load);
         Shown += new EventHandler(FlexibleMaterialForm_Shown);
-        ((ISupportInitialize)(FlexibleMaterialFormBindingSource)).EndInit();
+        ((ISupportInitialize)FlexibleMaterialFormBindingSource).EndInit();
         messageContainer.ResumeLayout(false);
-        ((ISupportInitialize)(pictureBoxForIcon)).EndInit();
+        ((ISupportInitialize)pictureBoxForIcon).EndInit();
         ResumeLayout(false);
 
     }
@@ -528,7 +528,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         var marginWidth = FlexibleMaterialForm.Width - FlexibleMaterialForm.richTextBoxMessage.Width;
         var marginHeight = FlexibleMaterialForm.Height - FlexibleMaterialForm.richTextBoxMessage.Height;
 
-        var minimumHeight = FlexibleMaterialForm.messageContainer.Top + (FlexibleMaterialForm.pictureBoxForIcon.Height + 2 * 8) + 54;
+        var minimumHeight = FlexibleMaterialForm.messageContainer.Top + FlexibleMaterialForm.pictureBoxForIcon.Height + 2 * 8 + 54;
         if (marginHeight < minimumHeight) marginHeight = minimumHeight;
 
         //Set calculated dialog size (if the calculated values exceed the maximums, they were cut by windows forms automatically)

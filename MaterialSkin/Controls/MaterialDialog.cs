@@ -2,26 +2,20 @@
 
 public class MaterialDialog : MaterialForm
 {
-
-    private const int LEFT_RIGHT_PADDING = 24;
-    private const int BUTTON_PADDING = 8;
-    private const int BUTTON_HEIGHT = 36;
-    private const int TEXT_TOP_PADDING = 17;
-    private const int TEXT_BOTTOM_PADDING = 28;
+    private const int _leftRightPadding = 24;
+    private const int _buttonPadding = 8;
+    private const int _buttonHeight = 36;
+    private const int _textTopPadding = 17;
+    private const int _textBottomPadding = 28;
     private readonly int _header_Height = 40;
 
     private readonly MaterialButton _validationButton = new();
     private readonly MaterialButton _cancelButton = new();
-    private readonly AnimationManager _AnimationManager;
-    private readonly bool CloseAnimation = false;
+    private readonly AnimationManager _animationManager;
+    private readonly bool _closeAnimation;
     private readonly Form _formOverlay;
     private readonly string _text;
     private readonly string _title;
-
-    /// <summary>
-    /// The Collection for the Buttons
-    /// </summary>
-    //public ObservableCollection<MaterialButton> Buttons { get; set; }
 
     [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
     private static extern IntPtr CreateRoundRectRgn
@@ -34,9 +28,6 @@ public class MaterialDialog : MaterialForm
         int nHeightEllipse // height of ellipse
     );
 
-    /// <summary>
-    /// Constructer Setting up the Layout
-    /// </summary>
     public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText, bool UseAccentColor)
     {
         _formOverlay = new Form
@@ -59,9 +50,13 @@ public class MaterialDialog : MaterialForm
 
         _title = Title;
         if (Title.Length == 0)
+        {
             _header_Height = 0;
+        }
         else
+        {
             _header_Height = 40;
+        }
 
         _text = Text;
         ShowInTaskbar = false;
@@ -70,12 +65,13 @@ public class MaterialDialog : MaterialForm
         BackColor = SkinManager.BackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
-        _AnimationManager = new AnimationManager
+        _animationManager = new AnimationManager
         {
             AnimationType = AnimationType.EaseOut,
             Increment = 0.03
         };
-        _AnimationManager.OnAnimationProgress += _AnimationManager_OnAnimationProgress;
+
+        _animationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
 
         _validationButton = new MaterialButton
         {
@@ -106,28 +102,28 @@ public class MaterialDialog : MaterialForm
             Controls.Add(_cancelButton);
 
         Width = 560;
-        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
-        int RectWidth = Width - (2 * LEFT_RIGHT_PADDING) - BUTTON_PADDING;
-        int RectHeight = ((TextWidth / RectWidth) + 1) * 19;
-        Rectangle textRect = new(
-            LEFT_RIGHT_PADDING,
-            _header_Height + TEXT_TOP_PADDING,
+        var TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
+        var RectWidth = Width - (2 * _leftRightPadding) - _buttonPadding;
+        var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
+        var textRect = new Rectangle(
+            _leftRightPadding,
+            _header_Height + _textTopPadding,
             RectWidth,
             RectHeight + 9);
 
-        Height = _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_BOTTOM_PADDING + 52; //560;
+        Height = _header_Height + _textTopPadding + textRect.Height + _textBottomPadding + 52; //560;
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
-        Rectangle _validationbuttonBounds = new((Width) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
+        var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        var _validationbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _validationButton.Width = _validationbuttonBounds.Width;
         _validationButton.Height = _validationbuttonBounds.Height;
         _validationButton.Top = _validationbuttonBounds.Top;
         _validationButton.Left = _validationbuttonBounds.Left;  //Button minimum width management
         _validationButton.Visible = true;
 
-        _buttonWidth = ((TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button))).Width + 32);
-        Rectangle _cancelbuttonBounds = new((_validationbuttonBounds.Left) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
+        _buttonWidth = TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        var _cancelbuttonBounds = new Rectangle(_validationbuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _cancelButton.Width = _cancelbuttonBounds.Width;
         _cancelButton.Height = _cancelbuttonBounds.Height;
         _cancelButton.Top = _cancelbuttonBounds.Top;
@@ -139,34 +135,40 @@ public class MaterialDialog : MaterialForm
         //return materialDialogResult;
     }
 
-    public MaterialDialog(Form ParentForm) : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
+    public MaterialDialog(Form ParentForm)
+        : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Text) : this(ParentForm, "Title", Text, "OK", false, "Cancel", false)
+    public MaterialDialog(Form ParentForm, string Text)
+        : this(ParentForm, "Title", Text, "OK", false, "Cancel", false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text) : this(ParentForm, Title, Text, "OK", false, "Cancel", false)
+    public MaterialDialog(Form ParentForm, string Title, string Text)
+        : this(ParentForm, Title, Text, "OK", false, "Cancel", false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText) : this(ParentForm, Title, Text, ValidationButtonText, false, "Cancel", false)
+    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText)
+        : this(ParentForm, Title, Text, ValidationButtonText, false, "Cancel", false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton) : this(ParentForm, Title, Text, "OK", ShowCancelButton, "Cancel", false)
+    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton)
+        : this(ParentForm, Title, Text, "OK", ShowCancelButton, "Cancel", false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton, string CancelButtonText) : this(ParentForm, Title, Text, "OK", ShowCancelButton, CancelButtonText, false)
+    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton, string CancelButtonText)
+        : this(ParentForm, Title, Text, "OK", ShowCancelButton, CancelButtonText, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText) : this(ParentForm, Title, Text, ValidationButtonText, ShowCancelButton, CancelButtonText, false)
+    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText)
+        : this(ParentForm, Title, Text, ValidationButtonText, ShowCancelButton, CancelButtonText, false)
     {
     }
-
 
     /// <summary>
     /// Sets up the Starting Location and starts the Animation
@@ -176,17 +178,17 @@ public class MaterialDialog : MaterialForm
         base.OnLoad(e);
 
         Location = new Point(Convert.ToInt32(Owner.Location.X + (Owner.Width / 2) - (Width / 2)), Convert.ToInt32(Owner.Location.Y + (Owner.Height / 2) - (Height / 2)));
-        _AnimationManager.StartNewAnimation(AnimationDirection.In);
+        _animationManager.StartNewAnimation(AnimationDirection.In);
     }
 
     /// <summary>
     /// Animates the Form slides
     /// </summary>
-    void _AnimationManager_OnAnimationProgress(object sender)
+    private void AnimationManager_OnAnimationProgress(object? sender, EventArgs e)
     {
-        if (CloseAnimation)
+        if (_closeAnimation)
         {
-            Opacity = _AnimationManager.GetProgress();
+            Opacity = _animationManager.GetProgress();
         }
     }
 
@@ -195,22 +197,19 @@ public class MaterialDialog : MaterialForm
     /// </summary>
     protected override void OnPaint(PaintEventArgs e)
     {
-
-        Graphics g = e.Graphics;
+        var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-
         e.Graphics.Clear(BackColor);
 
-
         // Calc title Rect
-        Rectangle titleRect = new(
-            LEFT_RIGHT_PADDING,
+        var titleRect = new Rectangle(
+            _leftRightPadding,
             0,
-            Width - (2 * LEFT_RIGHT_PADDING),
+            Width - (2 * _leftRightPadding),
             _header_Height);
 
         //Draw title
-        using (NativeTextRenderer NativeText = new(g))
+        using (var NativeText = new NativeTextRenderer(g))
         {
             // Draw header text
             NativeText.DrawTransparentText(
@@ -224,18 +223,18 @@ public class MaterialDialog : MaterialForm
 
         // Calc text Rect
 
-        int TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
-        int RectWidth = Width - (2 * LEFT_RIGHT_PADDING) - BUTTON_PADDING;
-        int RectHeight = ((TextWidth / RectWidth) + 1) * 19;
+        var TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
+        var RectWidth = Width - (2 * _leftRightPadding) - _buttonPadding;
+        var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
 
-        Rectangle textRect = new(
-            LEFT_RIGHT_PADDING,
+        var textRect = new Rectangle(
+            _leftRightPadding,
             _header_Height + 17,
             RectWidth,
             RectHeight + 19);
 
         //Draw  Text
-        using (NativeTextRenderer NativeText = new(g))
+        using (var NativeText = new NativeTextRenderer(g))
         {
             // Draw header text
             NativeText.DrawMultilineTransparentText(
@@ -246,7 +245,6 @@ public class MaterialDialog : MaterialForm
                 textRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
-
     }
 
     /// <summary>
@@ -263,14 +261,6 @@ public class MaterialDialog : MaterialForm
         base.OnClosing(e);
     }
 
-    /// <summary>
-    /// Closes the Form after the pull out animation
-    /// </summary>
-    void _AnimationManager_OnAnimationFinished(object sender)
-    {
-        Close();
-    }
-
     protected override bool ProcessDialogKey(Keys keyData)
     {
         if (ModifierKeys == Keys.None && keyData == Keys.Escape)
@@ -279,15 +269,6 @@ public class MaterialDialog : MaterialForm
             return true;
         }
         return base.ProcessDialogKey(keyData);
-    }
-
-    private void InitializeComponent()
-    {
-        SuspendLayout();
-        ClientSize = new Size(560, 182);
-        Name = "Dialog";
-        ResumeLayout(false);
-
     }
 
     /// <summary>
@@ -301,7 +282,7 @@ public class MaterialDialog : MaterialForm
         switch (message.Msg)
         {
             case WM_SYSCOMMAND:
-                int command = message.WParam.ToInt32() & 0xfff0;
+                var command = message.WParam.ToInt32() & 0xfff0;
                 if (command == SC_MOVE)
                     return;
                 break;
@@ -309,5 +290,4 @@ public class MaterialDialog : MaterialForm
 
         base.WndProc(ref message);
     }
-
 }

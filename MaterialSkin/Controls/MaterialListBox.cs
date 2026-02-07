@@ -5,7 +5,7 @@ namespace MaterialSkin.Controls;
 [ComVisible(true)]
 public partial class MaterialListBox : Control, IMaterialControl
 {
-    private readonly ObservableCollection<MaterialListBoxItem> _items = new();
+    private readonly ObservableCollection<MaterialListBoxItem> _items = [];
     private List<object> _selectedItems;
     private List<object> _indicates;
     private bool _multiSelect;
@@ -48,7 +48,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get { return useAccentColor; }
+        get => useAccentColor;
         set { useAccentColor = value; _scrollBar.UseAccentColor = value; Invalidate(); }
     }
 
@@ -193,7 +193,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     [Description("Gets or sets list density")]
     public MaterialItemDensity Density
     {
-        get { return _density; }
+        get => _density;
         set
         {
             _density = value;
@@ -235,8 +235,8 @@ public partial class MaterialListBox : Control, IMaterialControl
         _hoveredItem = -1;
         _showScrollBar = false;
         _items.CollectionChanged += InvalidateScroll;
-        _selectedItems = new List<object>();
-        _indicates = new List<object>();
+        _selectedItems = [];
+        _indicates = [];
         _multiKeyDown = false;
         _scrollBar = new MaterialScrollBar()
         {
@@ -407,7 +407,7 @@ public partial class MaterialListBox : Control, IMaterialControl
                     primaryTextRect.Height = 30 - _primaryTextBottomPadding;
                 }
             }
-            secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + (_primaryTextBottomPadding + _secondaryTextTopPadding), primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
+            secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
 
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(

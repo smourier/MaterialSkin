@@ -120,7 +120,7 @@ public sealed partial class NativeTextRenderer : IDisposable
                 if (flags.HasFlag(TextAlignFlags.Middle))
                     pos.Y = ((size.Height) >> 1) - (strRect.Height >> 1);
                 if (flags.HasFlag(TextAlignFlags.Bottom))
-                    pos.Y = (size.Height) - (strRect.Height);
+                    pos.Y = size.Height - strRect.Height;
 
                 // Draw Text for multiline format
                 Rect region = new(new Rectangle(pos, size));
@@ -134,12 +134,12 @@ public sealed partial class NativeTextRenderer : IDisposable
                 if (flags.HasFlag(TextAlignFlags.Center))
                     pos.X = ((size.Width) >> 1) - (strSize.Width >> 1);
                 if (flags.HasFlag(TextAlignFlags.Right))
-                    pos.X = (size.Width) - (strSize.Width);
+                    pos.X = size.Width - strSize.Width;
 
                 if (flags.HasFlag(TextAlignFlags.Middle))
                     pos.Y = ((size.Height) >> 1) - (strSize.Height >> 1);
                 if (flags.HasFlag(TextAlignFlags.Bottom))
-                    pos.Y = (size.Height) - (strSize.Height);
+                    pos.Y = size.Height - strSize.Height;
 
                 // Draw text to memory HDC
                 TextOut(memoryHdc, pos.X, pos.Y, str, str.Length);
@@ -180,13 +180,15 @@ public sealed partial class NativeTextRenderer : IDisposable
             }
             else
             {
-                dic1[font.Size] = new Dictionary<FontStyle, IntPtr>();
+                dic1[font.Size] = [];
             }
         }
         else
         {
-            _fontsCache[font.Name] = new Dictionary<float, Dictionary<FontStyle, IntPtr>>();
-            _fontsCache[font.Name][font.Size] = new Dictionary<FontStyle, IntPtr>();
+            _fontsCache[font.Name] = new Dictionary<float, Dictionary<FontStyle, IntPtr>>
+            {
+                [font.Size] = []
+            };
         }
 
         if (hfont == 0)

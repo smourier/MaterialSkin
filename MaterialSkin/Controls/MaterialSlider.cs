@@ -31,7 +31,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Define control value")]
     public int Value
     {
-        get { return _value; }
+        get => _value;
         set
         {
             if (value < _rangeMin)
@@ -51,7 +51,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Define position indicator maximum value. Ignored when set to 0.")]
     public int ValueMax
     {
-        get { return _valueMax; }
+        get => _valueMax;
         set
         {
             if (value > _rangeMax)
@@ -69,7 +69,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Define control range maximum value")]
     public int RangeMax
     {
-        get { return _rangeMax; }
+        get => _rangeMax;
         set
         {
             _rangeMax = value;
@@ -85,7 +85,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Define control range minimum value")]
     public int RangeMin
     {
-        get { return _rangeMin; }
+        get => _rangeMin;
         set
         {
             _rangeMin = value;
@@ -101,7 +101,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Set control text")]
     public override string Text
     {
-        get { return _text; }
+        get => _text;
         set
         {
             _text = value;
@@ -116,7 +116,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Set control value suffix text")]
     public string ValueSuffix
     {
-        get { return _valueSuffix; }
+        get => _valueSuffix;
         set
         {
             _valueSuffix = value;
@@ -130,7 +130,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Show text")]
     public bool ShowText
     {
-        get { return _showText; }
+        get => _showText;
         set { _showText = value; UpdateRects(); Invalidate(); }
     }
 
@@ -140,7 +140,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Description("Show value")]
     public bool ShowValue
     {
-        get { return _showValue; }
+        get => _showValue;
         set { _showValue = value; UpdateRects(); Invalidate(); }
     }
 
@@ -148,7 +148,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get { return _useAccentColor; }
+        get => _useAccentColor;
         set { _useAccentColor = value; Invalidate(); }
     }
 
@@ -156,10 +156,7 @@ public class MaterialSlider : Control, IMaterialControl
     DefaultValue(typeof(FontType), "Body1")]
     public FontType FontType
     {
-        get
-        {
-            return _fontType;
-        }
+        get => _fontType;
         set
         {
             _fontType = value;

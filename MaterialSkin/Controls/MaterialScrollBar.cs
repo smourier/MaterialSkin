@@ -17,7 +17,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get { return useAccentColor; }
+        get => useAccentColor;
         set { useAccentColor = value; Invalidate(); }
     }
 
@@ -99,7 +99,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [DefaultValue(10)]
     public int MouseWheelBarPartitions
     {
-        get { return mouseWheelBarPartitions; }
+        get => mouseWheelBarPartitions;
         set
         {
             if (value > 0)
@@ -119,15 +119,13 @@ public class MaterialScrollBar : Control, IMaterialControl
     private bool useBarColor = false;
     [DefaultValue(false)]
     public bool UseBarColor
-    {
-        get { return useBarColor; }
-        set { useBarColor = value; }
+    { get => useBarColor; set => useBarColor = value;
     }
 
     [DefaultValue(SCROLLBAR_DEFAULT_SIZE)]
     public int ScrollbarSize
     {
-        get { return Orientation == MaterialScrollOrientation.Vertical ? Width : Height; }
+        get => Orientation == MaterialScrollOrientation.Vertical ? Width : Height;
         set
         {
             if (Orientation == MaterialScrollOrientation.Vertical)
@@ -140,9 +138,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     private bool highlightOnWheel = false;
     [DefaultValue(false)]
     public bool HighlightOnWheel
-    {
-        get { return highlightOnWheel; }
-        set { highlightOnWheel = value; }
+    { get => highlightOnWheel; set => highlightOnWheel = value;
     }
 
     private MaterialScrollOrientation MaterialOrientation = MaterialScrollOrientation.Vertical;
@@ -150,7 +146,7 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     public MaterialScrollOrientation Orientation
     {
-        get { return MaterialOrientation; }
+        get => MaterialOrientation;
         set
         {
             if (value == MaterialOrientation) return;
@@ -165,7 +161,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [DefaultValue(0)]
     public int Minimum
     {
-        get { return minimum; }
+        get => minimum;
         set
         {
             if (minimum == value || value < 0 || value >= maximum)
@@ -203,7 +199,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [DefaultValue(100)]
     public int Maximum
     {
-        get { return maximum; }
+        get => maximum;
         set
         {
             if (value == maximum || value < 1 || value <= minimum)
@@ -236,7 +232,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [DefaultValue(1)]
     public int SmallChange
     {
-        get { return smallChange; }
+        get => smallChange;
         set
         {
             if (value == smallChange || value < 1 || value >= largeChange)
@@ -253,7 +249,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [DefaultValue(10)]
     public int LargeChange
     {
-        get { return largeChange; }
+        get => largeChange;
         set
         {
             if (value == largeChange || value < smallChange || value < 2)
@@ -285,7 +281,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [Browsable(false)]
     public int Value
     {
-        get { return curValue; }
+        get => curValue;
 
         set
         {
@@ -579,7 +575,7 @@ public class MaterialScrollBar : Control, IMaterialControl
                 int oldScrollValue = curValue;
 
                 int pos = MaterialOrientation == MaterialScrollOrientation.Vertical ? e.Location.Y : e.Location.X;
-                int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? (pos / Height) / thumbHeight : (pos / Width) / thumbWidth;
+                int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? pos / Height / thumbHeight : pos / Width / thumbWidth;
 
                 if (pos <= (thumbTopLimit + thumbPosition))
                 {
@@ -614,7 +610,7 @@ public class MaterialScrollBar : Control, IMaterialControl
 
                     if (pixelRange != 0)
                     {
-                        perc = (thumbPos) / (float)pixelRange;
+                        perc = thumbPos / (float)pixelRange;
                     }
 
                     curValue = Convert.ToInt32((perc * (maximum - minimum)) + minimum);
@@ -835,7 +831,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             return 0;
         }
 
-        int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? (thumbPosition / Height) / thumbHeight : (thumbPosition / Width) / thumbWidth;
+        int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? thumbPosition / Height / thumbHeight : thumbPosition / Width / thumbWidth;
 
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
@@ -854,7 +850,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             perc = (curValue - (float)minimum) / realRange;
         }
 
-        return Math.Max(thumbTopLimit, Math.Min(thumbBottomLimitTop, Convert.ToInt32((perc * pixelRange))));
+        return Math.Max(thumbTopLimit, Math.Min(thumbBottomLimitTop, Convert.ToInt32(perc * pixelRange)));
     }
 
     private int GetThumbSize()
@@ -868,7 +864,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             return trackSize;
         }
 
-        float newThumbSize = (largeChange * (float)trackSize) / maximum;
+        float newThumbSize = largeChange * (float)trackSize / maximum;
 
         return Convert.ToInt32(Math.Min(trackSize, Math.Max(newThumbSize, 10f)));
     }
@@ -920,7 +916,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             thumbSize = thumbRectangle.Width;
         }
 
-        if ((bottomBarClicked && (thumbPos + thumbSize) < trackPosition))
+        if (bottomBarClicked && (thumbPos + thumbSize) < trackPosition)
         {
             type = ScrollEventType.LargeIncrement;
 
@@ -937,7 +933,7 @@ public class MaterialScrollBar : Control, IMaterialControl
                 ChangeThumbPosition(Math.Min(thumbBottomLimitTop, GetThumbPosition()));
             }
         }
-        else if ((topBarClicked && thumbPos > trackPosition))
+        else if (topBarClicked && thumbPos > trackPosition)
         {
             type = ScrollEventType.LargeDecrement;
 

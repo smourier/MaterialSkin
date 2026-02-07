@@ -8,7 +8,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
     public bool AutoResize
     {
-        get { return _AutoResize; }
+        get => _AutoResize;
         set
         {
             _AutoResize = value;
@@ -31,7 +31,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
     public bool UseTallSize
     {
-        get { return _UseTallSize; }
+        get => _UseTallSize;
         set
         {
             _UseTallSize = value;
@@ -48,7 +48,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
-        get { return _hint; }
+        get => _hint;
         set
         {
             _hint = value;
@@ -93,7 +93,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
         // Material Properties
-        Hint = "";
+        Hint = string.Empty;
         UseAccent = true;
         UseTallSize = true;
         MaxDropDownItems = 4;
@@ -111,41 +111,50 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             Increment = 0.08,
             AnimationType = AnimationType.EaseInOut
         };
-        _animationManager.OnAnimationProgress += sender => Invalidate();
-        _animationManager.OnAnimationFinished += sender => _animationManager.SetProgress(0);
+
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
+        _animationManager.OnAnimationFinished += (sender, e) => _animationManager.SetProgress(0);
+
         DropDownClosed += (sender, args) =>
         {
             MouseState = MouseState.OUT;
             if (SelectedIndex < 0 && !Focused) _animationManager.StartNewAnimation(AnimationDirection.Out);
         };
+
         LostFocus += (sender, args) =>
         {
             MouseState = MouseState.OUT;
             if (SelectedIndex < 0) _animationManager.StartNewAnimation(AnimationDirection.Out);
         };
+
         DropDown += (sender, args) =>
         {
             _animationManager.StartNewAnimation(AnimationDirection.In);
         };
+
         GotFocus += (sender, args) =>
         {
             _animationManager.StartNewAnimation(AnimationDirection.In);
             Invalidate();
         };
+
         MouseEnter += (sender, args) =>
         {
             MouseState = MouseState.HOVER;
             Invalidate();
         };
+
         MouseLeave += (sender, args) =>
         {
             MouseState = MouseState.OUT;
             Invalidate();
         };
+
         SelectedIndexChanged += (sender, args) =>
         {
             Invalidate();
         };
+
         KeyUp += (sender, args) =>
         {
             if (Enabled && DropDownStyle == ComboBoxStyle.DropDownList && (args.KeyCode == Keys.Delete || args.KeyCode == Keys.Back))
@@ -227,9 +236,9 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             {
                 hintRect = new Rectangle(
                     SkinManager.FORM_PADDING,
-                    userTextPresent && !_animationManager.IsAnimating() ? (TEXT_SMALL_Y) : ClientRectangle.Y + (int)((TEXT_SMALL_Y - ClientRectangle.Y) * animationProgress),
+                    userTextPresent && !_animationManager.IsAnimating() ? TEXT_SMALL_Y : ClientRectangle.Y + (int)((TEXT_SMALL_Y - ClientRectangle.Y) * animationProgress),
                     Width,
-                    userTextPresent && !_animationManager.IsAnimating() ? (TEXT_SMALL_SIZE) : (int)(LINE_Y + (TEXT_SMALL_SIZE - LINE_Y) * animationProgress));
+                    userTextPresent && !_animationManager.IsAnimating() ? TEXT_SMALL_SIZE : (int)(LINE_Y + (TEXT_SMALL_SIZE - LINE_Y) * animationProgress));
                 hintTextSize = userTextPresent && !_animationManager.IsAnimating() ? 12 : (int)(16 + (12 - 16) * animationProgress);
             }
 
@@ -242,7 +251,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         // Calc text Rect
         Rectangle textRect = new(
             SkinManager.FORM_PADDING,
-            hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
+            hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
             ClientRectangle.Width - SkinManager.FORM_PADDING * 3 - 8,
             hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
 

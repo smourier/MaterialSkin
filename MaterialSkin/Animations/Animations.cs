@@ -1,48 +1,6 @@
 ﻿namespace MaterialSkin.Animations;
 
 /// <summary>
-/// Defines the AnimationType
-/// </summary>
-internal enum AnimationType
-{
-    /// <summary>
-    /// Defines the Linear
-    /// </summary>
-    Linear,
-
-    /// <summary>
-    /// Defines the EaseInOut
-    /// </summary>
-    EaseInOut,
-
-    /// <summary>
-    /// Defines the EaseOut
-    /// </summary>
-    EaseOut,
-
-    /// <summary>
-    /// Defines the CustomQuadratic
-    /// </summary>
-    CustomQuadratic
-}
-
-/// <summary>
-/// Defines the <see cref="AnimationLinear" />
-/// </summary>
-internal static class AnimationLinear
-{
-    /// <summary>
-    /// The CalculateProgress
-    /// </summary>
-    /// <param name="progress">The progress<see cref="double"/></param>
-    /// <returns>The <see cref="double"/></returns>
-    public static double CalculateProgress(double progress)
-    {
-        return progress;
-    }
-}
-
-/// <summary>
 /// Defines the <see cref="AnimationEaseInOut" />
 /// </summary>
 internal static class AnimationEaseInOut

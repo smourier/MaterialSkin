@@ -19,7 +19,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     [Category("Appearance")]
     public bool Ripple
     {
-        get { return _ripple; }
+        get => _ripple;
         set
         {
             _ripple = value;
@@ -73,9 +73,9 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             if (Ripple)
                 _checkAM.StartNewAnimation(Checked ? AnimationDirection.In : AnimationDirection.Out);
         };
-        _checkAM.OnAnimationProgress += sender => Invalidate();
-        _hoverAM.OnAnimationProgress += sender => Invalidate();
-        _rippleAM.OnAnimationProgress += sender => Invalidate();
+        _checkAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _hoverAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _rippleAM.OnAnimationProgress += (sender, e) => Invalidate();
 
         Ripple = true;
         Height = HEIGHT_RIPPLE;
@@ -141,7 +141,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
                 double animationValue = _rippleAM.GetProgress(i);
                 int rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using SolidBrush rippleBrush = new(Color.FromArgb((int)((animationValue * 40)), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
+                using SolidBrush rippleBrush = new(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }
         }
@@ -188,7 +188,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
     public override bool AutoSize
     {
-        get { return base.AutoSize; }
+        get => base.AutoSize;
         set
         {
             base.AutoSize = value;

@@ -28,7 +28,7 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
-        get { return hint; }
+        get => hint;
         set
         {
             hint = value;
