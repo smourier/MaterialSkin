@@ -85,9 +85,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // messageContainer
         // 
-        messageContainer.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        messageContainer.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
-        | AnchorStyles.Right)));
+        | AnchorStyles.Right);
         messageContainer.BackColor = Color.White;
         messageContainer.Controls.Add(materialLabel1);
         messageContainer.Controls.Add(pictureBoxForIcon);
@@ -99,9 +99,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // materialLabel1
         // 
-        materialLabel1.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        materialLabel1.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
-        | AnchorStyles.Right)));
+        | AnchorStyles.Right);
         materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         materialLabel1.Depth = 0;
         materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -124,15 +124,15 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // richTextBoxMessage
         // 
-        richTextBoxMessage.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+        richTextBoxMessage.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
         | AnchorStyles.Left)
-        | AnchorStyles.Right)));
-        richTextBoxMessage.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+        | AnchorStyles.Right);
+        richTextBoxMessage.BackColor = Color.FromArgb(((byte)(255)), ((byte)(255)), ((byte)(255)));
         richTextBoxMessage.BorderStyle = BorderStyle.None;
         richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         richTextBoxMessage.Depth = 0;
-        richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-        richTextBoxMessage.ForeColor = Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+        richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        richTextBoxMessage.ForeColor = Color.FromArgb(((byte)(222)), ((byte)(0)), ((byte)(0)), ((byte)(0)));
         richTextBoxMessage.Location = new Point(56, 12);
         richTextBoxMessage.Margin = new Padding(0);
         richTextBoxMessage.MouseState = MouseState.HOVER;
@@ -391,7 +391,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <summary>
     /// Defines the languageID
     /// </summary>
-    private TwoLetterISOLanguageID languageID = TwoLetterISOLanguageID.en;
+    private readonly TwoLetterISOLanguageID languageID = TwoLetterISOLanguageID.en;
 
     /// <summary>
     /// Prevents a default instance of the <see cref="FlexibleMaterialForm"/> class from being created.
@@ -802,13 +802,15 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     public static DialogResult Show(IWin32Window? owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, bool UseRichTextBox = true, ButtonsPosition buttonsPosition = ButtonsPosition.Right)
     {
         //Create a new instance of the FlexibleMessageBox form
-        var FlexibleMaterialForm = new FlexibleMaterialForm();
-        FlexibleMaterialForm.ShowInTaskbar = false;
-        FlexibleMaterialForm.Sizable = false;
+        var FlexibleMaterialForm = new FlexibleMaterialForm
+        {
+            ShowInTaskbar = false,
+            Sizable = false,
 
-        //Bind the caption and the message text
-        FlexibleMaterialForm.CaptionText = caption;
-        FlexibleMaterialForm.MessageText = text;
+            //Bind the caption and the message text
+            CaptionText = caption,
+            MessageText = text
+        };
         FlexibleMaterialForm.FlexibleMaterialFormBindingSource.DataSource = FlexibleMaterialForm;
 
 

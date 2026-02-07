@@ -253,7 +253,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             // Draw user text
             NativeText.DrawTransparentText(
                 Text,
-                SkinManager.getLogFontByType(FontType.Subtitle1),
+                SkinManager.GetLogFontByType(FontType.Subtitle1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 textRect.Location,
                 textRect.Size,
@@ -268,7 +268,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(
             Hint,
-            SkinManager.getTextBoxFontBySize(hintTextSize),
+            SkinManager.GetTextBoxFontBySize(hintTextSize),
             Enabled ? DroppedDown || Focused ?
             SelectedColor : // Focus 
             SkinManager.TextMediumEmphasisColor : // not focused
@@ -370,7 +370,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             var itemsList = Items.Cast<object>().Select(item => item.ToString());
             foreach (string s in itemsList)
             {
-                int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+                int newWidth = NativeText.MeasureLogString(s, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
                 if (w < newWidth) w = newWidth;
             }
         }

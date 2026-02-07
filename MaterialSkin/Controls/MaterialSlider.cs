@@ -16,7 +16,7 @@ public class MaterialSlider : Control, IMaterialControl
     private const int _inactiveTrack = 4;
     private const int _thumbRadius = 20;
     private const int _thumbRadiusHoverPressed = 40;
-    private FontType _fontType = MaterialSkin.FontType.Body1;
+    private FontType _fontType = FontType.Body1;
 
     [Browsable(false)]
     public int Depth { get; set; }
@@ -40,8 +40,7 @@ public class MaterialSlider : Control, IMaterialControl
                 _value = _rangeMax;
             else
                 _value = value;
-            //_mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
-            _mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width - _thumbRadius)));
+            _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
             RecalcutlateIndicator();
         }
     }
@@ -75,7 +74,7 @@ public class MaterialSlider : Control, IMaterialControl
         {
             _rangeMax = value;
             //_mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
-            _mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width - _thumbRadius)));
+            _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
             RecalcutlateIndicator();
         }
     }
@@ -91,7 +90,7 @@ public class MaterialSlider : Control, IMaterialControl
         {
             _rangeMin = value;
             //_mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
-            _mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width - _thumbRadius)));
+            _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
             RecalcutlateIndicator();
         }
     }
@@ -315,13 +314,13 @@ public class MaterialSlider : Control, IMaterialControl
         Size valueSize;
         using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            textSize = NativeText.MeasureLogString(_showText ? Text : "", SkinManager.getLogFontByType(_fontType));
-            valueSize = NativeText.MeasureLogString(_showValue ? RangeMax.ToString() + _valueSuffix : "", SkinManager.getLogFontByType(_fontType));
+            textSize = NativeText.MeasureLogString(_showText ? Text : "", SkinManager.GetLogFontByType(_fontType));
+            valueSize = NativeText.MeasureLogString(_showValue ? RangeMax.ToString() + _valueSuffix : "", SkinManager.GetLogFontByType(_fontType));
         }
         _valueRectangle = new Rectangle(Width - valueSize.Width - _thumbRadiusHoverPressed / 4, 0, valueSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _textRectangle = new Rectangle(0, 0, textSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _sliderRectangle = new Rectangle(_textRectangle.Right, 0, _valueRectangle.Left - _textRectangle.Right, _thumbRadius);
-        _mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(_rangeMax - _rangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
+        _mouseX = _sliderRectangle.X + ((int)(_value / (double)(_rangeMax - _rangeMin) * _sliderRectangle.Width - _thumbRadius / 2));
         RecalcutlateIndicator();
     }
 
@@ -425,7 +424,7 @@ public class MaterialSlider : Control, IMaterialControl
             // Draw text
             NativeText.DrawTransparentText(
             Text,
-            SkinManager.getLogFontByType(_fontType),
+            SkinManager.GetLogFontByType(_fontType),
             Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             _textRectangle.Location,
             _textRectangle.Size,
@@ -435,7 +434,7 @@ public class MaterialSlider : Control, IMaterialControl
             // Draw value
             NativeText.DrawTransparentText(
                 Value.ToString() + ValueSuffix,
-                SkinManager.getLogFontByType(_fontType),
+                SkinManager.GetLogFontByType(_fontType),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 _valueRectangle.Location,
                 _valueRectangle.Size,

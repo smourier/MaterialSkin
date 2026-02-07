@@ -110,7 +110,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         var textRect = new Rectangle(LEFT_PADDING, itemRect.Y, itemRect.Width - (LEFT_PADDING + RIGHT_PADDING), itemRect.Height);
 
         using NativeTextRenderer NativeText = new(g);
-        NativeText.DrawTransparentText(e.Text, SkinManager.getLogFontByType(FontType.Body2),
+        NativeText.DrawTransparentText(e.Text, SkinManager.GetLogFontByType(FontType.Body2),
             e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             textRect.Location,
             textRect.Size,
@@ -127,8 +127,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         g.FillRectangle(e.Item.Selected && e.Item.Enabled ? SkinManager.BackgroundFocusBrush : SkinManager.BackgroundBrush, itemRect);
 
         //Ripple animation
-        var toolStrip = e.ToolStrip as MaterialContextMenuStrip;
-        if (toolStrip != null)
+        if (e.ToolStrip is MaterialContextMenuStrip toolStrip)
         {
             var animationManager = toolStrip.AnimationManager;
             var animationSource = toolStrip.AnimationSource;
@@ -183,7 +182,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         g.FillPath(arrowBrush, arrowPath);
     }
 
-    private Rectangle GetItemRect(ToolStripItem item)
+    private static Rectangle GetItemRect(ToolStripItem item)
     {
         return new Rectangle(0, item.ContentRectangle.Y, item.ContentRectangle.Width, item.ContentRectangle.Height);
     }

@@ -361,8 +361,8 @@ public partial class MaterialForm : Form, IMaterialControl
     private Point _animationSource;
     private Padding originalPadding;
 
-    private Form drawerOverlay = new();
-    private MaterialDrawerForm drawerForm = new();
+    private readonly Form drawerOverlay = new();
+    private readonly MaterialDrawerForm drawerForm = new();
 
     // Drawer overlay and speed improvements
     private bool _drawerShowIconsWhenHidden;
@@ -372,7 +372,7 @@ public partial class MaterialForm : Form, IMaterialControl
     private bool _drawerUseColors;
     private bool _drawerHighlightWithAccent;
     private bool _backgroundWithAccent;
-    private MaterialDrawer drawerControl = new();
+    private readonly MaterialDrawer drawerControl = new();
     private AnimationManager _drawerShowHideAnimManager;
     private readonly AnimationManager _clickAnimManager;
 
@@ -568,7 +568,7 @@ public partial class MaterialForm : Form, IMaterialControl
         // Fix Closing the Drawer or Overlay form with Alt+F4 not exiting the app
         drawerOverlay.FormClosed += TerminateOnClose;
         drawerForm.FormClosed += TerminateOnClose;
-        drawerForm.Attach(drawerControl);
+        MaterialDrawerForm.Attach(drawerControl);
     }
 
     private void TerminateOnClose(object sender, FormClosedEventArgs e)
@@ -822,7 +822,7 @@ public partial class MaterialForm : Form, IMaterialControl
                 base.ContextMenuStrip = null;
 
                 // Show default system menu when right clicking titlebar
-                var id = TrackPopupMenuEx(GetSystemMenu(Handle, false), (int)TPM.LeftAlign | (int)TPM.ReturnCommand, Cursor.Position.X, Cursor.Position.Y, Handle, IntPtr.Zero);
+                var id = TrackPopupMenuEx(GetSystemMenu(Handle, false), (int)TPM.LeftAlign | (int)TPM.ReturnCommand, Cursor.Position.X, Cursor.Position.Y, Handle, 0);
 
                 // Pass the command as a WM_SYSCOMMAND message
                 SendMessage(Handle, (int)WM.SystemCommand, id, 0);
@@ -1111,26 +1111,26 @@ public partial class MaterialForm : Form, IMaterialControl
             // Middle line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING),
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2),
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING) + 18,
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2));
+               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2,
+               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2);
 
             // Bottom line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING),
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2) - 6,
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING) + 18,
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2) - 6);
+               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2 - 6,
+               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2 - 6);
 
             // Top line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING),
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2) + 6,
-               _drawerIconRect.X + (int)(SkinManager.FORM_PADDING) + 18,
-               _drawerIconRect.Y + (int)(ACTION_BAR_HEIGHT / 2) + 6);
+               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2 + 6,
+               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.Y + ACTION_BAR_HEIGHT / 2 + 6);
         }
 
         if (ControlBox == true && _formStyle != FormStyles.ActionBar_None && _formStyle != FormStyles.StatusAndActionBar_None)
@@ -1138,7 +1138,7 @@ public partial class MaterialForm : Form, IMaterialControl
             //Form title
             using NativeTextRenderer NativeText = new(g);
             Rectangle textLocation = new(DrawerTabControl != null ? TITLE_LEFT_PADDING : TITLE_LEFT_PADDING - (ICON_SIZE + (ACTION_BAR_PADDING * 2)), STATUS_BAR_HEIGHT, ClientSize.Width, ACTION_BAR_HEIGHT);
-            NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(FontType.H6),
+            NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.H6),
                 SkinManager.ColorScheme.TextColor,
                 textLocation.Location,
                 textLocation.Size,

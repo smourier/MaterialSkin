@@ -46,7 +46,7 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
 
     public class ItemsList(Panel parent) : List<MaterialCheckbox>
     {
-        private Panel _parent = parent;
+        private readonly Panel _parent = parent;
 
         public delegate void SelectedIndexChangedEventHandler(int Index);
 

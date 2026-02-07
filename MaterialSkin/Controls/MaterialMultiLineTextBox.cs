@@ -32,7 +32,7 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         set
         {
             hint = value;
-            SendMessage(Handle, EM_SETCUEBANNER, (int)IntPtr.Zero, Hint);
+            SendMessage(Handle, EM_SETCUEBANNER, (int)0, Hint);
         }
     }
 

@@ -416,7 +416,7 @@ public class MaterialDrawer : Control, IMaterialControl
             {
                 if (ShowIconsWhenHidden)
                 {
-                    Location = new Point((int)(-Width + MinWidth), Location.Y);
+                    Location = new Point(-Width + MinWidth, Location.Y);
                 }
                 else
                 {
@@ -493,7 +493,7 @@ public class MaterialDrawer : Control, IMaterialControl
                 (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) : // selected
                 SkinManager.TextHighEmphasisColor));
 
-            IntPtr textFont = SkinManager.getLogFontByType(FontType.Subtitle2);
+            IntPtr textFont = SkinManager.GetLogFontByType(FontType.Subtitle2);
 
             Rectangle textRect = _drawerItemRects[currentTabIndex];
             textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)(SkinManager.FORM_PADDING * 0.75);
@@ -596,7 +596,7 @@ public class MaterialDrawer : Control, IMaterialControl
     {
         if (tabIndex == _baseTabControl.SelectedIndex && !_clickAnimManager.IsAnimating())
         {
-            return (int)(primaryA);
+            return primaryA;
         }
         if (tabIndex != _previousSelectedTabIndex && tabIndex != _baseTabControl.SelectedIndex)
         {
@@ -756,7 +756,7 @@ public class MaterialDrawer : Control, IMaterialControl
         {
             _drawerItemRects[i] = (new Rectangle(
                 (int)(SkinManager.FORM_PADDING * 0.75) - (ShowIconsWhenHidden ? Location.X : 0),
-                (TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1),
+                (TAB_HEADER_PADDING * 2) * i + (SkinManager.FORM_PADDING >> 1),
                 (Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5) - 1,
                 drawerItemHeight));
 

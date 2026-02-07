@@ -2,8 +2,8 @@ namespace MaterialSkin.Controls;
 
 public class MaterialExpansionPanel : Panel, IMaterialControl
 {
-    private MaterialButton _validationButton;
-    private MaterialButton _cancelButton;
+    private readonly MaterialButton _validationButton;
+    private readonly MaterialButton _cancelButton;
 
     private const int _expansionPanelDefaultPadding = 16;
     private const int _leftrightPadding = 24;
@@ -349,7 +349,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         base.OnResize(e);
 
         _headerBounds = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _headerHeight);
-        _expandcollapseBounds = new Rectangle((Width) - _leftrightPadding - _expandcollapsbuttonsize, (int)((_headerHeight - _expandcollapsbuttonsize) / 2), _expandcollapsbuttonsize, _expandcollapsbuttonsize);
+        _expandcollapseBounds = new Rectangle((Width) - _leftrightPadding - _expandcollapsbuttonsize, (_headerHeight - _expandcollapsbuttonsize) / 2, _expandcollapsbuttonsize, _expandcollapsbuttonsize);
 
         UpdateRects();
 
@@ -476,7 +476,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             // Draw header text
             NativeText.DrawTransparentText(
                 _titleHeader,
-                SkinManager.getLogFontByType(FontType.Body1),
+                SkinManager.GetLogFontByType(FontType.Body1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 headerRect.Location,
                 headerRect.Size,
@@ -497,7 +497,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             // Draw description header text 
             NativeText.DrawTransparentText(
             _descriptionHeader,
-            SkinManager.getLogFontByType(FontType.Body1),
+            SkinManager.GetLogFontByType(FontType.Body1),
              SkinManager.TextDisabledOrHintColor,
             headerDescriptionRect.Location,
             headerDescriptionRect.Size,

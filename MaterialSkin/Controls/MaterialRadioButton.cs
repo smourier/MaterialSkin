@@ -2,6 +2,24 @@
 
 public class MaterialRadioButton : RadioButton, IMaterialControl
 {
+    // size constants
+    private const int HEIGHT_RIPPLE = 37;
+    private const int HEIGHT_NO_RIPPLE = 20;
+    private const int RADIOBUTTON_SIZE = 18;
+    private const int RADIOBUTTON_SIZE_HALF = RADIOBUTTON_SIZE / 2;
+    private const int RADIOBUTTON_OUTER_CIRCLE_WIDTH = 2;
+    private const int RADIOBUTTON_INNER_CIRCLE_SIZE = RADIOBUTTON_SIZE - (2 * RADIOBUTTON_OUTER_CIRCLE_WIDTH);
+    private const int TEXT_OFFSET = 26;
+
+    // animation managers
+    private readonly AnimationManager _checkAM;
+    private readonly AnimationManager _rippleAM;
+    private readonly AnimationManager _hoverAM;
+
+    // size related variables which should be recalculated onsizechanged
+    private int _boxOffset;
+    private bool _ripple;
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -14,15 +32,13 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     [Browsable(false)]
     public Point MouseLocation { get; set; }
 
-    private bool ripple;
-
     [Category("Behavior")]
     public bool Ripple
     {
-        get { return ripple; }
+        get { return _ripple; }
         set
         {
-            ripple = value;
+            _ripple = value;
             AutoSize = AutoSize; //Make AutoSize directly set the bounds.
 
             if (value)
@@ -33,27 +49,6 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             Invalidate();
         }
     }
-
-    // animation managers
-    private readonly AnimationManager _checkAM;
-
-    private readonly AnimationManager _rippleAM;
-    private readonly AnimationManager _hoverAM;
-
-    // size related variables which should be recalculated onsizechanged
-    private Rectangle _radioButtonBounds;
-
-    private int _boxOffset;
-
-    // size constants
-    private const int HEIGHT_RIPPLE = 37;
-
-    private const int HEIGHT_NO_RIPPLE = 20;
-    private const int RADIOBUTTON_SIZE = 18;
-    private const int RADIOBUTTON_SIZE_HALF = RADIOBUTTON_SIZE / 2;
-    private const int RADIOBUTTON_OUTER_CIRCLE_WIDTH = 2;
-    private const int RADIOBUTTON_INNER_CIRCLE_SIZE = RADIOBUTTON_SIZE - (2 * RADIOBUTTON_OUTER_CIRCLE_WIDTH);
-    private const int TEXT_OFFSET = 26;
 
     public MaterialRadioButton()
     {
@@ -94,19 +89,14 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         MouseLocation = new Point(-1, -1);
     }
 
-    private void OnSizeChanged(object sender, EventArgs eventArgs)
-    {
-        _boxOffset = Height / 2 - (int)(RADIOBUTTON_SIZE / 2);
-        _radioButtonBounds = new Rectangle(_boxOffset, _boxOffset, RADIOBUTTON_SIZE, RADIOBUTTON_SIZE);
-    }
+    private void OnSizeChanged(object sender, EventArgs eventArgs) => _boxOffset = Height / 2 - RADIOBUTTON_SIZE / 2;
 
     public override Size GetPreferredSize(Size proposedSize)
     {
         Size strSize;
-
-        using (NativeTextRenderer NativeText = new(CreateGraphics()))
+        using (var NativeText = new NativeTextRenderer(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(FontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
         }
 
         int w = _boxOffset + TEXT_OFFSET + strSize.Width;
@@ -180,7 +170,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         // Text
         using NativeTextRenderer NativeText = new(g);
         Rectangle textLocation = new(_boxOffset + TEXT_OFFSET, 0, Width, Height);
-        NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(FontType.Body1),
+        NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.Body1),
             Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             textLocation.Location,
             textLocation.Size,

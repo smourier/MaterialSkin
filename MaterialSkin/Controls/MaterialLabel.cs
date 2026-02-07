@@ -64,7 +64,7 @@ public class MaterialLabel : Label, IMaterialControl
             Size strSize;
             using (NativeTextRenderer NativeText = new(CreateGraphics()))
             {
-                strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(_fontType));
+                strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(_fontType));
                 strSize.Width += 1; // necessary to avoid a bug when autosize = true
             }
             return strSize;
@@ -101,7 +101,7 @@ public class MaterialLabel : Label, IMaterialControl
         using NativeTextRenderer NativeText = new(g);
         NativeText.DrawMultilineTransparentText(
             Text,
-            SkinManager.getLogFontByType(_fontType),
+            SkinManager.GetLogFontByType(_fontType),
             Enabled ? HighEmphasis ? UseAccent ?
             SkinManager.ColorScheme.AccentColor : // High emphasis, accent
             (SkinManager.Theme == Themes.LIGHT) ?

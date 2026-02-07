@@ -8,15 +8,15 @@ public class MaterialDialog : MaterialForm
     private const int BUTTON_HEIGHT = 36;
     private const int TEXT_TOP_PADDING = 17;
     private const int TEXT_BOTTOM_PADDING = 28;
-    private int _header_Height = 40;
+    private readonly int _header_Height = 40;
 
-    private MaterialButton _validationButton = new();
-    private MaterialButton _cancelButton = new();
-    private AnimationManager _AnimationManager;
-    private bool CloseAnimation = false;
-    private Form _formOverlay;
-    private string _text;
-    private string _title;
+    private readonly MaterialButton _validationButton = new();
+    private readonly MaterialButton _cancelButton = new();
+    private readonly AnimationManager _AnimationManager;
+    private readonly bool CloseAnimation = false;
+    private readonly Form _formOverlay;
+    private readonly string _text;
+    private readonly string _title;
 
     /// <summary>
     /// The Collection for the Buttons
@@ -70,9 +70,11 @@ public class MaterialDialog : MaterialForm
         BackColor = SkinManager.BackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
-        _AnimationManager = new AnimationManager();
-        _AnimationManager.AnimationType = AnimationType.EaseOut;
-        _AnimationManager.Increment = 0.03;
+        _AnimationManager = new AnimationManager
+        {
+            AnimationType = AnimationType.EaseOut,
+            Increment = 0.03
+        };
         _AnimationManager.OnAnimationProgress += _AnimationManager_OnAnimationProgress;
 
         _validationButton = new MaterialButton
@@ -213,7 +215,7 @@ public class MaterialDialog : MaterialForm
             // Draw header text
             NativeText.DrawTransparentText(
                 _title,
-                SkinManager.getLogFontByType(FontType.H6),
+                SkinManager.GetLogFontByType(FontType.H6),
                 SkinManager.TextHighEmphasisColor,
                 titleRect.Location,
                 titleRect.Size,
@@ -238,7 +240,7 @@ public class MaterialDialog : MaterialForm
             // Draw header text
             NativeText.DrawMultilineTransparentText(
                 _text,
-                SkinManager.getLogFontByType(FontType.Body1),
+                SkinManager.GetLogFontByType(FontType.Body1),
                 SkinManager.TextHighEmphasisColor,
                 textRect.Location,
                 textRect.Size,

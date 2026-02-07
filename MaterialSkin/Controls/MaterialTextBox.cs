@@ -3,7 +3,7 @@ namespace MaterialSkin.Controls;
 public partial class MaterialTextBox : Control, IMaterialControl
 {
 
-    MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
+    readonly MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
     ContextMenuStrip _lastContextMenuStrip = new();
 
     //Properties for managing the material design properties
@@ -1440,7 +1440,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             // Draw Prefix text 
             NativeText.DrawTransparentText(
             _prefixsuffixText,
-            SkinManager.getLogFontByType(FontType.Subtitle1),
+            SkinManager.GetLogFontByType(FontType.Subtitle1),
             Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
             prefixRect.Location,
             prefixRect.Size,
@@ -1461,7 +1461,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             // Draw Suffix text 
             NativeText.DrawTransparentText(
             _prefixsuffixText,
-            SkinManager.getLogFontByType(FontType.Subtitle1),
+            SkinManager.GetLogFontByType(FontType.Subtitle1),
             Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
             suffixRect.Location,
             suffixRect.Size,
@@ -1474,7 +1474,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(
             Hint,
-            SkinManager.getTextBoxFontBySize(hintTextSize),
+            SkinManager.GetTextBoxFontBySize(hintTextSize),
             Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
             SkinManager.ColorScheme.AccentColor : // Focus Accent
             SkinManager.ColorScheme.PrimaryColor : // Focus Primary
@@ -1492,7 +1492,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(
             HelperText,
-            SkinManager.getTextBoxFontBySize(hintTextSize),
+            SkinManager.GetTextBoxFontBySize(hintTextSize),
             Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
             SkinManager.ColorScheme.AccentColor : // Focus Accent
             SkinManager.ColorScheme.PrimaryColor : // Focus Primary
@@ -1510,7 +1510,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(
             ErrorMessage,
-            SkinManager.getTextBoxFontBySize(hintTextSize),
+            SkinManager.GetTextBoxFontBySize(hintTextSize),
             Enabled ?
             SkinManager.BackgroundHoverRedColor : // error state
             SkinManager.TextDisabledOrHintColor, // Disabled
@@ -1827,7 +1827,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
             _left_padding += _prefix_padding;
         }
         else
@@ -1836,7 +1836,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
             _right_padding += _suffix_padding;
         }
         else
@@ -1902,8 +1902,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     private void ContextMenuStripOnOpening(object sender, CancelEventArgs cancelEventArgs)
     {
-        var strip = sender as BaseTextBoxContextMenuStrip;
-        if (strip != null)
+        if (sender is BaseTextBoxContextMenuStrip strip)
         {
             strip.undo.Enabled = baseTextBox.CanUndo && !ReadOnly;
             strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;

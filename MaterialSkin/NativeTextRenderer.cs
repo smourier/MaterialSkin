@@ -89,7 +89,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         info.biBitCount = 32;
         info.biCompression = 0; // BI_RGB
         IntPtr ppvBits;
-        IntPtr dib = CreateDIBSection(_hdc, ref info, 0, out ppvBits, IntPtr.Zero, 0);
+        IntPtr dib = CreateDIBSection(_hdc, ref info, 0, out ppvBits, 0, 0);
         SelectObject(memoryHdc, dib);
 
         try
@@ -157,11 +157,11 @@ public sealed partial class NativeTextRenderer : IDisposable
 
     public void Dispose()
     {
-        if (_hdc != IntPtr.Zero)
+        if (_hdc != 0)
         {
-            SelectClipRgn(_hdc, IntPtr.Zero);
+            SelectClipRgn(_hdc, 0);
             _g.ReleaseHdc(_hdc);
-            _hdc = IntPtr.Zero;
+            _hdc = 0;
         }
     }
 
@@ -169,7 +169,7 @@ public sealed partial class NativeTextRenderer : IDisposable
 
     private static IntPtr GetCachedHFont(Font font)
     {
-        IntPtr hfont = IntPtr.Zero;
+        IntPtr hfont = 0;
         Dictionary<float, Dictionary<FontStyle, IntPtr>> dic1;
         if (_fontsCache.TryGetValue(font.Name, out dic1))
         {
@@ -189,7 +189,7 @@ public sealed partial class NativeTextRenderer : IDisposable
             _fontsCache[font.Name][font.Size] = new Dictionary<FontStyle, IntPtr>();
         }
 
-        if (hfont == IntPtr.Zero)
+        if (hfont == 0)
         {
             _fontsCache[font.Name][font.Size][font.Style] = hfont = font.ToHfont();
         }
@@ -199,7 +199,7 @@ public sealed partial class NativeTextRenderer : IDisposable
 
     private void SetTextColor(Color color)
     {
-        int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
+        var rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
         SetTextColor(_hdc, rgb);
     }
 
@@ -281,10 +281,10 @@ public sealed partial class NativeTextRenderer : IDisposable
 
     private struct Rect(Rectangle r)
     {
-        private int _left = r.Left;
-        private int _top = r.Top;
-        private int _right = r.Right;
-        private int _bottom = r.Bottom;
+        private readonly int _left = r.Left;
+        private readonly int _top = r.Top;
+        private readonly int _right = r.Right;
+        private readonly int _bottom = r.Bottom;
 
         public int Height
         {

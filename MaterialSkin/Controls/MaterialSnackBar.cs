@@ -7,10 +7,10 @@ public class MaterialSnackBar : MaterialForm
     private const int BUTTON_PADDING = 8;
     private const int BUTTON_HEIGHT = 36;
 
-    private MaterialButton _actionButton = new();
-    private Timer _duration = new();      // Timer that checks when the drop down is fully visible
+    private readonly MaterialButton _actionButton = new();
+    private readonly Timer _duration = new();      // Timer that checks when the drop down is fully visible
 
-    private AnimationManager _AnimationManager;
+    private readonly AnimationManager _AnimationManager;
     private bool _closingAnimationDone = false;
     private bool _useAccentColor;
     private bool CloseAnimation = false;
@@ -128,9 +128,11 @@ public class MaterialSnackBar : MaterialForm
 
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        _AnimationManager = new AnimationManager();
-        _AnimationManager.AnimationType = AnimationType.EaseOut;
-        _AnimationManager.Increment = 0.03;
+        _AnimationManager = new AnimationManager
+        {
+            AnimationType = AnimationType.EaseOut,
+            Increment = 0.03
+        };
         _AnimationManager.OnAnimationProgress += _AnimationManager_OnAnimationProgress;
 
         _duration.Tick += new EventHandler(duration_Tick);
@@ -273,7 +275,7 @@ public class MaterialSnackBar : MaterialForm
         // Draw header text
         NativeText.DrawTransparentText(
             _text,
-            SkinManager.getLogFontByType(FontType.Body2),
+            SkinManager.GetLogFontByType(FontType.Body2),
             SkinManager.SnackBarTextHighEmphasisColor,
             textRect.Location,
             textRect.Size,

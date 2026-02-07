@@ -46,9 +46,9 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
     private const int THUMB_SIZE_HALF = THUMB_SIZE / 2;
 
-    private const int TRACK_SIZE_HEIGHT = (int)(14);
-    private const int TRACK_SIZE_WIDTH = (int)(36);
-    private const int TRACK_RADIUS = (int)(TRACK_SIZE_HEIGHT / 2);
+    private const int TRACK_SIZE_HEIGHT = 14;
+    private const int TRACK_SIZE_WIDTH = 36;
+    private const int TRACK_RADIUS = TRACK_SIZE_HEIGHT / 2;
 
     private int TRACK_CENTER_Y;
     private int TRACK_CENTER_X_BEGIN;
@@ -114,7 +114,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         Size strSize;
         using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(FontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
         }
         var w = TRACK_SIZE_WIDTH + THUMB_SIZE + strSize.Width;
         return Ripple ? new Size(w, RIPPLE_DIAMETER) : new Size(w, THUMB_SIZE);
@@ -206,7 +206,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         Rectangle textLocation = new(TEXT_OFFSET + TRACK_SIZE_WIDTH, 0, Width - (TEXT_OFFSET + TRACK_SIZE_WIDTH), Height);
         NativeText.DrawTransparentText(
             Text,
-            SkinManager.getLogFontByType(FontType.Body1),
+            SkinManager.GetLogFontByType(FontType.Body1),
             Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             textLocation.Location,
             textLocation.Size,

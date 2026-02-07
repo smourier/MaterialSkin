@@ -95,7 +95,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
         using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(FontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
         }
 
         int w = _boxOffset + TEXT_OFFSET + strSize.Width;
@@ -174,7 +174,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         using (NativeTextRenderer NativeText = new(g))
         {
             Rectangle textLocation = new(_boxOffset + TEXT_OFFSET, 0, Width - (_boxOffset + TEXT_OFFSET), HEIGHT_RIPPLE);
-            NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(FontType.Body1),
+            NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.Body1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 textLocation.Location,
                 textLocation.Size,

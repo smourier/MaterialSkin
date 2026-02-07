@@ -366,9 +366,10 @@ public partial class MaterialButton : Button, IMaterialControl
         }
 
         // added processed image to brush for drawing
-        TextureBrush textureBrushGray = new(bgray);
-
-        textureBrushGray.WrapMode = WrapMode.Clamp;
+        TextureBrush textureBrushGray = new(bgray)
+        {
+            WrapMode = WrapMode.Clamp
+        };
 
         // Translate the brushes to the correct positions
         var iconRect = new Rectangle(8, (Height / 2 - ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
@@ -506,7 +507,7 @@ public partial class MaterialButton : Button, IMaterialControl
             NativeText.DrawMultilineTransparentText(
                 CharacterCasing == CharacterCasingEnum.Upper ? base.Text.ToUpper() : CharacterCasing == CharacterCasingEnum.Lower ? base.Text.ToLower() :
                     CharacterCasing == CharacterCasingEnum.Title ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(base.Text.ToLower()) : base.Text,
-                SkinManager.getLogFontByType(FontType.Button),
+                SkinManager.GetLogFontByType(FontType.Button),
                 textColor,
                 textRect.Location,
                 textRect.Size,

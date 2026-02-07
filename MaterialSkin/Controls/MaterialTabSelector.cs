@@ -11,7 +11,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+    readonly TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
 
     private MaterialTabControl _baseTabControl;
 

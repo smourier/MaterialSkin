@@ -5,7 +5,7 @@ namespace MaterialSkin.Controls;
 [ComVisible(true)]
 public partial class MaterialListBox : Control, IMaterialControl
 {
-    private ObservableCollection<MaterialListBoxItem> _items = new();
+    private readonly ObservableCollection<MaterialListBoxItem> _items = new();
     private List<object> _selectedItems;
     private List<object> _indicates;
     private bool _multiSelect;
@@ -777,8 +777,8 @@ public partial class MaterialListBox : Control, IMaterialControl
     {
         if (m.Msg == WM_SETCURSOR)
         {
-            SetCursor(LoadCursor(IntPtr.Zero, IDC_HAND));
-            m.Result = IntPtr.Zero;
+            SetCursor(LoadCursor(0, IDC_HAND));
+            m.Result = 0;
             return;
         }
         base.WndProc(ref m);

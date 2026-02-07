@@ -38,10 +38,10 @@ public class ColorScheme
     public ColorScheme(int primary, int darkPrimary, int lightPrimary, int accent, TextShade textShade)
     {
         //Color
-        PrimaryColor = ((int)primary).ToColor();
-        DarkPrimaryColor = ((int)darkPrimary).ToColor();
-        LightPrimaryColor = ((int)lightPrimary).ToColor();
-        AccentColor = ((int)accent).ToColor();
+        PrimaryColor = primary.ToColor();
+        DarkPrimaryColor = darkPrimary.ToColor();
+        LightPrimaryColor = lightPrimary.ToColor();
+        AccentColor = accent.ToColor();
         TextColor = ((int)textShade).ToColor();
 
         //Pen

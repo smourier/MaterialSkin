@@ -2,8 +2,7 @@
 
 public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 {
-
-    MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
+    readonly MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
     ContextMenuStrip _lastContextMenuStrip = new();
 
     //Properties for managing the material design properties
@@ -30,16 +29,15 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     [Browsable(false)]
     public int SelectionStart { get { return baseTextBox.SelectionStart; } set { baseTextBox.SelectionStart = value; } }
+
     [Browsable(false)]
     public int SelectionLength { get { return baseTextBox.SelectionLength; } set { baseTextBox.SelectionLength = value; } }
+
     [Browsable(false)]
     public int TextLength { get { return baseTextBox.TextLength; } }
 
     [Browsable(false)]
     public override Color ForeColor { get; set; }
-
-    //Material Skin properties
-
 
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
@@ -48,7 +46,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         set
         {
             baseTextBox.Hint = value;
-            hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
             Invalidate();
         }
     }
@@ -56,15 +53,9 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true)]
     public bool UseAccent { get; set; }
 
-
-
     [Browsable(true)]
     [Category("Material Skin"), DefaultValue(true), Description("Defines whether MaterialMultiLineTextBox allows scrolling of text. This property is independent of the ScrollBars property")]
     public bool AllowScroll { get; set; }
-
-
-
-    //TextBox properties
 
     public override ContextMenuStrip ContextMenuStrip
     {
@@ -186,15 +177,10 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     }
 
     public void SelectAll() { baseTextBox.SelectAll(); }
-
     public void Clear() { baseTextBox.Clear(); }
-
     public void Copy() { baseTextBox.Copy(); }
-
     public void Cut() { baseTextBox.Cut(); }
-
     public void Undo() { baseTextBox.Undo(); }
-
     public void Paste() { baseTextBox.Paste(); }
 
     public event EventHandler AcceptsTabChanged
@@ -1103,21 +1089,19 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     private readonly AnimationManager _animationManager;
 
     public bool isFocused = false;
-    private const int HINT_TEXT_SMALL_SIZE = 18;
-    private const int HINT_TEXT_SMALL_Y = 4;
     private const int LINE_BOTTOM_PADDING = 3;
     private const int TOP_PADDING = 10;
     private const int BOTTOM_PADDING = 10;
     private const int LEFT_PADDING = 16;
     private const int RIGHT_PADDING = 12;
     private int LINE_Y;
-    private bool hasHint;
     private readonly int SB_LINEUP = 0;
     private readonly int SB_LINEDOWN = 1;
     private readonly uint WM_VSCROLL = 277;
     private readonly IntPtr ptrLparam = new(0);
 
     protected readonly BaseTextBox baseTextBox;
+
     public MaterialMultiLineTextBox2()
     {
         AllowScroll = true;
@@ -1336,18 +1320,23 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             case "Undo":
                 Undo();
                 break;
+
             case "Cut":
                 Cut();
                 break;
+
             case "Copy":
                 Copy();
                 break;
+
             case "Paste":
                 Paste();
                 break;
+
             case "Delete":
                 SelectedText = string.Empty;
                 break;
+
             case "Select All":
                 SelectAll();
                 break;
@@ -1356,8 +1345,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     private void ContextMenuStripOnOpening(object sender, CancelEventArgs cancelEventArgs)
     {
-        var strip = sender as BaseTextBoxContextMenuStrip;
-        if (strip != null)
+        if (sender is BaseTextBoxContextMenuStrip strip)
         {
             strip.undo.Enabled = baseTextBox.CanUndo && !ReadOnly;
             strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
