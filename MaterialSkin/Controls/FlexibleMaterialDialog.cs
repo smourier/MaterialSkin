@@ -217,7 +217,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         SizeGripStyle = SizeGripStyle.Show;
         StartPosition = FormStartPosition.CenterParent;
         Text = "<Caption>";
-        Load += new EventHandler(FlexibleMaterialForm_Load);
         Shown += new EventHandler(FlexibleMaterialForm_Shown);
         ((ISupportInitialize)FlexibleMaterialFormBindingSource).EndInit();
         messageContainer.ResumeLayout(false);
@@ -414,13 +413,8 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         return workingAreaFactor;
     }
 
-    /// <summary>
-    /// Set the dialogs start position when given.
-    /// Otherwise center the dialog on the current screen.
-    /// </summary>
-    /// <param name="FlexibleMaterialForm">The FlexibleMessageBox dialog.</param>
-    /// <param name="owner">The owner.</param>
-    private static void SetDialogStartPosition(FlexibleMaterialForm FlexibleMaterialForm, IWin32Window owner)
+    // Set the dialogs start position when given. Otherwise center the dialog on the current screen.
+    private static void SetDialogStartPosition(FlexibleMaterialForm FlexibleMaterialForm, IWin32Window? owner)
     {
         //If no owner given: Center on current screen
         if (owner == null)
@@ -614,14 +608,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         SetButtonsPosition(FlexibleMaterialForm, buttonsPosition);
     }
 
-    /// <summary>
-    /// Handles the Shown event of the FlexibleMaterialForm control.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-    private void FlexibleMaterialForm_Shown(object sender, EventArgs e)
+    private void FlexibleMaterialForm_Shown(object? sender, EventArgs e)
     {
-        var buttonIndexToFocus = 1;
+        int buttonIndexToFocus;
         Button buttonToFocus;
 
         //Set the default button...
@@ -653,12 +642,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         buttonToFocus.Focus();
     }
 
-    /// <summary>
-    /// Handles the LinkClicked event of the richTextBoxMessage control.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="LinkClickedEventArgs"/> instance containing the event data.</param>
-    private void RichTextBoxMessage_LinkClicked(object sender, LinkClickedEventArgs e)
+    private void RichTextBoxMessage_LinkClicked(object? sender, LinkClickedEventArgs e)
     {
         try
         {
@@ -679,12 +663,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         }
     }
 
-    /// <summary>
-    /// Handles the KeyUp event of the richTextBoxMessage control.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
-    internal void FlexibleMaterialForm_KeyUp(object sender, KeyEventArgs e)
+    internal void FlexibleMaterialForm_KeyUp(object? sender, KeyEventArgs e)
     {
         //Handle standard key strikes for clipboard copy: "Ctrl + C" and "Ctrl + Insert"
         if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.Insert))
@@ -766,10 +745,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         SetDialogButtons(FlexibleMaterialForm, buttons, defaultButton, buttonsPosition);
         //Show the dialog
         return FlexibleMaterialForm.ShowDialog(owner);
-    }
-
-    private void FlexibleMaterialForm_Load(object sender, EventArgs e)
-    {
     }
 
     private static void SetButtonsPosition(FlexibleMaterialForm fMF, ButtonsPosition buttonsPosition)

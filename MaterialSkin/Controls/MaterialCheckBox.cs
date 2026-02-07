@@ -2,6 +2,58 @@
 
 public class MaterialCheckbox : CheckBox, IMaterialControl
 {
+    private readonly AnimationManager _checkAM;
+    private readonly AnimationManager _rippleAM;
+    private readonly AnimationManager _hoverAM;
+    private const int _heightRipple = 37;
+    private const int _heightNoRipple = 20;
+    private const int _textOffset = 26;
+    private const int _checkboxSize = 18;
+    private const int _checkboxHalfSize = _checkboxSize / 2;
+
+    private int _boxOffset;
+    private static readonly Point[] _checkmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
+    private bool _hovered;
+    private CheckState _oldCheckState;
+
+    public MaterialCheckbox()
+    {
+        _checkAM = new AnimationManager
+        {
+            AnimationType = AnimationType.EaseInOut,
+            Increment = 0.05
+        };
+
+        _hoverAM = new AnimationManager(true)
+        {
+            AnimationType = AnimationType.Linear,
+            Increment = 0.10
+        };
+
+        _rippleAM = new AnimationManager(false)
+        {
+            AnimationType = AnimationType.Linear,
+            Increment = 0.10,
+            SecondaryIncrement = 0.08
+        };
+
+        CheckedChanged += (sender, args) =>
+        {
+            if (Ripple)
+            {
+                _checkAM.StartNewAnimation(Checked ? AnimationDirection.In : AnimationDirection.Out);
+            }
+        };
+
+        _checkAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _hoverAM.OnAnimationProgress += (sender, e) => Invalidate();
+        _rippleAM.OnAnimationProgress += (sender, e) => Invalidate();
+
+        Ripple = true;
+        Height = _heightRipple;
+        MouseLocation = new Point(-1, -1);
+    }
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -23,7 +75,9 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         set
         {
             _ripple = value;
+#pragma warning disable CA2245 // Do not assign a property to itself
             AutoSize = AutoSize; //Make AutoSize directly set the bounds.
+#pragma warning restore CA2245 // Do not assign a property to itself
 
             if (value)
             {
@@ -37,98 +91,54 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     [Browsable(true)]
     public bool ReadOnly { get; set; }
 
-    private readonly AnimationManager _checkAM;
-    private readonly AnimationManager _rippleAM;
-    private readonly AnimationManager _hoverAM;
-    private const int HEIGHT_RIPPLE = 37;
-    private const int HEIGHT_NO_RIPPLE = 20;
-    private const int TEXT_OFFSET = 26;
-    private const int CHECKBOX_SIZE = 18;
-    private const int CHECKBOX_SIZE_HALF = CHECKBOX_SIZE / 2;
-    private int _boxOffset;
-    private static readonly Point[] CheckmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
-    private bool hovered = false;
-    private CheckState _oldCheckState;
-
-    public MaterialCheckbox()
-    {
-        _checkAM = new AnimationManager
-        {
-            AnimationType = AnimationType.EaseInOut,
-            Increment = 0.05
-        };
-        _hoverAM = new AnimationManager(true)
-        {
-            AnimationType = AnimationType.Linear,
-            Increment = 0.10
-        };
-        _rippleAM = new AnimationManager(false)
-        {
-            AnimationType = AnimationType.Linear,
-            Increment = 0.10,
-            SecondaryIncrement = 0.08
-        };
-        CheckedChanged += (sender, args) =>
-        {
-            if (Ripple)
-                _checkAM.StartNewAnimation(Checked ? AnimationDirection.In : AnimationDirection.Out);
-        };
-        _checkAM.OnAnimationProgress += (sender, e) => Invalidate();
-        _hoverAM.OnAnimationProgress += (sender, e) => Invalidate();
-        _rippleAM.OnAnimationProgress += (sender, e) => Invalidate();
-
-        Ripple = true;
-        Height = HEIGHT_RIPPLE;
-        MouseLocation = new Point(-1, -1);
-    }
-
     protected override void OnSizeChanged(EventArgs e)
     {
         base.OnSizeChanged(e);
-
-        _boxOffset = HEIGHT_RIPPLE / 2 - 9;
+        _boxOffset = _heightRipple / 2 - 9;
     }
 
     public override Size GetPreferredSize(Size proposedSize)
     {
         Size strSize;
-
-        using (NativeTextRenderer NativeText = new(CreateGraphics()))
+        using (var NativeText = new NativeTextRenderer(CreateGraphics()))
         {
             strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
         }
 
-        int w = _boxOffset + TEXT_OFFSET + strSize.Width;
-        return Ripple ? new Size(w, HEIGHT_RIPPLE) : new Size(w, HEIGHT_NO_RIPPLE);
+        var w = _boxOffset + _textOffset + strSize.Width;
+        return Ripple ? new Size(w, _heightRipple) : new Size(w, _heightNoRipple);
     }
 
     protected override void OnPaint(PaintEventArgs pevent)
     {
-        Graphics g = pevent.Graphics;
+        var g = pevent.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
         // clear the control
-        g.Clear(Parent.BackColor);
+        if (Parent != null)
+        {
+            g.Clear(Parent.BackColor);
+        }
 
-        int CHECKBOX_CENTER = _boxOffset + CHECKBOX_SIZE_HALF - 1;
-        Point animationSource = new(CHECKBOX_CENTER, CHECKBOX_CENTER);
-        double animationProgress = _checkAM.GetProgress();
+        var checkboxCenter = _boxOffset + _checkboxHalfSize - 1;
+        var animationSource = new Point(checkboxCenter, checkboxCenter);
+        var animationProgress = _checkAM.GetProgress();
 
-        int colorAlpha = Enabled ? (int)(animationProgress * 255.0) : SkinManager.CheckBoxOffDisabledColor.A;
-        int backgroundAlpha = Enabled ? (int)(SkinManager.CheckboxOffColor.A * (1.0 - animationProgress)) : SkinManager.CheckBoxOffDisabledColor.A;
-        int rippleHeight = (HEIGHT_RIPPLE % 2 == 0) ? HEIGHT_RIPPLE - 3 : HEIGHT_RIPPLE - 2;
+        var colorAlpha = Enabled ? (int)(animationProgress * 255.0) : SkinManager.CheckBoxOffDisabledColor.A;
+        var backgroundAlpha = Enabled ? (int)(SkinManager.CheckboxOffColor.A * (1.0 - animationProgress)) : SkinManager.CheckBoxOffDisabledColor.A;
+        var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
 
-        SolidBrush brush = new(Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor));
-        Pen pen = new(brush.Color, 2);
+        var brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor));
+        var pen = new Pen(brush.Color, 2);
 
         // draw hover animation
         if (Ripple)
         {
-            double animationValue = _hoverAM.IsAnimating() ? _hoverAM.GetProgress() : hovered ? 1 : 0;
-            int rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
+            var animationValue = _hoverAM.IsAnimating() ? _hoverAM.GetProgress() : _hovered ? 1 : 0;
+            var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
 
-            using SolidBrush rippleBrush = new(Color.FromArgb((int)(40 * animationValue),
+            using var rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * animationValue),
                 !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color)); // no animation
             g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
         }
@@ -136,23 +146,24 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         // draw ripple animation
         if (Ripple && _rippleAM.IsAnimating())
         {
-            for (int i = 0; i < _rippleAM.GetAnimationCount(); i++)
+            for (var i = 0; i < _rippleAM.GetAnimationCount(); i++)
             {
-                double animationValue = _rippleAM.GetProgress(i);
-                int rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
+                var animationValue = _rippleAM.GetProgress(i);
+                var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using SolidBrush rippleBrush = new(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
+                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }
         }
 
-        Rectangle checkMarkLineFill = new(_boxOffset, _boxOffset, (int)(CHECKBOX_SIZE * animationProgress), CHECKBOX_SIZE);
-        using (GraphicsPath checkmarkPath = DrawHelper.CreateRoundRect(_boxOffset - 0.5f, _boxOffset - 0.5f, CHECKBOX_SIZE, CHECKBOX_SIZE, 1))
+        var checkMarkLineFill = new Rectangle(_boxOffset, _boxOffset, (int)(_checkboxSize * animationProgress), _checkboxSize);
+        using (var checkmarkPath = DrawHelper.CreateRoundRect(_boxOffset - 0.5f, _boxOffset - 0.5f, _checkboxSize, _checkboxSize, 1))
         {
             if (Enabled)
             {
-                using (Pen pen2 = new(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2))
+                if (Parent != null)
                 {
+                    using var pen2 = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2);
                     g.DrawPath(pen2, checkmarkPath);
                 }
 
@@ -162,18 +173,22 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             else
             {
                 if (Checked)
+                {
                     g.FillPath(brush, checkmarkPath);
+                }
                 else
+                {
                     g.DrawPath(pen, checkmarkPath);
+                }
             }
 
             g.DrawImageUnscaledAndClipped(DrawCheckMarkBitmap(), checkMarkLineFill);
         }
 
         // draw checkbox text
-        using (NativeTextRenderer NativeText = new(g))
+        using (var NativeText = new NativeTextRenderer(g))
         {
-            Rectangle textLocation = new(_boxOffset + TEXT_OFFSET, 0, Width - (_boxOffset + TEXT_OFFSET), HEIGHT_RIPPLE);
+            var textLocation = new Rectangle(_boxOffset + _textOffset, 0, Width - (_boxOffset + _textOffset), _heightRipple);
             NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.Body1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 textLocation.Location,
@@ -202,37 +217,32 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-
-        if (DesignMode) return;
+        if (DesignMode)
+            return;
 
         MouseState = MouseState.OUT;
 
         GotFocus += (sender, AddingNewEventArgs) =>
         {
-            if (Ripple && !hovered)
+            if (Ripple && !_hovered)
             {
                 _hoverAM.StartNewAnimation(AnimationDirection.In, [Checked]);
-                hovered = true;
+                _hovered = true;
             }
         };
 
         LostFocus += (sender, args) =>
         {
-            if (Ripple && hovered)
+            if (Ripple && _hovered)
             {
                 _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
-                hovered = false;
+                _hovered = false;
             }
         };
 
         MouseEnter += (sender, args) =>
         {
             MouseState = MouseState.HOVER;
-            //if (Ripple && !hovered)
-            //{
-            //    _hoverAM.StartNewAnimation(AnimationDirection.In, new object[] { Checked });
-            //    hovered = true;
-            //}
             _oldCheckState = CheckState;
         };
 
@@ -240,11 +250,6 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         {
             MouseLocation = new Point(-1, -1);
             MouseState = MouseState.OUT;
-            //if (Ripple && hovered)
-            //{
-            //    _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
-            //    hovered = false;
-            //}
         };
 
         MouseDown += (sender, args) =>
@@ -275,7 +280,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
                 MouseState = MouseState.HOVER;
                 _rippleAM.SecondaryIncrement = 0.08;
                 _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
-                hovered = false;
+                _hovered = false;
             }
             if (ReadOnly) CheckState = _oldCheckState;
         };
@@ -299,23 +304,21 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
     private Bitmap DrawCheckMarkBitmap()
     {
-        Bitmap checkMark = new(CHECKBOX_SIZE, CHECKBOX_SIZE);
-        Graphics g = Graphics.FromImage(checkMark);
+        var checkMark = new Bitmap(_checkboxSize, _checkboxSize);
+        var g = Graphics.FromImage(checkMark);
 
         // clear everything, transparent
         g.Clear(Color.Transparent);
 
         // draw the checkmark lines
-        using (Pen pen = new(Parent.BackColor, 2))
+        if (Parent != null)
         {
-            g.DrawLines(pen, CheckmarkLine);
+            using var pen = new Pen(Parent.BackColor, 2);
+            g.DrawLines(pen, _checkmarkLine);
         }
 
         return checkMark;
     }
 
-    private bool IsMouseInCheckArea()
-    {
-        return ClientRectangle.Contains(MouseLocation);
-    }
+    private bool IsMouseInCheckArea() => ClientRectangle.Contains(MouseLocation);
 }
