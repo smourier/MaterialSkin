@@ -239,7 +239,7 @@ public class MaterialSlider : Control, IMaterialControl
     protected override void OnMouseDown(MouseEventArgs e)
     {
         base.OnMouseDown(e);
-        if (e.Button == System.Windows.Forms.MouseButtons.Left && e.Y > _indicatorRectanglePressed.Top && e.Y < _indicatorRectanglePressed.Bottom)
+        if (e.Button == MouseButtons.Left && e.Y > _indicatorRectanglePressed.Top && e.Y < _indicatorRectanglePressed.Bottom)
         {
             _mousePressed = true;
             UpdateValue(e);
@@ -260,7 +260,7 @@ public class MaterialSlider : Control, IMaterialControl
     {
         base.OnMouseEnter(e);
         _hovered = true;
-        if (!this.Focused) this.Focus();
+        if (!Focused) Focus();
         Invalidate();
     }
 
@@ -268,7 +268,7 @@ public class MaterialSlider : Control, IMaterialControl
     {
         base.OnMouseLeave(e);
         _hovered = false;
-        if (this.Focused) this.Parent.Focus();
+        if (Focused) Parent.Focus();
         Invalidate();
     }
 
@@ -350,8 +350,8 @@ public class MaterialSlider : Control, IMaterialControl
     protected override void OnPaint(PaintEventArgs e)
     {
         var g = e.Graphics;
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
 
         Color _inactiveTrackColor;

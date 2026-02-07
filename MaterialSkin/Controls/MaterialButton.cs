@@ -352,12 +352,12 @@ public class MaterialButton : Button, IMaterialControl
         float l = (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT & (highEmphasis == false | Enabled == false | Type != MaterialButtonType.Contained)) ? 0f : 1.5f;
 
         // Create matrices
-        float[][] matrixGray = {
-                new float[] {   0,   0,   0,   0,  0}, // Red scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Green scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Blue scale factor
-                new float[] {   0,   0,   0, Enabled ? .7f : .3f,  0}, // alpha scale factor
-                new float[] {   l,   l,   l,   0,  1}};// offset
+        float[][] matrixGray = [
+                [0,   0,   0,   0,  0], // Red scale factor
+                [0,   0,   0,   0,  0], // Green scale factor
+                [0,   0,   0,   0,  0], // Blue scale factor
+                [0,   0,   0, Enabled ? .7f : .3f,  0], // alpha scale factor
+                [l,   l,   l,   0,  1]];// offset
 
 
         ColorMatrix colorMatrixGray = new ColorMatrix(matrixGray);
@@ -375,18 +375,18 @@ public class MaterialButton : Button, IMaterialControl
         using (Graphics gGray = Graphics.FromImage(bgray))
         {
             gGray.DrawImage(IconResized,
-                new Point[] {
+                [
                             new Point(0, 0),
                             new Point(destRect.Width, 0),
                             new Point(0, destRect.Height),
-                },
+                ],
                 destRect, GraphicsUnit.Pixel, grayImageAttributes);
         }
 
         // added processed image to brush for drawing
         TextureBrush textureBrushGray = new TextureBrush(bgray);
 
-        textureBrushGray.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
+        textureBrushGray.WrapMode = WrapMode.Clamp;
 
         // Translate the brushes to the correct positions
         var iconRect = new Rectangle(8, (Height / 2 - ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);

@@ -190,19 +190,19 @@ public class MaterialDrawer : Control, IMaterialControl
         float b = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.B : SkinManager.ColorScheme.PrimaryColor.B) / 255f;
 
         // Create matrices
-        float[][] matrixGray = {
-                new float[] {   0,   0,   0,   0,  0}, // Red scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Green scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Blue scale factor
-                new float[] {   0,   0,   0, .7f,  0}, // alpha scale factor
-                new float[] {   l,   l,   l,   0,  1}};// offset
+        float[][] matrixGray = [
+                [0,   0,   0,   0,  0], // Red scale factor
+                [0,   0,   0,   0,  0], // Green scale factor
+                [0,   0,   0,   0,  0], // Blue scale factor
+                [0,   0,   0, .7f,  0], // alpha scale factor
+                [l,   l,   l,   0,  1]];// offset
 
-        float[][] matrixColor = {
-                new float[] {   0,   0,   0,   0,  0}, // Red scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Green scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Blue scale factor
-                new float[] {   0,   0,   0,   1,  0}, // alpha scale factor
-                new float[] {   r,   g,   b,   0,  1}};// offset
+        float[][] matrixColor = [
+                [0,   0,   0,   0,  0], // Red scale factor
+                [0,   0,   0,   0,  0], // Green scale factor
+                [0,   0,   0,   0,  0], // Blue scale factor
+                [0,   0,   0,   1,  0], // alpha scale factor
+                [r,   g,   b,   0,  1]];// offset
 
         ColorMatrix colorMatrixGray = new ColorMatrix(matrixGray);
         ColorMatrix colorMatrixColor = new ColorMatrix(matrixColor);
@@ -233,11 +233,11 @@ public class MaterialDrawer : Control, IMaterialControl
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_baseTabControl.ImageList.Images[tabPage.ImageKey],
-                    new Point[] {
+                    [
                             new Point(0, 0),
                             new Point(destRect.Width, 0),
                             new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, grayImageAttributes);
             }
 
@@ -246,11 +246,11 @@ public class MaterialDrawer : Control, IMaterialControl
             using (Graphics gColor = Graphics.FromImage(bcolor))
             {
                 gColor.DrawImage(_baseTabControl.ImageList.Images[tabPage.ImageKey],
-                    new Point[] {
+                    [
                             new Point(0, 0),
                             new Point(destRect.Width, 0),
                             new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, colorImageAttributes);
             }
 
@@ -258,8 +258,8 @@ public class MaterialDrawer : Control, IMaterialControl
             TextureBrush textureBrushGray = new TextureBrush(bgray);
             TextureBrush textureBrushColor = new TextureBrush(bcolor);
 
-            textureBrushGray.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
-            textureBrushColor.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
+            textureBrushGray.WrapMode = WrapMode.Clamp;
+            textureBrushColor.WrapMode = WrapMode.Clamp;
 
             // Translate the brushes to the correct positions
             var currentTabIndex = _baseTabControl.TabPages.IndexOf(tabPage);
@@ -682,20 +682,20 @@ public class MaterialDrawer : Control, IMaterialControl
 
         Cursor previousCursor = Cursor;
 
-        if (e.Location.X + this.Location.X < BORDER_WIDTH)
+        if (e.Location.X + Location.X < BORDER_WIDTH)
         {
-            if (e.Location.Y > this.Height - BORDER_WIDTH)
+            if (e.Location.Y > Height - BORDER_WIDTH)
                 Cursor = Cursors.SizeNESW;                  //Bottom Left
             else
                 Cursor = Cursors.SizeWE;                    //Left
         }
-        else if (e.Location.Y > this.Height - BORDER_WIDTH)
+        else if (e.Location.Y > Height - BORDER_WIDTH)
         {
             Cursor = Cursors.SizeNS;                        //Bottom
         }
         else
         {
-            if (e.Location.Y < _drawerItemRects[_drawerItemRects.Count - 1].Bottom && (e.Location.X + this.Location.X) >= BORDER_WIDTH)
+            if (e.Location.Y < _drawerItemRects[_drawerItemRects.Count - 1].Bottom && (e.Location.X + Location.X) >= BORDER_WIDTH)
                 Cursor = Cursors.Hand;
             else
                 Cursor = Cursors.Default;

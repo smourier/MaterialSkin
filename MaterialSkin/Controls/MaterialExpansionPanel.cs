@@ -571,24 +571,24 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         if (_collapse)
         {
             _headerHeight = _headerHeightCollapse;
-            this.Height = _headerHeightCollapse;
+            Height = _headerHeightCollapse;
             Margin = new Padding(16, 1, 16, 0);
 
             // Is the event registered?
             if (PanelCollapse != null)
                 // Raise the event
-                this.PanelCollapse(this, new EventArgs());
+                PanelCollapse(this, new EventArgs());
         }
         else
         {
             _headerHeight = _headerHeightExpand;
-            this.Height = _expandHeight;
+            Height = _expandHeight;
             Margin = new Padding(16, 16, 16, 16);
 
             // Is the event registered?
             if (PanelExpand != null)
                 // Raise the event
-                this.PanelExpand(this, new EventArgs());
+                PanelExpand(this, new EventArgs());
         }
 
         Refresh();

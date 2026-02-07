@@ -349,7 +349,7 @@ public class MaterialSkinManager
     /// <returns></returns>
     public IntPtr getLogFontByType(fontType type)
     {
-        return logicalFonts[Enum.GetName(typeof(fontType), type)];
+        return logicalFonts[Enum.GetName(type)];
     }
 
     // Font stuff
@@ -445,7 +445,7 @@ public class MaterialSkinManager
         {
             controlToUpdate.BackColor = controlToUpdate.Parent.BackColor;
             controlToUpdate.ForeColor = TextHighEmphasisColor;
-            controlToUpdate.Font = getFontByType(MaterialSkinManager.fontType.Body1);
+            controlToUpdate.Font = getFontByType(fontType.Body1);
         }
 
         // Recursive call to control's children

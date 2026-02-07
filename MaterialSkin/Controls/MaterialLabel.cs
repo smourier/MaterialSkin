@@ -139,7 +139,7 @@ public class MaterialLabel : Label, IMaterialControl
                 SkinManager.getLogFontByType(_fontType),
                 Enabled ? HighEmphasis ? UseAccent ?
                 SkinManager.ColorScheme.AccentColor : // High emphasis, accent
-                (SkinManager.Theme == MaterialSkin.MaterialSkinManager.Themes.LIGHT) ?
+                (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT) ?
                 SkinManager.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
                 SkinManager.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
                 SkinManager.TextHighEmphasisColor : // Normal

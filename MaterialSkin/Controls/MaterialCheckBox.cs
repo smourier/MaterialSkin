@@ -49,7 +49,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     private const int CHECKBOX_SIZE = 18;
     private const int CHECKBOX_SIZE_HALF = CHECKBOX_SIZE / 2;
     private int _boxOffset;
-    private static readonly Point[] CheckmarkLine = { new Point(3, 8), new Point(7, 12), new Point(14, 5) };
+    private static readonly Point[] CheckmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
     private bool hovered = false;
     private CheckState _oldCheckState;
     #endregion
@@ -222,7 +222,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         {
             if (Ripple && !hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.In, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.In, [Checked]);
                 hovered = true;
             }
         };
@@ -231,7 +231,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         {
             if (Ripple && hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
         };
@@ -264,7 +264,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             if (Ripple)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
             if (ReadOnly) CheckState = _oldCheckState;
         };
@@ -274,7 +274,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             if (Ripple && (args.KeyCode == Keys.Space) && _rippleAM.GetAnimationCount() == 0)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
             if (ReadOnly) CheckState = _oldCheckState;
         };
@@ -285,7 +285,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             {
                 MouseState = MouseState.HOVER;
                 _rippleAM.SecondaryIncrement = 0.08;
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
             if (ReadOnly) CheckState = _oldCheckState;

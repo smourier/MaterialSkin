@@ -19,9 +19,9 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
 
     public MaterialCheckedListBox() : base()
     {
-        this.DoubleBuffered = true;
-        this.Items = new ItemsList(this);
-        this.AutoScroll = true;
+        DoubleBuffered = true;
+        Items = new ItemsList(this);
+        AutoScroll = true;
     }
 
     protected override void OnCreateControl()

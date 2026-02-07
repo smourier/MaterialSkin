@@ -216,7 +216,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         {
             if (Ripple && !hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.In, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.In, [Checked]);
                 hovered = true;
             }
         };
@@ -225,7 +225,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         {
             if (Ripple && hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
         };
@@ -257,7 +257,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             if (Ripple)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
         };
 
@@ -266,7 +266,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             if (Ripple && (args.KeyCode == Keys.Space) && _rippleAM.GetAnimationCount() == 0)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
         };
 
@@ -276,7 +276,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             {
                 MouseState = MouseState.HOVER;
                 _rippleAM.SecondaryIncrement = 0.08;
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
         };

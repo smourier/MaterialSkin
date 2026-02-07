@@ -28,7 +28,7 @@ public class BaseTextBox : TextBox, IMaterialControl
     {
         BeginInvoke((MethodInvoker)delegate ()
         {
-            base.Focus();
+            Focus();
             base.SelectAll();
         });
     }
@@ -128,7 +128,7 @@ public class BaseMaskedTextBox : MaskedTextBox, IMaterialControl
     {
         BeginInvoke((MethodInvoker)delegate ()
         {
-            base.Focus();
+            Focus();
             base.SelectAll();
         });
     }
@@ -213,8 +213,8 @@ public class BaseTextBoxContextMenuStrip : MaterialContextMenuStrip
 
     public BaseTextBoxContextMenuStrip()
     {
-        Items.AddRange(new[]
-        {
+        Items.AddRange(
+        [
                 undo,
                 seperator1,
                 cut,
@@ -223,6 +223,6 @@ public class BaseTextBoxContextMenuStrip : MaterialContextMenuStrip
                 delete,
                 seperator2,
                 selectAll
-            });
+            ]);
     }
 }

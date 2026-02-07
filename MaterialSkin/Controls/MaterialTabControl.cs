@@ -26,6 +26,6 @@ public class MaterialTabControl : TabControl, IMaterialControl
     {
         base.OnControlAdded(e);
 
-        e.Control.BackColor = System.Drawing.Color.White;
+        e.Control.BackColor = Color.White;
     }
 }

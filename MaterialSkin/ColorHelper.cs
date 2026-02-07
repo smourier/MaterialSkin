@@ -20,7 +20,7 @@ public static class ColorHelper
         {
             lighting = 0.1f;
         }
-        var tintedColor = ColorHelper.FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
+        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
 
         return tintedColor;
     }
@@ -43,7 +43,7 @@ public static class ColorHelper
         {
             lighting = 0;
         }
-        var tintedColor = ColorHelper.FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
+        var tintedColor = FromHsl(color.A, color.GetHue(), color.GetSaturation(), lighting);
 
         return tintedColor;
     }

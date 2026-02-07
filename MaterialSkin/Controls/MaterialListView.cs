@@ -87,7 +87,7 @@ public class MaterialListView : ListView, IMaterialControl
     {
         Graphics g = e.Graphics;
 
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
 
         g.FillRectangle(new SolidBrush(BackColor), e.Bounds);
         // Draw Text
@@ -107,7 +107,7 @@ public class MaterialListView : ListView, IMaterialControl
     {
         Graphics g = e.Graphics;
 
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Always draw default background
         g.FillRectangle(SkinManager.BackgroundBrush, e.Bounds);

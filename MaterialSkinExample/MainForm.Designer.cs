@@ -348,7 +348,7 @@ namespace MaterialSkinExample
             this.materialButton25.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.materialButton25.UseAccentColor = false;
             this.materialButton25.UseVisualStyleBackColor = true;
-            this.materialButton25.Click += new System.EventHandler(this.materialButton25_Click);
+            this.materialButton25.Click += new System.EventHandler(this.MaterialButton25_Click);
             // 
             // materialButton6
             // 
@@ -368,7 +368,7 @@ namespace MaterialSkinExample
             this.materialButton6.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.materialButton6.UseAccentColor = false;
             this.materialButton6.UseVisualStyleBackColor = true;
-            this.materialButton6.Click += new System.EventHandler(this.materialButton6_Click);
+            this.materialButton6.Click += new System.EventHandler(this.MaterialButton6_Click);
             // 
             // materialLabel57
             // 
@@ -462,7 +462,7 @@ namespace MaterialSkinExample
             this.materialSwitch8.TabIndex = 37;
             this.materialSwitch8.Text = "Drawer - Display Icons when hidden";
             this.materialSwitch8.UseVisualStyleBackColor = true;
-            this.materialSwitch8.CheckedChanged += new System.EventHandler(this.materialSwitch8_CheckedChanged);
+            this.materialSwitch8.CheckedChanged += new System.EventHandler(this.MaterialSwitch8_CheckedChanged);
             // 
             // materialLabel24
             // 
@@ -558,7 +558,7 @@ namespace MaterialSkinExample
             this.materialButton7.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             this.materialButton7.UseAccentColor = false;
             this.materialButton7.UseVisualStyleBackColor = true;
-            this.materialButton7.Click += new System.EventHandler(this.materialButton1_Click);
+            this.materialButton7.Click += new System.EventHandler(this.MaterialButton7_Click);
             // 
             // materialSwitch9
             // 
@@ -575,7 +575,7 @@ namespace MaterialSkinExample
             this.materialSwitch9.TabIndex = 29;
             this.materialSwitch9.Text = "Drawer - Auto show";
             this.materialSwitch9.UseVisualStyleBackColor = true;
-            this.materialSwitch9.CheckedChanged += new System.EventHandler(this.materialSwitch9_CheckedChanged);
+            this.materialSwitch9.CheckedChanged += new System.EventHandler(this.MaterialSwitch9_CheckedChanged);
             // 
             // materialSwitch4
             // 
@@ -592,7 +592,7 @@ namespace MaterialSkinExample
             this.materialSwitch4.TabIndex = 29;
             this.materialSwitch4.Text = "Drawer - Use colors";
             this.materialSwitch4.UseVisualStyleBackColor = true;
-            this.materialSwitch4.CheckedChanged += new System.EventHandler(this.materialSwitch4_CheckedChanged);
+            this.materialSwitch4.CheckedChanged += new System.EventHandler(this.MaterialSwitch4_CheckedChanged);
             // 
             // MaterialButton4
             // 
@@ -612,7 +612,7 @@ namespace MaterialSkinExample
             this.MaterialButton4.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.MaterialButton4.UseAccentColor = false;
             this.MaterialButton4.UseVisualStyleBackColor = true;
-            this.MaterialButton4.Click += new System.EventHandler(this.MaterialButton1_Click);
+            this.MaterialButton4.Click += new System.EventHandler(this.MaterialButton4_Click);
             // 
             // tabPage7
             // 
@@ -1835,7 +1835,7 @@ namespace MaterialSkinExample
             this.materialSwitch15.TabIndex = 78;
             this.materialSwitch15.Text = "Trailing Icon";
             this.materialSwitch15.UseVisualStyleBackColor = true;
-            this.materialSwitch15.CheckedChanged += new System.EventHandler(this.materialSwitch15_CheckedChanged);
+            this.materialSwitch15.CheckedChanged += new System.EventHandler(this.MaterialSwitch15_CheckedChanged);
             // 
             // materialSwitch14
             // 
@@ -1851,7 +1851,7 @@ namespace MaterialSkinExample
             this.materialSwitch14.TabIndex = 77;
             this.materialSwitch14.Text = "Leading Icon";
             this.materialSwitch14.UseVisualStyleBackColor = true;
-            this.materialSwitch14.CheckedChanged += new System.EventHandler(this.materialSwitch14_CheckedChanged);
+            this.materialSwitch14.CheckedChanged += new System.EventHandler(this.MaterialSwitch14_CheckedChanged);
             // 
             // materialSwitch16
             // 
@@ -1869,7 +1869,7 @@ namespace MaterialSkinExample
             this.materialSwitch16.TabIndex = 76;
             this.materialSwitch16.Text = "Show Assistive Text";
             this.materialSwitch16.UseVisualStyleBackColor = true;
-            this.materialSwitch16.CheckedChanged += new System.EventHandler(this.materialSwitch16_CheckedChanged);
+            this.materialSwitch16.CheckedChanged += new System.EventHandler(this.MaterialSwitch16_CheckedChanged);
             // 
             // materialSwitch13
             // 
@@ -1885,7 +1885,7 @@ namespace MaterialSkinExample
             this.materialSwitch13.TabIndex = 76;
             this.materialSwitch13.Text = "Password";
             this.materialSwitch13.UseVisualStyleBackColor = true;
-            this.materialSwitch13.CheckedChanged += new System.EventHandler(this.materialSwitch13_CheckedChanged);
+            this.materialSwitch13.CheckedChanged += new System.EventHandler(this.MaterialSwitch13_CheckedChanged);
             // 
             // materialComboBox7
             // 
@@ -1913,7 +1913,7 @@ namespace MaterialSkinExample
             this.materialComboBox7.Size = new System.Drawing.Size(183, 49);
             this.materialComboBox7.StartIndex = 0;
             this.materialComboBox7.TabIndex = 75;
-            this.materialComboBox7.SelectionChangeCommitted += new System.EventHandler(this.materialComboBox7_SelectionChangeCommitted);
+            this.materialComboBox7.SelectionChangeCommitted += new System.EventHandler(this.MaterialComboBox7_SelectionChangeCommitted);
             // 
             // materialSwitch12
             // 
@@ -1929,7 +1929,7 @@ namespace MaterialSkinExample
             this.materialSwitch12.TabIndex = 74;
             this.materialSwitch12.Text = "Hint text";
             this.materialSwitch12.UseVisualStyleBackColor = true;
-            this.materialSwitch12.CheckedChanged += new System.EventHandler(this.materialSwitch12_CheckedChanged);
+            this.materialSwitch12.CheckedChanged += new System.EventHandler(this.MaterialSwitch12_CheckedChanged);
             // 
             // materialSwitch11
             // 
@@ -1947,7 +1947,7 @@ namespace MaterialSkinExample
             this.materialSwitch11.TabIndex = 73;
             this.materialSwitch11.Text = "Use Tall Size";
             this.materialSwitch11.UseVisualStyleBackColor = true;
-            this.materialSwitch11.CheckedChanged += new System.EventHandler(this.materialSwitch11_CheckedChanged);
+            this.materialSwitch11.CheckedChanged += new System.EventHandler(this.MaterialSwitch11_CheckedChanged);
             // 
             // materialSwitch10
             // 
@@ -1965,7 +1965,7 @@ namespace MaterialSkinExample
             this.materialSwitch10.TabIndex = 72;
             this.materialSwitch10.Text = "Use Accent";
             this.materialSwitch10.UseVisualStyleBackColor = true;
-            this.materialSwitch10.CheckedChanged += new System.EventHandler(this.materialSwitch10_CheckedChanged);
+            this.materialSwitch10.CheckedChanged += new System.EventHandler(this.MaterialSwitch10_CheckedChanged);
             // 
             // materialTextBox21
             // 
@@ -1998,8 +1998,8 @@ namespace MaterialSkinExample
             this.materialTextBox21.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.materialTextBox21.TrailingIcon = null;
             this.materialTextBox21.UseSystemPasswordChar = false;
-            this.materialTextBox21.LeadingIconClick += new System.EventHandler(this.materialTextBox21_LeadingIconClick);
-            this.materialTextBox21.TrailingIconClick += new System.EventHandler(this.materialTextBox21_TrailingIconClick);
+            this.materialTextBox21.LeadingIconClick += new System.EventHandler(this.MaterialTextBox21_LeadingIconClick);
+            this.materialTextBox21.TrailingIconClick += new System.EventHandler(this.MaterialTextBox21_TrailingIconClick);
             // 
             // materialMultiLineTextBox21
             // 
@@ -2141,7 +2141,7 @@ namespace MaterialSkinExample
             this.materialTextBox2.TabIndex = 3;
             this.materialTextBox2.Text = "";
             this.materialTextBox2.TrailingIcon = null;
-            this.materialTextBox2.LeadingIconClick += new System.EventHandler(this.materialTextBox2_LeadingIconClick);
+            this.materialTextBox2.LeadingIconClick += new System.EventHandler(this.MaterialTextBox2_LeadingIconClick);
             // 
             // materialTextBox1
             // 
@@ -2327,7 +2327,7 @@ namespace MaterialSkinExample
             this.materialFlatButton2.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             this.materialFlatButton2.UseAccentColor = false;
             this.materialFlatButton2.UseVisualStyleBackColor = true;
-            this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton4_Click);
+            this.materialFlatButton2.Click += new System.EventHandler(this.MaterialFlatButton4_Click);
             // 
             // materialLabel50
             // 

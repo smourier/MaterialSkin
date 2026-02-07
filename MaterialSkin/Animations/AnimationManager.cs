@@ -240,11 +240,11 @@ internal class AnimationManager
 
             if (Singular && _animationDatas.Count > 0)
             {
-                _animationDatas[0] = data ?? new object[] { };
+                _animationDatas[0] = data ?? [];
             }
             else
             {
-                _animationDatas.Add(data ?? new object[] { });
+                _animationDatas.Add(data ?? []);
             }
         }
 

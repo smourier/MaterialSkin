@@ -146,7 +146,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             {
                 baseTextBox.ReadOnly = _readonly;
             }
-            this.Invalidate();
+            Invalidate();
         }
     }
 
@@ -1167,7 +1167,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             }
             else
-                base.Focus();
+                Focus();
         };
         baseTextBox.LostFocus += (sender, args) =>
         {
@@ -1179,12 +1179,12 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         baseTextBox.BackColorChanged += new EventHandler(Redraw);
 
         baseTextBox.TabStop = true;
-        this.TabStop = false;
+        TabStop = false;
 
         cms.Opening += ContextMenuStripOnOpening;
         cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
         ContextMenuStrip = cms;
-        this.MouseWheel += OnMouseWheel;
+        MouseWheel += OnMouseWheel;
     }
 
     private void Redraw(object sencer, EventArgs e)
@@ -1197,7 +1197,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     protected override void OnPaint(PaintEventArgs pevent)
     {
         var g = pevent.Graphics;
-        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+        g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
         SolidBrush backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
 
@@ -1303,7 +1303,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         if (DesignMode)
             return;
 
-        if (this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
+        if (ClientRectangle.Contains(PointToClient(MousePosition)))
             return;
         else
         {

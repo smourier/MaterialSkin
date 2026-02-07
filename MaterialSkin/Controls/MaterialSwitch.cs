@@ -120,7 +120,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         return Ripple ? new Size(w, RIPPLE_DIAMETER) : new Size(w, THUMB_SIZE);
     }
 
-    private static readonly Point[] CheckmarkLine = { new Point(3, 8), new Point(7, 12), new Point(14, 5) };
+    private static readonly Point[] CheckmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
 
     private const int TEXT_OFFSET = THUMB_SIZE;
 
@@ -270,7 +270,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         {
             if (Ripple && !hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.In, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.In, [Checked]);
                 hovered = true;
             }
         };
@@ -279,7 +279,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         {
             if (Ripple && hovered)
             {
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
         };
@@ -311,7 +311,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             if (Ripple)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
         };
 
@@ -320,7 +320,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             if (Ripple && (args.KeyCode == Keys.Space) && _rippleAM.GetAnimationCount() == 0)
             {
                 _rippleAM.SecondaryIncrement = 0;
-                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, new object[] { Checked });
+                _rippleAM.StartNewAnimation(AnimationDirection.InOutIn, [Checked]);
             }
         };
 
@@ -330,7 +330,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
             {
                 MouseState = MouseState.HOVER;
                 _rippleAM.SecondaryIncrement = 0.08;
-                _hoverAM.StartNewAnimation(AnimationDirection.Out, new object[] { Checked });
+                _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 hovered = false;
             }
         };

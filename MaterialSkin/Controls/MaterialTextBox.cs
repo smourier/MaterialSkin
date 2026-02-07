@@ -116,13 +116,13 @@ public class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true)]
     public bool UseAccent { get; set; }
 
-    private Image _leadingIcon;
+    private Image? _leadingIcon;
 
     [Category("Material Skin"), Browsable(true), Localizable(false)]
     /// <summary>
     /// Gets or sets the leading Icon
     /// </summary>
-    public Image LeadingIcon
+    public Image? LeadingIcon
     {
         get { return _leadingIcon; }
         set
@@ -134,13 +134,13 @@ public class MaterialTextBox : Control, IMaterialControl
         }
     }
 
-    private Image _trailingIcon;
+    private Image? _trailingIcon;
 
     [Category("Material Skin"), Browsable(true), Localizable(false)]
     /// <summary>
     /// Gets or sets the trailing Icon
     /// </summary>
-    public Image TrailingIcon
+    public Image? TrailingIcon
     {
         get { return _trailingIcon; }
         set
@@ -273,7 +273,7 @@ public class MaterialTextBox : Control, IMaterialControl
             {
                 baseTextBox.ReadOnly = _readonly;
             }
-            this.Invalidate();
+            Invalidate();
         }
     }
 
@@ -1341,7 +1341,7 @@ public class MaterialTextBox : Control, IMaterialControl
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             }
             else
-                base.Focus();
+                Focus();
             UpdateRects();
         };
         baseTextBox.LostFocus += (sender, args) =>
@@ -1355,7 +1355,7 @@ public class MaterialTextBox : Control, IMaterialControl
         baseTextBox.BackColorChanged += new EventHandler(Redraw);
 
         baseTextBox.TabStop = true;
-        this.TabStop = false;
+        TabStop = false;
 
         cms.Opening += ContextMenuStripOnOpening;
         cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
@@ -1372,7 +1372,7 @@ public class MaterialTextBox : Control, IMaterialControl
     protected override void OnPaint(PaintEventArgs pevent)
     {
         var g = pevent.Graphics;
-        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+        g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
         SolidBrush backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
 
@@ -1602,7 +1602,7 @@ public class MaterialTextBox : Control, IMaterialControl
         if (DesignMode)
             return;
 
-        if (this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
+        if (ClientRectangle.Contains(PointToClient(MousePosition)))
             return;
         else
         {
@@ -1685,19 +1685,19 @@ public class MaterialTextBox : Control, IMaterialControl
         float l = (SkinManager.Theme == MaterialSkinManager.Themes.LIGHT) ? 0f : 1f;
 
         // Create matrices
-        float[][] matrixGray = {
-                new float[] {   0,   0,   0,   0,  0}, // Red scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Green scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Blue scale factor
-                new float[] {   0,   0,   0, Enabled ? .7f : .3f,  0}, // alpha scale factor
-                new float[] {   l,   l,   l,   0,  1}};// offset
+        float[][] matrixGray = [
+                [0,   0,   0,   0,  0], // Red scale factor
+                [0,   0,   0,   0,  0], // Green scale factor
+                [0,   0,   0,   0,  0], // Blue scale factor
+                [0,   0,   0, Enabled ? .7f : .3f,  0], // alpha scale factor
+                [l,   l,   l,   0,  1]];// offset
 
-        float[][] matrixRed = {
-                new float[] {   0,   0,   0,   0,  0}, // Red scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Green scale factor
-                new float[] {   0,   0,   0,   0,  0}, // Blue scale factor
-                new float[] {   0,   0,   0,   1,  0}, // alpha scale factor
-                new float[] {   1,   0,   0,   0,  1}};// offset
+        float[][] matrixRed = [
+                [0,   0,   0,   0,  0], // Red scale factor
+                [0,   0,   0,   0,  0], // Green scale factor
+                [0,   0,   0,   0,  0], // Blue scale factor
+                [0,   0,   0,   1,  0], // alpha scale factor
+                [1,   0,   0,   0,  1]];// offset
 
         ColorMatrix colorMatrixGray = new ColorMatrix(matrixGray);
         ColorMatrix colorMatrixRed = new ColorMatrix(matrixRed);
@@ -1731,11 +1731,11 @@ public class MaterialTextBox : Control, IMaterialControl
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_leadingIconIconResized,
-                    new Point[] {
+                    [
                                 new Point(0, 0),
                                 new Point(destRect.Width, 0),
                                 new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, grayImageAttributes);
             }
 
@@ -1744,11 +1744,11 @@ public class MaterialTextBox : Control, IMaterialControl
             using (Graphics gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_leadingIconIconResized,
-                    new Point[] {
+                    [
                                 new Point(0, 0),
                                 new Point(destRect.Width, 0),
                                 new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, redImageAttributes);
             }
 
@@ -1756,8 +1756,8 @@ public class MaterialTextBox : Control, IMaterialControl
             TextureBrush textureBrushGray = new TextureBrush(bgray);
             TextureBrush textureBrushRed = new TextureBrush(bred);
 
-            textureBrushGray.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
-            textureBrushRed.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
+            textureBrushGray.WrapMode = WrapMode.Clamp;
+            textureBrushRed.WrapMode = WrapMode.Clamp;
 
             var iconRect = _leadingIconBounds;
 
@@ -1788,11 +1788,11 @@ public class MaterialTextBox : Control, IMaterialControl
             using (Graphics gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_trailingIconResized,
-                    new Point[] {
+                    [
                                 new Point(0, 0),
                                 new Point(destRect.Width, 0),
                                 new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, grayImageAttributes);
             }
 
@@ -1801,11 +1801,11 @@ public class MaterialTextBox : Control, IMaterialControl
             using (Graphics gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_trailingIconResized,
-                    new Point[] {
+                    [
                                 new Point(0, 0),
                                 new Point(destRect.Width, 0),
                                 new Point(0, destRect.Height),
-                    },
+                    ],
                     destRect, GraphicsUnit.Pixel, redImageAttributes);
             }
 
@@ -1814,8 +1814,8 @@ public class MaterialTextBox : Control, IMaterialControl
             TextureBrush textureBrushGray = new TextureBrush(bgray);
             TextureBrush textureBrushRed = new TextureBrush(bred);
 
-            textureBrushGray.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
-            textureBrushRed.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
+            textureBrushGray.WrapMode = WrapMode.Clamp;
+            textureBrushRed.WrapMode = WrapMode.Clamp;
 
             var iconRect = _trailingIconBounds;
 

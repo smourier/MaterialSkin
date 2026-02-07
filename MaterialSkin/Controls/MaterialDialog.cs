@@ -95,8 +95,8 @@ public class MaterialDialog : MaterialForm
             Text = CancelButtonText
         };
 
-        this.AcceptButton = _validationButton;
-        this.CancelButton = _cancelButton;
+        AcceptButton = _validationButton;
+        CancelButton = _cancelButton;
 
         if (!Controls.Contains(_validationButton))
             Controls.Add(_validationButton);
@@ -114,7 +114,7 @@ public class MaterialDialog : MaterialForm
             RectHeight + 9);
 
         Height = _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_BOTTOM_PADDING + 52; //560;
-        Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
         int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.getFontByType(MaterialSkinManager.fontType.Button))).Width + 32);
         Rectangle _validationbuttonBounds = new Rectangle((Width) - BUTTON_PADDING - _buttonWidth, Height - BUTTON_PADDING - BUTTON_HEIGHT, _buttonWidth, BUTTON_HEIGHT);
@@ -256,7 +256,7 @@ public class MaterialDialog : MaterialForm
         _formOverlay.Close();
         _formOverlay.Dispose();
 
-        DialogResult res = this.DialogResult;
+        DialogResult res = DialogResult;
 
         base.OnClosing(e);
     }
@@ -271,9 +271,9 @@ public class MaterialDialog : MaterialForm
 
     protected override bool ProcessDialogKey(Keys keyData)
     {
-        if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+        if (ModifierKeys == Keys.None && keyData == Keys.Escape)
         {
-            this.Close();
+            Close();
             return true;
         }
         return base.ProcessDialogKey(keyData);
@@ -281,10 +281,10 @@ public class MaterialDialog : MaterialForm
 
     private void InitializeComponent()
     {
-        this.SuspendLayout();
-        this.ClientSize = new System.Drawing.Size(560, 182);
-        this.Name = "Dialog";
-        this.ResumeLayout(false);
+        SuspendLayout();
+        ClientSize = new System.Drawing.Size(560, 182);
+        Name = "Dialog";
+        ResumeLayout(false);
 
     }
 

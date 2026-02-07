@@ -66,7 +66,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             _startIndex = value;
             try
             {
-                if (base.Items.Count > 0)
+                if (Items.Count > 0)
                 {
                     base.SelectedIndex = value;
                 }
@@ -179,19 +179,19 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         // Create and Draw the arrow
         System.Drawing.Drawing2D.GraphicsPath pth = new System.Drawing.Drawing2D.GraphicsPath();
-        PointF TopRight = new PointF(this.Width - 0.5f - SkinManager.FORM_PADDING, (this.Height >> 1) - 2.5f);
-        PointF MidBottom = new PointF(this.Width - 4.5f - SkinManager.FORM_PADDING, (this.Height >> 1) + 2.5f);
-        PointF TopLeft = new PointF(this.Width - 8.5f - SkinManager.FORM_PADDING, (this.Height >> 1) - 2.5f);
+        PointF TopRight = new PointF(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        PointF MidBottom = new PointF(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
+        PointF TopLeft = new PointF(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
         pth.AddLine(TopLeft, TopRight);
         pth.AddLine(TopRight, MidBottom);
 
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
         g.FillPath((SolidBrush)(Enabled ? DroppedDown || Focused ?
             SelectedBrush : //DroppedDown or Focused
             SkinManager.TextHighEmphasisBrush : //Not DroppedDown and not Focused
             new SolidBrush(DrawHelper.BlendColor(SkinManager.TextHighEmphasisColor, SkinManager.SwitchOffDisabledThumbColor, 197))  //Disabled
             ), pth);
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+        g.SmoothingMode = SmoothingMode.None;
 
         // HintText
         bool userTextPresent = SelectedIndex >= 0;
@@ -371,7 +371,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         Graphics g = CreateGraphics();
         using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
         {
-            var itemsList = this.Items.Cast<object>().Select(item => item.ToString());
+            var itemsList = Items.Cast<object>().Select(item => item.ToString());
             foreach (string s in itemsList)
             {
                 int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + vertScrollBarWidth + padding;

@@ -16,8 +16,8 @@ public class MaterialItemCollectionEditor : CollectionEditor
 
     protected override Type[] CreateNewItemTypes()
     {
-        return new Type[] {
+        return [
         typeof(MaterialListBoxItem)
-     };
+     ];
     }
 }

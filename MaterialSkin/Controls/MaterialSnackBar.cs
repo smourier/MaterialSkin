@@ -132,7 +132,7 @@ public class MaterialSnackBar : MaterialForm
 
         this.ShowActionButton = ShowActionButton;
 
-        Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
         _AnimationManager = new AnimationManager();
         _AnimationManager.AnimationType = AnimationType.EaseOut;
@@ -215,7 +215,7 @@ public class MaterialSnackBar : MaterialForm
         _actionButton.Visible = _showActionButton;
 
         Width = TextRenderer.MeasureText(_text, SkinManager.getFontByType(MaterialSkinManager.fontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
-        Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
     }
 
@@ -323,10 +323,10 @@ public class MaterialSnackBar : MaterialForm
 
     private void InitializeComponent()
     {
-        this.SuspendLayout();
-        this.ClientSize = new System.Drawing.Size(344, 48);
-        this.Name = "SnackBar";
-        this.ResumeLayout(false);
+        SuspendLayout();
+        ClientSize = new System.Drawing.Size(344, 48);
+        Name = "SnackBar";
+        ResumeLayout(false);
 
     }
 

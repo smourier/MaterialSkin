@@ -177,10 +177,10 @@ internal class MaterialToolStripRender : ToolStripProfessionalRenderer, IMateria
         using (var arrowPath = new GraphicsPath())
         {
             arrowPath.AddLines(
-                new[] {
+                [
                     new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y - ARROW_SIZE),
                     new Point(arrowMiddle.X, arrowMiddle.Y),
-                    new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y + ARROW_SIZE) });
+                    new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y + ARROW_SIZE) ]);
             arrowPath.CloseFigure();
 
             g.FillPath(arrowBrush, arrowPath);

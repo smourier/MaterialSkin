@@ -87,7 +87,7 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
     public MaterialMultiLineTextBox()
     {
         base.OnCreateControl();
-        this.Multiline = true;
+        Multiline = true;
 
         BorderStyle = BorderStyle.None;
         Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);

@@ -351,7 +351,7 @@ public class MaterialForm : Form, IMaterialControl
     #endregion
 
     #region Private Fields
-    private readonly Cursor[] _resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
+    private readonly Cursor[] _resizeCursors = [Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS];
 
     private ResizeDirection _resizeDir;
     private ButtonState _buttonState = ButtonState.None;
