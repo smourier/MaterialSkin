@@ -1,44 +1,43 @@
-﻿namespace MaterialSkin
+﻿namespace MaterialSkin;
+
+/// <summary>
+/// Defines the <see cref="IMaterialControl" />
+/// </summary>
+public interface IMaterialControl
 {
     /// <summary>
-    /// Defines the <see cref="IMaterialControl" />
+    /// Gets or sets the Depth
     /// </summary>
-    public interface IMaterialControl
-    {
-        /// <summary>
-        /// Gets or sets the Depth
-        /// </summary>
-        int Depth { get; set; }
-
-        /// <summary>
-        /// Gets the SkinManager
-        /// </summary>
-        MaterialSkinManager SkinManager { get; }
-
-        /// <summary>
-        /// Gets or sets the MouseState
-        /// </summary>
-        MouseState MouseState { get; set; }
-    }
+    int Depth { get; set; }
 
     /// <summary>
-    /// Defines the MouseState
+    /// Gets the SkinManager
     /// </summary>
-    public enum MouseState
-    {
-        /// <summary>
-        /// Defines the HOVER
-        /// </summary>
-        HOVER,
+    MaterialSkinManager SkinManager { get; }
 
-        /// <summary>
-        /// Defines the DOWN
-        /// </summary>
-        DOWN,
+    /// <summary>
+    /// Gets or sets the MouseState
+    /// </summary>
+    MouseState MouseState { get; set; }
+}
 
-        /// <summary>
-        /// Defines the OUT
-        /// </summary>
-        OUT
-    }
+/// <summary>
+/// Defines the MouseState
+/// </summary>
+public enum MouseState
+{
+    /// <summary>
+    /// Defines the HOVER
+    /// </summary>
+    HOVER,
+
+    /// <summary>
+    /// Defines the DOWN
+    /// </summary>
+    DOWN,
+
+    /// <summary>
+    /// Defines the OUT
+    /// </summary>
+    OUT
 }

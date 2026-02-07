@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.InteropServices;
+namespace MaterialSkin;
 
 public sealed class NativeTextRenderer : IDisposable
 {
@@ -251,7 +248,7 @@ public sealed class NativeTextRenderer : IDisposable
     private static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
 
     [DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW")]
-    private static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)]string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
+    private static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)] string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
 
     [DllImport("gdi32.dll", EntryPoint = "TextOutW")]
     private static extern bool TextOut(IntPtr hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
@@ -272,7 +269,7 @@ public sealed class NativeTextRenderer : IDisposable
     public static extern bool DeleteDC(IntPtr hdc);
 
     [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)]LogFont lplf);
+    public static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LogFont lplf);
 
     [DllImport("gdi32.dll", ExactSpelling = true)]
     public static extern IntPtr AddFontMemResourceEx(byte[] pbFont, int cbFont, IntPtr pdv, out uint pcFonts);

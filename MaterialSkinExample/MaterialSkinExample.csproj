@@ -5,10 +5,20 @@
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
+		<!--<PublishAot>true</PublishAot>
+		<_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>-->
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\MaterialSkin\MaterialSkin.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="MaterialSkin" />
+		<Using Include="MaterialSkin.Controls" />
+		<Using Include="System" />
+		<Using Include="System.Text" />
+		<Using Include="System.Windows.Forms" />
 	</ItemGroup>
 
 </Project>

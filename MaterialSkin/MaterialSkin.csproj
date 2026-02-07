@@ -28,6 +28,31 @@
 		<FileVersion>3.0.0</FileVersion>
 		<InformationalVersion>3.0.0</InformationalVersion>
 		<SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="MaterialSkin" />
+		<Using Include="MaterialSkin.Animations" />
+		<Using Include="MaterialSkin.Controls" />
+		<Using Include="MaterialSkin.Properties" />
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.Collections.ObjectModel" />
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.ComponentModel.Design" />
+		<Using Include="System.Data" />
+		<Using Include="System.Diagnostics" />
+		<Using Include="System.Drawing" />
+		<Using Include="System.Drawing.Design" />
+		<Using Include="System.Drawing.Drawing2D" />
+		<Using Include="System.Drawing.Imaging" />
+		<Using Include="System.Drawing.Text" />
+		<Using Include="System.Globalization" />
+		<Using Include="System.Runtime.InteropServices" />
+		<Using Include="System.Windows.Forms" />
+
+		<Using Alias="Timer" Include="System.Windows.Forms.Timer"  />
+	</ItemGroup>
 
 </Project>
