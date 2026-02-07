@@ -2,721 +2,6 @@ namespace MaterialSkin.Controls;
 
 public partial class MaterialTextBox : Control, IMaterialControl
 {
-
-    readonly MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
-    ContextMenuStrip _lastContextMenuStrip = new();
-
-    //Properties for managing the material design properties
-    [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    //Unused properties
-    [Browsable(false)]
-    public override Image BackgroundImage { get; set; }
-
-    [Browsable(false)]
-    public override ImageLayout BackgroundImageLayout { get; set; }
-
-    [Browsable(false)]
-    public string SelectedText { get => baseTextBox.SelectedText; set => baseTextBox.SelectedText = value; }
-
-    [Browsable(false)]
-    public int SelectionStart { get => baseTextBox.SelectionStart; set => baseTextBox.SelectionStart = value; }
-
-    [Browsable(false)]
-    public int SelectionLength { get => baseTextBox.SelectionLength; set => baseTextBox.SelectionLength = value; }
-
-    [Browsable(false)]
-    public int TextLength { get { return baseTextBox.TextLength; } }
-
-    [Browsable(false)]
-    public override Color ForeColor { get; set; }
-
-
-    //Material Skin properties
-
-    private bool _UseTallSize;
-
-    [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
-    public bool UseTallSize
-    {
-        get => _UseTallSize;
-        set
-        {
-            _UseTallSize = value;
-            UpdateHeight();
-            UpdateRects();
-            Invalidate();
-        }
-    }
-
-    private bool _showAssistiveText;
-    [Category("Material Skin"), DefaultValue(false), Description("Assistive elements provide additional detail about text entered into text fields. Could be Helper text or Error message.")]
-    public bool ShowAssistiveText
-    {
-        get => _showAssistiveText;
-        set
-        {
-            _showAssistiveText = value;
-            if (_showAssistiveText)
-                _helperTextHeight = HELPER_TEXT_HEIGHT;
-            else
-                _helperTextHeight = 0;
-            UpdateHeight();
-            //UpdateRects();
-            Invalidate();
-        }
-    }
-
-    private string _helperText;
-
-    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Helper text conveys additional guidance about the input field, such as how it will be used.")]
-    public string HelperText
-    {
-        get => _helperText;
-        set
-        {
-            _helperText = value;
-            Invalidate();
-        }
-    }
-
-    private string _errorMessage;
-
-    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("When text input isn't accepted, an error message can display instructions on how to fix it. Error messages are displayed below the input line, replacing helper text until fixed.")]
-    public string ErrorMessage
-    {
-        get => _errorMessage;
-        set
-        {
-            _errorMessage = value;
-            Invalidate();
-        }
-    }
-
-    [Category("Material Skin"), DefaultValue(""), Localizable(true)]
-    public string Hint
-    {
-        get => baseTextBox.Hint;
-        set
-        {
-            baseTextBox.Hint = value;
-            hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
-            UpdateRects();
-            Invalidate();
-        }
-    }
-
-    [Category("Material Skin"), DefaultValue(true)]
-    public bool UseAccent { get; set; }
-
-    private Image? _leadingIcon;
-
-    [Category("Material Skin"), Browsable(true), Localizable(false)]
-    /// <summary>
-    /// Gets or sets the leading Icon
-    /// </summary>
-    public Image? LeadingIcon
-    {
-        get => _leadingIcon;
-        set
-        {
-            _leadingIcon = value;
-            UpdateRects();
-            preProcessIcons();
-            Invalidate();
-        }
-    }
-
-    private Image? _trailingIcon;
-
-    [Category("Material Skin"), Browsable(true), Localizable(false)]
-    /// <summary>
-    /// Gets or sets the trailing Icon
-    /// </summary>
-    public Image? TrailingIcon
-    {
-        get => _trailingIcon;
-        set
-        {
-            _trailingIcon = value;
-            UpdateRects();
-            preProcessIcons();
-            Invalidate();
-        }
-    }
-
-    private PrefixSuffixTypes _prefixsuffix;
-    [Category("Material Skin"), DefaultValue(PrefixSuffixTypes.None), Description("Set Prefix/Suffix/None")]
-    public PrefixSuffixTypes PrefixSuffix
-    {
-        get => _prefixsuffix;
-        set
-        {
-            _prefixsuffix = value;
-            UpdateRects();            //Génére une nullref exception
-            if (_prefixsuffix == PrefixSuffixTypes.Suffix)
-                RightToLeft = RightToLeft.Yes;
-            else
-                RightToLeft = RightToLeft.No;
-            Invalidate();
-        }
-    }
-
-    private string _prefixsuffixText;
-    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Set Prefix or Suffix text")]
-    public string PrefixSuffixText
-    {
-        get => _prefixsuffixText;
-        set
-        {
-            //if (_prefixsuffixText != value)
-            //{
-            _prefixsuffixText = value;
-            UpdateRects();
-            Invalidate();
-            //}
-        }
-    }
-
-    //TextBox properties
-
-    public override ContextMenuStrip ContextMenuStrip
-    {
-        get => baseTextBox.ContextMenuStrip;
-        set
-        {
-            if (value != null)
-            {
-                //ContextMenuStrip = value;
-                baseTextBox.ContextMenuStrip = value;
-                base.ContextMenuStrip = value;
-            }
-            else
-            {
-                //ContextMenuStrip = cms;
-                baseTextBox.ContextMenuStrip = cms;
-                base.ContextMenuStrip = cms;
-            }
-            _lastContextMenuStrip = base.ContextMenuStrip;
-        }
-    }
-
-    [Browsable(false)]
-    public override Color BackColor { get { return Parent == null ? SkinManager.BackgroundColor : Parent.BackColor; } }
-
-    public override string Text { get => baseTextBox.Text; set { baseTextBox.Text = value; UpdateRects(); } }
-
-    [Category("Appearance")]
-    public HorizontalAlignment TextAlign { get => baseTextBox.TextAlign; set => baseTextBox.TextAlign = value; }
-
-    [Category("Behavior")]
-    public CharacterCasing CharacterCasing { get => baseTextBox.CharacterCasing; set => baseTextBox.CharacterCasing = value; }
-
-    [Category("Behavior")]
-    public bool HideSelection { get => baseTextBox.HideSelection; set => baseTextBox.HideSelection = value; }
-
-    [Category("Behavior")]
-    public int MaxLength { get => baseTextBox.MaxLength; set => baseTextBox.MaxLength = value; }
-
-    [Category("Behavior")]
-    public char PasswordChar { get => baseTextBox.PasswordChar; set => baseTextBox.PasswordChar = value; }
-
-    [Category("Behavior")]
-    public bool ShortcutsEnabled
-    {
-        get => baseTextBox.ShortcutsEnabled;
-        set
-        {
-            baseTextBox.ShortcutsEnabled = value;
-            if (value == false)
-            {
-                baseTextBox.ContextMenuStrip = null;
-                base.ContextMenuStrip = null;
-            }
-            else
-            {
-                baseTextBox.ContextMenuStrip = _lastContextMenuStrip;
-                base.ContextMenuStrip = _lastContextMenuStrip;
-            }
-        }
-    }
-
-    [Category("Behavior")]
-    public bool UseSystemPasswordChar { get => baseTextBox.UseSystemPasswordChar; set => baseTextBox.UseSystemPasswordChar = value; }
-
-    public new object Tag { get => baseTextBox.Tag; set => baseTextBox.Tag = value; }
-
-    private bool _readonly;
-    [Category("Behavior")]
-    public bool ReadOnly
-    {
-        get => _readonly;
-        set
-        {
-            _readonly = value;
-            if (Enabled == true)
-            {
-                baseTextBox.ReadOnly = _readonly;
-            }
-            Invalidate();
-        }
-    }
-
-    private bool _animateReadOnly;
-
-    [Category("Material Skin")]
-    [Browsable(true)]
-    public bool AnimateReadOnly
-    {
-        get => _animateReadOnly;
-        set
-        {
-            _animateReadOnly = value;
-            Invalidate();
-        }
-    }
-
-    private bool _leaveOnEnterKey;
-
-    [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed.")]
-    public bool LeaveOnEnterKey
-    {
-        get => _leaveOnEnterKey;
-        set
-        {
-            _leaveOnEnterKey = value;
-            if (value)
-            {
-                baseTextBox.KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
-            }
-            else
-            {
-                baseTextBox.KeyDown -= LeaveOnEnterKey_KeyDown;
-            }
-            Invalidate();
-        }
-    }
-
-    public AutoCompleteStringCollection AutoCompleteCustomSource { get => baseTextBox.AutoCompleteCustomSource; set => baseTextBox.AutoCompleteCustomSource = value; }
-
-    public AutoCompleteSource AutoCompleteSource { get => baseTextBox.AutoCompleteSource; set => baseTextBox.AutoCompleteSource = value; }
-
-    public AutoCompleteMode AutoCompleteMode { get => baseTextBox.AutoCompleteMode; set => baseTextBox.AutoCompleteMode = value; }
-
-    public void SelectAll() { baseTextBox.SelectAll(); }
-
-    public void Clear() { baseTextBox.Clear(); }
-
-    public void Copy() { baseTextBox.Copy(); }
-
-    public void Cut() { baseTextBox.Cut(); }
-
-    public void Undo() { baseTextBox.Undo(); }
-
-    public void Paste() { baseTextBox.Paste(); }
-
-    [Category("Action")]
-    [Description("Fires when Leading Icon is clicked")]
-    public event EventHandler LeadingIconClick;
-
-    [Category("Action")]
-    [Description("Fires when Trailing Icon is clicked")]
-    public event EventHandler TrailingIconClick;
-
-    public event EventHandler AcceptsTabChanged
-    {
-        add => baseTextBox.AcceptsTabChanged += value; remove => baseTextBox.AcceptsTabChanged -= value;
-    }
-
-    public new event EventHandler AutoSizeChanged
-    {
-        add => baseTextBox.AutoSizeChanged += value; remove => baseTextBox.AutoSizeChanged -= value;
-    }
-
-    public new event EventHandler BackgroundImageChanged
-    {
-        add => baseTextBox.BackgroundImageChanged += value; remove => baseTextBox.BackgroundImageChanged -= value;
-    }
-
-    public new event EventHandler BackgroundImageLayoutChanged
-    {
-        add => baseTextBox.BackgroundImageLayoutChanged += value; remove => baseTextBox.BackgroundImageLayoutChanged -= value;
-    }
-
-    public new event EventHandler BindingContextChanged
-    {
-        add => baseTextBox.BindingContextChanged += value; remove => baseTextBox.BindingContextChanged -= value;
-    }
-
-    public event EventHandler BorderStyleChanged
-    {
-        add => baseTextBox.BorderStyleChanged += value; remove => baseTextBox.BorderStyleChanged -= value;
-    }
-
-    public new event EventHandler CausesValidationChanged
-    {
-        add => baseTextBox.CausesValidationChanged += value; remove => baseTextBox.CausesValidationChanged -= value;
-    }
-
-    public new event UICuesEventHandler ChangeUICues
-    {
-        add => baseTextBox.ChangeUICues += value; remove => baseTextBox.ChangeUICues -= value;
-    }
-
-    public new event EventHandler Click
-    {
-        add => baseTextBox.Click += value; remove => baseTextBox.Click -= value;
-    }
-
-    public new event EventHandler ClientSizeChanged
-    {
-        add => baseTextBox.ClientSizeChanged += value; remove => baseTextBox.ClientSizeChanged -= value;
-    }
-
-#if NETFRAMEWORK
-    public new event EventHandler ContextMenuChanged
-    {
-        add
-        {
-            baseTextBox.ContextMenuChanged += value;
-        }
-        remove
-        {
-            baseTextBox.ContextMenuChanged -= value;
-        }
-    }
-#endif
-
-    public new event EventHandler ContextMenuStripChanged
-    {
-        add => baseTextBox.ContextMenuStripChanged += value; remove => baseTextBox.ContextMenuStripChanged -= value;
-    }
-
-    public new event ControlEventHandler ControlAdded
-    {
-        add => baseTextBox.ControlAdded += value; remove => baseTextBox.ControlAdded -= value;
-    }
-
-    public new event ControlEventHandler ControlRemoved
-    {
-        add => baseTextBox.ControlRemoved += value; remove => baseTextBox.ControlRemoved -= value;
-    }
-
-    public new event EventHandler CursorChanged
-    {
-        add => baseTextBox.CursorChanged += value; remove => baseTextBox.CursorChanged -= value;
-    }
-
-    public new event EventHandler Disposed
-    {
-        add => baseTextBox.Disposed += value; remove => baseTextBox.Disposed -= value;
-    }
-
-    public new event EventHandler DockChanged
-    {
-        add => baseTextBox.DockChanged += value; remove => baseTextBox.DockChanged -= value;
-    }
-
-    public new event EventHandler DoubleClick
-    {
-        add => baseTextBox.DoubleClick += value; remove => baseTextBox.DoubleClick -= value;
-    }
-
-    public new event DragEventHandler DragDrop
-    {
-        add => baseTextBox.DragDrop += value; remove => baseTextBox.DragDrop -= value;
-    }
-
-    public new event DragEventHandler DragEnter
-    {
-        add => baseTextBox.DragEnter += value; remove => baseTextBox.DragEnter -= value;
-    }
-
-    public new event EventHandler DragLeave
-    {
-        add => baseTextBox.DragLeave += value; remove => baseTextBox.DragLeave -= value;
-    }
-
-    public new event DragEventHandler DragOver
-    {
-        add => baseTextBox.DragOver += value; remove => baseTextBox.DragOver -= value;
-    }
-
-    public new event EventHandler EnabledChanged
-    {
-        add => baseTextBox.EnabledChanged += value; remove => baseTextBox.EnabledChanged -= value;
-    }
-
-    public new event EventHandler Enter
-    {
-        add => baseTextBox.Enter += value; remove => baseTextBox.Enter -= value;
-    }
-
-    public new event EventHandler FontChanged
-    {
-        add => baseTextBox.FontChanged += value; remove => baseTextBox.FontChanged -= value;
-    }
-
-    public new event EventHandler ForeColorChanged
-    {
-        add => baseTextBox.ForeColorChanged += value; remove => baseTextBox.ForeColorChanged -= value;
-    }
-
-    public new event GiveFeedbackEventHandler GiveFeedback
-    {
-        add => baseTextBox.GiveFeedback += value; remove => baseTextBox.GiveFeedback -= value;
-    }
-
-    public new event EventHandler GotFocus
-    {
-        add => baseTextBox.GotFocus += value; remove => baseTextBox.GotFocus -= value;
-    }
-
-    public new event EventHandler HandleCreated
-    {
-        add => baseTextBox.HandleCreated += value; remove => baseTextBox.HandleCreated -= value;
-    }
-
-    public new event EventHandler HandleDestroyed
-    {
-        add => baseTextBox.HandleDestroyed += value; remove => baseTextBox.HandleDestroyed -= value;
-    }
-
-    public new event HelpEventHandler HelpRequested
-    {
-        add => baseTextBox.HelpRequested += value; remove => baseTextBox.HelpRequested -= value;
-    }
-
-    public event EventHandler HideSelectionChanged
-    {
-        add => baseTextBox.HideSelectionChanged += value; remove => baseTextBox.HideSelectionChanged -= value;
-    }
-
-    public new event EventHandler ImeModeChanged
-    {
-        add => baseTextBox.ImeModeChanged += value; remove => baseTextBox.ImeModeChanged -= value;
-    }
-
-    public new event InvalidateEventHandler Invalidated
-    {
-        add => baseTextBox.Invalidated += value; remove => baseTextBox.Invalidated -= value;
-    }
-
-    public new event KeyEventHandler KeyDown
-    {
-        add => baseTextBox.KeyDown += value; remove => baseTextBox.KeyDown -= value;
-    }
-
-    public new event KeyPressEventHandler KeyPress
-    {
-        add => baseTextBox.KeyPress += value; remove => baseTextBox.KeyPress -= value;
-    }
-
-    public new event KeyEventHandler KeyUp
-    {
-        add => baseTextBox.KeyUp += value; remove => baseTextBox.KeyUp -= value;
-    }
-
-    public new event LayoutEventHandler Layout
-    {
-        add => baseTextBox.Layout += value; remove => baseTextBox.Layout -= value;
-    }
-
-    public new event EventHandler Leave
-    {
-        add => baseTextBox.Leave += value; remove => baseTextBox.Leave -= value;
-    }
-
-    public new event EventHandler LocationChanged
-    {
-        add => baseTextBox.LocationChanged += value; remove => baseTextBox.LocationChanged -= value;
-    }
-
-    public new event EventHandler LostFocus
-    {
-        add => baseTextBox.LostFocus += value; remove => baseTextBox.LostFocus -= value;
-    }
-
-    public new event EventHandler MarginChanged
-    {
-        add => baseTextBox.MarginChanged += value; remove => baseTextBox.MarginChanged -= value;
-    }
-
-    public event EventHandler ModifiedChanged
-    {
-        add => baseTextBox.ModifiedChanged += value; remove => baseTextBox.ModifiedChanged -= value;
-    }
-
-    public new event EventHandler MouseCaptureChanged
-    {
-        add => baseTextBox.MouseCaptureChanged += value; remove => baseTextBox.MouseCaptureChanged -= value;
-    }
-
-    public new event MouseEventHandler MouseClick
-    {
-        add => baseTextBox.MouseClick += value; remove => baseTextBox.MouseClick -= value;
-    }
-
-    public new event MouseEventHandler MouseDoubleClick
-    {
-        add => baseTextBox.MouseDoubleClick += value; remove => baseTextBox.MouseDoubleClick -= value;
-    }
-
-    public new event MouseEventHandler MouseDown
-    {
-        add => baseTextBox.MouseDown += value; remove => baseTextBox.MouseDown -= value;
-    }
-
-    public new event EventHandler MouseEnter
-    {
-        add => baseTextBox.MouseEnter += value; remove => baseTextBox.MouseEnter -= value;
-    }
-
-    public new event EventHandler MouseHover
-    {
-        add => baseTextBox.MouseHover += value; remove => baseTextBox.MouseHover -= value;
-    }
-
-    public new event EventHandler MouseLeave
-    {
-        add => baseTextBox.MouseLeave += value; remove => baseTextBox.MouseLeave -= value;
-    }
-
-    public new event MouseEventHandler MouseMove
-    {
-        add => baseTextBox.MouseMove += value; remove => baseTextBox.MouseMove -= value;
-    }
-
-    public new event MouseEventHandler MouseUp
-    {
-        add => baseTextBox.MouseUp += value; remove => baseTextBox.MouseUp -= value;
-    }
-
-    public new event MouseEventHandler MouseWheel
-    {
-        add => baseTextBox.MouseWheel += value; remove => baseTextBox.MouseWheel -= value;
-    }
-
-    public new event EventHandler Move
-    {
-        add => baseTextBox.Move += value; remove => baseTextBox.Move -= value;
-    }
-
-    public event EventHandler MultilineChanged
-    {
-        add => baseTextBox.MultilineChanged += value; remove => baseTextBox.MultilineChanged -= value;
-    }
-
-    public new event EventHandler PaddingChanged
-    {
-        add => baseTextBox.PaddingChanged += value; remove => baseTextBox.PaddingChanged -= value;
-    }
-
-    public new event PaintEventHandler Paint
-    {
-        add => baseTextBox.Paint += value; remove => baseTextBox.Paint -= value;
-    }
-
-    public new event EventHandler ParentChanged
-    {
-        add => baseTextBox.ParentChanged += value; remove => baseTextBox.ParentChanged -= value;
-    }
-
-    public new event PreviewKeyDownEventHandler PreviewKeyDown
-    {
-        add => baseTextBox.PreviewKeyDown += value; remove => baseTextBox.PreviewKeyDown -= value;
-    }
-
-    public new event QueryAccessibilityHelpEventHandler QueryAccessibilityHelp
-    {
-        add => baseTextBox.QueryAccessibilityHelp += value; remove => baseTextBox.QueryAccessibilityHelp -= value;
-    }
-
-    public new event QueryContinueDragEventHandler QueryContinueDrag
-    {
-        add => baseTextBox.QueryContinueDrag += value; remove => baseTextBox.QueryContinueDrag -= value;
-    }
-
-    public event EventHandler ReadOnlyChanged
-    {
-        add => baseTextBox.ReadOnlyChanged += value; remove => baseTextBox.ReadOnlyChanged -= value;
-    }
-
-    public new event EventHandler RegionChanged
-    {
-        add => baseTextBox.RegionChanged += value; remove => baseTextBox.RegionChanged -= value;
-    }
-
-    public new event EventHandler Resize
-    {
-        add => baseTextBox.Resize += value; remove => baseTextBox.Resize -= value;
-    }
-
-    public new event EventHandler RightToLeftChanged
-    {
-        add => baseTextBox.RightToLeftChanged += value; remove => baseTextBox.RightToLeftChanged -= value;
-    }
-
-    public new event EventHandler SizeChanged
-    {
-        add => baseTextBox.SizeChanged += value; remove => baseTextBox.SizeChanged -= value;
-    }
-
-    public new event EventHandler StyleChanged
-    {
-        add => baseTextBox.StyleChanged += value; remove => baseTextBox.StyleChanged -= value;
-    }
-
-    public new event EventHandler SystemColorsChanged
-    {
-        add => baseTextBox.SystemColorsChanged += value; remove => baseTextBox.SystemColorsChanged -= value;
-    }
-
-    public new event EventHandler TabIndexChanged
-    {
-        add => baseTextBox.TabIndexChanged += value; remove => baseTextBox.TabIndexChanged -= value;
-    }
-
-    public new event EventHandler TabStopChanged
-    {
-        add => baseTextBox.TabStopChanged += value; remove => baseTextBox.TabStopChanged -= value;
-    }
-
-    public event EventHandler TextAlignChanged
-    {
-        add => baseTextBox.TextAlignChanged += value; remove => baseTextBox.TextAlignChanged -= value;
-    }
-
-    public new event EventHandler TextChanged
-    {
-        add => baseTextBox.TextChanged += value; remove => baseTextBox.TextChanged -= value;
-    }
-
-    public new event EventHandler Validated
-    {
-        add => baseTextBox.Validated += value; remove => baseTextBox.Validated -= value;
-    }
-
-    public new event CancelEventHandler Validating
-    {
-        add => baseTextBox.Validating += value; remove => baseTextBox.Validating -= value;
-    }
-
-    public new event EventHandler VisibleChanged
-    {
-        add => baseTextBox.VisibleChanged += value; remove => baseTextBox.VisibleChanged -= value;
-    }
-
-    private readonly AnimationManager _animationManager;
-
-    public bool isFocused = false;
     private const int PREFIX_SUFFIX_PADDING = 4;
     private const int ICON_SIZE = 24;
     private const int HINT_TEXT_SMALL_SIZE = 18;
@@ -727,11 +12,26 @@ public partial class MaterialTextBox : Control, IMaterialControl
     private const int HELPER_TEXT_HEIGHT = 16;
     private const int FONT_HEIGHT = 20;
 
-    private int HEIGHT = 48;
-
-    private int LINE_Y;
-    private bool hasHint;
-    private bool _errorState = false;
+    private readonly MaterialContextMenuStrip _cms = new();
+    private readonly AnimationManager _animationManager;
+    private ContextMenuStrip _lastContextMenuStrip = new();
+    private bool _useTallSize;
+    private bool _readonly;
+    private bool _showAssistiveText;
+    private string? _helperText;
+    private string? _errorMessage;
+    private Image? _leadingIcon;
+    private Image? _trailingIcon;
+    private PrefixSuffixTypes _prefixsuffix;
+    private string? _prefixsuffixText;
+    private bool _animateReadOnly;
+    private bool _leaveOnEnterKey;
+    public bool _isFocused;
+    private int _height = 48;
+    private int _lineY;
+    private bool _hasHint;
+    private readonly BaseTextBox _baseTextBox;
+    private bool _errorState;
     private int _left_padding;
     private int _right_padding;
     private int _prefix_padding;
@@ -739,11 +39,91 @@ public partial class MaterialTextBox : Control, IMaterialControl
     private int _helperTextHeight;
     private Rectangle _leadingIconBounds;
     private Rectangle _trailingIconBounds;
+    private Dictionary<string, TextureBrush>? _iconsBrushes;
+    private Dictionary<string, TextureBrush>? _iconsErrorBrushes;
 
-    private Dictionary<string, TextureBrush> iconsBrushes;
-    private Dictionary<string, TextureBrush> iconsErrorBrushes;
+    [Category("Action")]
+    [Description("Fires when Leading Icon is clicked")]
+    public event EventHandler? LeadingIconClick;
 
-    protected readonly BaseTextBox baseTextBox;
+    [Category("Action")]
+    [Description("Fires when Trailing Icon is clicked")]
+    public event EventHandler? TrailingIconClick;
+
+    public event EventHandler AcceptsTabChanged { add => _baseTextBox.AcceptsTabChanged += value; remove => _baseTextBox.AcceptsTabChanged -= value; }
+    public new event EventHandler AutoSizeChanged { add => _baseTextBox.AutoSizeChanged += value; remove => _baseTextBox.AutoSizeChanged -= value; }
+    public new event EventHandler BackgroundImageChanged { add => _baseTextBox.BackgroundImageChanged += value; remove => _baseTextBox.BackgroundImageChanged -= value; }
+    public new event EventHandler BackgroundImageLayoutChanged { add => _baseTextBox.BackgroundImageLayoutChanged += value; remove => _baseTextBox.BackgroundImageLayoutChanged -= value; }
+    public new event EventHandler BindingContextChanged { add => _baseTextBox.BindingContextChanged += value; remove => _baseTextBox.BindingContextChanged -= value; }
+    public event EventHandler BorderStyleChanged { add => _baseTextBox.BorderStyleChanged += value; remove => _baseTextBox.BorderStyleChanged -= value; }
+    public new event EventHandler CausesValidationChanged { add => _baseTextBox.CausesValidationChanged += value; remove => _baseTextBox.CausesValidationChanged -= value; }
+    public new event UICuesEventHandler ChangeUICues { add => _baseTextBox.ChangeUICues += value; remove => _baseTextBox.ChangeUICues -= value; }
+    public new event EventHandler Click { add => _baseTextBox.Click += value; remove => _baseTextBox.Click -= value; }
+    public new event EventHandler ClientSizeChanged { add => _baseTextBox.ClientSizeChanged += value; remove => _baseTextBox.ClientSizeChanged -= value; }
+    public new event EventHandler ContextMenuStripChanged { add => _baseTextBox.ContextMenuStripChanged += value; remove => _baseTextBox.ContextMenuStripChanged -= value; }
+    public new event ControlEventHandler ControlAdded { add => _baseTextBox.ControlAdded += value; remove => _baseTextBox.ControlAdded -= value; }
+    public new event ControlEventHandler ControlRemoved { add => _baseTextBox.ControlRemoved += value; remove => _baseTextBox.ControlRemoved -= value; }
+    public new event EventHandler CursorChanged { add => _baseTextBox.CursorChanged += value; remove => _baseTextBox.CursorChanged -= value; }
+    public new event EventHandler Disposed { add => _baseTextBox.Disposed += value; remove => _baseTextBox.Disposed -= value; }
+    public new event EventHandler DockChanged { add => _baseTextBox.DockChanged += value; remove => _baseTextBox.DockChanged -= value; }
+    public new event EventHandler DoubleClick { add => _baseTextBox.DoubleClick += value; remove => _baseTextBox.DoubleClick -= value; }
+    public new event DragEventHandler DragDrop { add => _baseTextBox.DragDrop += value; remove => _baseTextBox.DragDrop -= value; }
+    public new event DragEventHandler DragEnter { add => _baseTextBox.DragEnter += value; remove => _baseTextBox.DragEnter -= value; }
+    public new event EventHandler DragLeave { add => _baseTextBox.DragLeave += value; remove => _baseTextBox.DragLeave -= value; }
+    public new event DragEventHandler DragOver { add => _baseTextBox.DragOver += value; remove => _baseTextBox.DragOver -= value; }
+    public new event EventHandler EnabledChanged { add => _baseTextBox.EnabledChanged += value; remove => _baseTextBox.EnabledChanged -= value; }
+    public new event EventHandler Enter { add => _baseTextBox.Enter += value; remove => _baseTextBox.Enter -= value; }
+    public new event EventHandler FontChanged { add => _baseTextBox.FontChanged += value; remove => _baseTextBox.FontChanged -= value; }
+    public new event EventHandler ForeColorChanged { add => _baseTextBox.ForeColorChanged += value; remove => _baseTextBox.ForeColorChanged -= value; }
+    public new event GiveFeedbackEventHandler GiveFeedback { add => _baseTextBox.GiveFeedback += value; remove => _baseTextBox.GiveFeedback -= value; }
+    public new event EventHandler GotFocus { add => _baseTextBox.GotFocus += value; remove => _baseTextBox.GotFocus -= value; }
+    public new event EventHandler HandleCreated { add => _baseTextBox.HandleCreated += value; remove => _baseTextBox.HandleCreated -= value; }
+    public new event EventHandler HandleDestroyed { add => _baseTextBox.HandleDestroyed += value; remove => _baseTextBox.HandleDestroyed -= value; }
+    public new event HelpEventHandler HelpRequested { add => _baseTextBox.HelpRequested += value; remove => _baseTextBox.HelpRequested -= value; }
+    public event EventHandler HideSelectionChanged { add => _baseTextBox.HideSelectionChanged += value; remove => _baseTextBox.HideSelectionChanged -= value; }
+    public new event EventHandler ImeModeChanged { add => _baseTextBox.ImeModeChanged += value; remove => _baseTextBox.ImeModeChanged -= value; }
+    public new event InvalidateEventHandler Invalidated { add => _baseTextBox.Invalidated += value; remove => _baseTextBox.Invalidated -= value; }
+    public new event KeyEventHandler KeyDown { add => _baseTextBox.KeyDown += value; remove => _baseTextBox.KeyDown -= value; }
+    public new event KeyPressEventHandler KeyPress { add => _baseTextBox.KeyPress += value; remove => _baseTextBox.KeyPress -= value; }
+    public new event KeyEventHandler KeyUp { add => _baseTextBox.KeyUp += value; remove => _baseTextBox.KeyUp -= value; }
+    public new event LayoutEventHandler Layout { add => _baseTextBox.Layout += value; remove => _baseTextBox.Layout -= value; }
+    public new event EventHandler Leave { add => _baseTextBox.Leave += value; remove => _baseTextBox.Leave -= value; }
+    public new event EventHandler LocationChanged { add => _baseTextBox.LocationChanged += value; remove => _baseTextBox.LocationChanged -= value; }
+    public new event EventHandler LostFocus { add => _baseTextBox.LostFocus += value; remove => _baseTextBox.LostFocus -= value; }
+    public new event EventHandler MarginChanged { add => _baseTextBox.MarginChanged += value; remove => _baseTextBox.MarginChanged -= value; }
+    public event EventHandler ModifiedChanged { add => _baseTextBox.ModifiedChanged += value; remove => _baseTextBox.ModifiedChanged -= value; }
+    public new event EventHandler MouseCaptureChanged { add => _baseTextBox.MouseCaptureChanged += value; remove => _baseTextBox.MouseCaptureChanged -= value; }
+    public new event MouseEventHandler MouseClick { add => _baseTextBox.MouseClick += value; remove => _baseTextBox.MouseClick -= value; }
+    public new event MouseEventHandler MouseDoubleClick { add => _baseTextBox.MouseDoubleClick += value; remove => _baseTextBox.MouseDoubleClick -= value; }
+    public new event MouseEventHandler MouseDown { add => _baseTextBox.MouseDown += value; remove => _baseTextBox.MouseDown -= value; }
+    public new event EventHandler MouseEnter { add => _baseTextBox.MouseEnter += value; remove => _baseTextBox.MouseEnter -= value; }
+    public new event EventHandler MouseHover { add => _baseTextBox.MouseHover += value; remove => _baseTextBox.MouseHover -= value; }
+    public new event EventHandler MouseLeave { add => _baseTextBox.MouseLeave += value; remove => _baseTextBox.MouseLeave -= value; }
+    public new event MouseEventHandler MouseMove { add => _baseTextBox.MouseMove += value; remove => _baseTextBox.MouseMove -= value; }
+    public new event MouseEventHandler MouseUp { add => _baseTextBox.MouseUp += value; remove => _baseTextBox.MouseUp -= value; }
+    public new event MouseEventHandler MouseWheel { add => _baseTextBox.MouseWheel += value; remove => _baseTextBox.MouseWheel -= value; }
+    public new event EventHandler Move { add => _baseTextBox.Move += value; remove => _baseTextBox.Move -= value; }
+    public event EventHandler MultilineChanged { add => _baseTextBox.MultilineChanged += value; remove => _baseTextBox.MultilineChanged -= value; }
+    public new event EventHandler PaddingChanged { add => _baseTextBox.PaddingChanged += value; remove => _baseTextBox.PaddingChanged -= value; }
+    public new event PaintEventHandler Paint { add => _baseTextBox.Paint += value; remove => _baseTextBox.Paint -= value; }
+    public new event EventHandler ParentChanged { add => _baseTextBox.ParentChanged += value; remove => _baseTextBox.ParentChanged -= value; }
+    public new event PreviewKeyDownEventHandler PreviewKeyDown { add => _baseTextBox.PreviewKeyDown += value; remove => _baseTextBox.PreviewKeyDown -= value; }
+    public new event QueryAccessibilityHelpEventHandler QueryAccessibilityHelp { add => _baseTextBox.QueryAccessibilityHelp += value; remove => _baseTextBox.QueryAccessibilityHelp -= value; }
+    public new event QueryContinueDragEventHandler QueryContinueDrag { add => _baseTextBox.QueryContinueDrag += value; remove => _baseTextBox.QueryContinueDrag -= value; }
+    public event EventHandler ReadOnlyChanged { add => _baseTextBox.ReadOnlyChanged += value; remove => _baseTextBox.ReadOnlyChanged -= value; }
+    public new event EventHandler RegionChanged { add => _baseTextBox.RegionChanged += value; remove => _baseTextBox.RegionChanged -= value; }
+    public new event EventHandler Resize { add => _baseTextBox.Resize += value; remove => _baseTextBox.Resize -= value; }
+    public new event EventHandler RightToLeftChanged { add => _baseTextBox.RightToLeftChanged += value; remove => _baseTextBox.RightToLeftChanged -= value; }
+    public new event EventHandler SizeChanged { add => _baseTextBox.SizeChanged += value; remove => _baseTextBox.SizeChanged -= value; }
+    public new event EventHandler StyleChanged { add => _baseTextBox.StyleChanged += value; remove => _baseTextBox.StyleChanged -= value; }
+    public new event EventHandler SystemColorsChanged { add => _baseTextBox.SystemColorsChanged += value; remove => _baseTextBox.SystemColorsChanged -= value; }
+    public new event EventHandler TabIndexChanged { add => _baseTextBox.TabIndexChanged += value; remove => _baseTextBox.TabIndexChanged -= value; }
+    public new event EventHandler TabStopChanged { add => _baseTextBox.TabStopChanged += value; remove => _baseTextBox.TabStopChanged -= value; }
+    public event EventHandler TextAlignChanged { add => _baseTextBox.TextAlignChanged += value; remove => _baseTextBox.TextAlignChanged -= value; }
+    public new event EventHandler TextChanged { add => _baseTextBox.TextChanged += value; remove => _baseTextBox.TextChanged -= value; }
+    public new event EventHandler Validated { add => _baseTextBox.Validated += value; remove => _baseTextBox.Validated -= value; }
+    public new event CancelEventHandler Validating { add => _baseTextBox.Validating += value; remove => _baseTextBox.Validating -= value; }
+    public new event EventHandler VisibleChanged { add => _baseTextBox.VisibleChanged += value; remove => _baseTextBox.VisibleChanged -= value; }
 
     public MaterialTextBox()
     {
@@ -764,30 +144,30 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
         SkinManager.ColorSchemeChanged += (sender, e) =>
         {
-            preProcessIcons();
+            PreProcessIcons();
         };
 
         SkinManager.ThemeChanged += (sender, e) =>
         {
-            preProcessIcons();
+            PreProcessIcons();
         };
 
         Font = SkinManager.GetFontByType(FontType.Subtitle1);
 
-        baseTextBox = new BaseTextBox
+        _baseTextBox = new BaseTextBox
         {
             BorderStyle = BorderStyle.None,
             Font = base.Font,
             ForeColor = SkinManager.TextHighEmphasisColor,
             Multiline = false,
-            Location = new Point(LEFT_PADDING, HEIGHT / 2 - FONT_HEIGHT / 2),
+            Location = new Point(LEFT_PADDING, _height / 2 - FONT_HEIGHT / 2),
             Width = Width - (LEFT_PADDING + RIGHT_PADDING),
             Height = FONT_HEIGHT
         };
 
         Enabled = true;
         ReadOnly = false;
-        Size = new Size(250, HEIGHT);
+        Size = new Size(250, _height);
 
         UseTallSize = true;
         PrefixSuffix = PrefixSuffixTypes.None;
@@ -795,41 +175,329 @@ public partial class MaterialTextBox : Control, IMaterialControl
         HelperText = string.Empty;
         ErrorMessage = string.Empty;
 
-        if (!Controls.Contains(baseTextBox) && !DesignMode)
+        if (!Controls.Contains(_baseTextBox) && !DesignMode)
         {
-            Controls.Add(baseTextBox);
+            Controls.Add(_baseTextBox);
         }
 
-        baseTextBox.GotFocus += (sender, args) =>
+        _baseTextBox.GotFocus += (sender, args) =>
         {
             if (Enabled)
             {
-                isFocused = true;
+                _isFocused = true;
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             }
             else
                 Focus();
             UpdateRects();
         };
-        baseTextBox.LostFocus += (sender, args) =>
+        _baseTextBox.LostFocus += (sender, args) =>
         {
-            isFocused = false;
+            _isFocused = false;
             _animationManager.StartNewAnimation(AnimationDirection.Out);
             UpdateRects();
         };
 
-        baseTextBox.TextChanged += new EventHandler(Redraw);
-        baseTextBox.BackColorChanged += new EventHandler(Redraw);
+        _baseTextBox.TextChanged += new EventHandler(Redraw);
+        _baseTextBox.BackColorChanged += new EventHandler(Redraw);
 
-        baseTextBox.TabStop = true;
+        _baseTextBox.TabStop = true;
         TabStop = false;
 
-        cms.Opening += ContextMenuStripOnOpening;
-        cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
-        ContextMenuStrip = cms;
+        _cms.Opening += ContextMenuStripOnOpening;
+        _cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
+        ContextMenuStrip = _cms;
     }
 
-    private void Redraw(object sencer, EventArgs e)
+    //Properties for managing the material design properties
+    [Browsable(false)]
+    public int Depth { get; set; }
+
+    [Browsable(false)]
+    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
+    [Browsable(false)]
+    public MouseState MouseState { get; set; }
+
+    //Unused properties
+    [Browsable(false)]
+    [AllowNull]
+    public override Image BackgroundImage { get; set; }
+
+    [Browsable(false)]
+    public override ImageLayout BackgroundImageLayout { get; set; }
+
+    [Browsable(false)]
+    public string SelectedText { get => _baseTextBox.SelectedText; set => _baseTextBox.SelectedText = value; }
+
+    [Browsable(false)]
+    public int SelectionStart { get => _baseTextBox.SelectionStart; set => _baseTextBox.SelectionStart = value; }
+
+    [Browsable(false)]
+    public int SelectionLength { get => _baseTextBox.SelectionLength; set => _baseTextBox.SelectionLength = value; }
+
+    [Browsable(false)]
+    public int TextLength => _baseTextBox.TextLength;
+
+    [Browsable(false)]
+    public override Color ForeColor { get; set; }
+
+    [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
+    public bool UseTallSize
+    {
+        get => _useTallSize;
+        set
+        {
+            _useTallSize = value;
+            UpdateHeight();
+            UpdateRects();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(false), Description("Assistive elements provide additional detail about text entered into text fields. Could be Helper text or Error message.")]
+    public bool ShowAssistiveText
+    {
+        get => _showAssistiveText;
+        set
+        {
+            _showAssistiveText = value;
+            if (_showAssistiveText)
+                _helperTextHeight = HELPER_TEXT_HEIGHT;
+            else
+                _helperTextHeight = 0;
+            UpdateHeight();
+            //UpdateRects();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Helper text conveys additional guidance about the input field, such as how it will be used.")]
+    public string? HelperText
+    {
+        get => _helperText;
+        set
+        {
+            _helperText = value;
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("When text input isn't accepted, an error message can display instructions on how to fix it. Error messages are displayed below the input line, replacing helper text until fixed.")]
+    public string? ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            _errorMessage = value;
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(""), Localizable(true)]
+    public string Hint
+    {
+        get => _baseTextBox.Hint;
+        set
+        {
+            _baseTextBox.Hint = value;
+            _hasHint = !string.IsNullOrEmpty(_baseTextBox.Hint);
+            UpdateRects();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(true)]
+    public bool UseAccent { get; set; }
+
+    [Category("Material Skin"), Browsable(true), Localizable(false)]
+    /// <summary>
+    /// Gets or sets the leading Icon
+    /// </summary>
+    public Image? LeadingIcon
+    {
+        get => _leadingIcon;
+        set
+        {
+            _leadingIcon = value;
+            UpdateRects();
+            PreProcessIcons();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), Browsable(true), Localizable(false)]
+    /// <summary>
+    /// Gets or sets the trailing Icon
+    /// </summary>
+    public Image? TrailingIcon
+    {
+        get => _trailingIcon;
+        set
+        {
+            _trailingIcon = value;
+            UpdateRects();
+            PreProcessIcons();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(PrefixSuffixTypes.None), Description("Set Prefix/Suffix/None")]
+    public PrefixSuffixTypes PrefixSuffix
+    {
+        get => _prefixsuffix;
+        set
+        {
+            _prefixsuffix = value;
+            UpdateRects();            //Génére une nullref exception
+            if (_prefixsuffix == PrefixSuffixTypes.Suffix)
+            {
+                RightToLeft = RightToLeft.Yes;
+            }
+            else
+            {
+                RightToLeft = RightToLeft.No;
+            }
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Set Prefix or Suffix text")]
+    public string? PrefixSuffixText
+    {
+        get => _prefixsuffixText;
+        set
+        {
+            _prefixsuffixText = value;
+            UpdateRects();
+            Invalidate();
+        }
+    }
+
+    public override ContextMenuStrip? ContextMenuStrip
+    {
+        get => _baseTextBox.ContextMenuStrip;
+        set
+        {
+            if (value != null)
+            {
+                //ContextMenuStrip = value;
+                _baseTextBox.ContextMenuStrip = value;
+                base.ContextMenuStrip = value;
+            }
+            else
+            {
+                //ContextMenuStrip = cms;
+                _baseTextBox.ContextMenuStrip = _cms;
+                base.ContextMenuStrip = _cms;
+            }
+            _lastContextMenuStrip = base.ContextMenuStrip;
+        }
+    }
+
+    [Browsable(false)]
+    public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
+
+    [AllowNull]
+    public override string Text { get => _baseTextBox.Text; set { _baseTextBox.Text = value; UpdateRects(); } }
+
+    [Category("Appearance")]
+    public HorizontalAlignment TextAlign { get => _baseTextBox.TextAlign; set => _baseTextBox.TextAlign = value; }
+
+    [Category("Behavior")]
+    public CharacterCasing CharacterCasing { get => _baseTextBox.CharacterCasing; set => _baseTextBox.CharacterCasing = value; }
+
+    [Category("Behavior")]
+    public bool HideSelection { get => _baseTextBox.HideSelection; set => _baseTextBox.HideSelection = value; }
+
+    [Category("Behavior")]
+    public int MaxLength { get => _baseTextBox.MaxLength; set => _baseTextBox.MaxLength = value; }
+
+    [Category("Behavior")]
+    public char PasswordChar { get => _baseTextBox.PasswordChar; set => _baseTextBox.PasswordChar = value; }
+
+    [Category("Behavior")]
+    public bool ShortcutsEnabled
+    {
+        get => _baseTextBox.ShortcutsEnabled;
+        set
+        {
+            _baseTextBox.ShortcutsEnabled = value;
+            if (value == false)
+            {
+                _baseTextBox.ContextMenuStrip = null;
+                base.ContextMenuStrip = null;
+            }
+            else
+            {
+                _baseTextBox.ContextMenuStrip = _lastContextMenuStrip;
+                base.ContextMenuStrip = _lastContextMenuStrip;
+            }
+        }
+    }
+
+    [Category("Behavior")]
+    public bool UseSystemPasswordChar { get => _baseTextBox.UseSystemPasswordChar; set => _baseTextBox.UseSystemPasswordChar = value; }
+    public new object? Tag { get => _baseTextBox.Tag; set => _baseTextBox.Tag = value; }
+
+    [Category("Behavior")]
+    public bool ReadOnly
+    {
+        get => _readonly;
+        set
+        {
+            _readonly = value;
+            if (Enabled == true)
+            {
+                _baseTextBox.ReadOnly = _readonly;
+            }
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin")]
+    [Browsable(true)]
+    public bool AnimateReadOnly
+    {
+        get => _animateReadOnly;
+        set
+        {
+            _animateReadOnly = value;
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed.")]
+    public bool LeaveOnEnterKey
+    {
+        get => _leaveOnEnterKey;
+        set
+        {
+            _leaveOnEnterKey = value;
+            if (value)
+            {
+                _baseTextBox.KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
+            }
+            else
+            {
+                _baseTextBox.KeyDown -= LeaveOnEnterKey_KeyDown;
+            }
+            Invalidate();
+        }
+    }
+
+    public AutoCompleteStringCollection AutoCompleteCustomSource { get => _baseTextBox.AutoCompleteCustomSource; set => _baseTextBox.AutoCompleteCustomSource = value; }
+    public AutoCompleteSource AutoCompleteSource { get => _baseTextBox.AutoCompleteSource; set => _baseTextBox.AutoCompleteSource = value; }
+    public AutoCompleteMode AutoCompleteMode { get => _baseTextBox.AutoCompleteMode; set => _baseTextBox.AutoCompleteMode = value; }
+
+    public void SelectAll() { _baseTextBox.SelectAll(); }
+    public void Clear() { _baseTextBox.Clear(); }
+    public void Copy() { _baseTextBox.Copy(); }
+    public void Cut() { _baseTextBox.Cut(); }
+    public void Undo() { _baseTextBox.Undo(); }
+    public void Paste() { _baseTextBox.Paste(); }
+
+    private void Redraw(object? sender, EventArgs e)
     {
         SuspendLayout();
         Invalidate();
@@ -852,13 +520,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
         //backColor
         g.FillRectangle(
             !Enabled ? SkinManager.BackgroundDisabledBrush : // Disabled
-            isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
+            _isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
             MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? SkinManager.BackgroundHoverBrush : // Hover
             backBrush, // Normal
-            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, LINE_Y);
+            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
-            isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
+        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
+            _isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
             MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundHoverColor, SkinManager.BackgroundHoverColor.A) : // Hover
             DrawHelper.BlendColor(BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A); // Normal
 
@@ -866,28 +534,28 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (LeadingIcon != null)
         {
             if (_errorState)
-                g.FillRectangle(iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
+                g.FillRectangle(_iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
             else
-                g.FillRectangle(iconsBrushes["_leadingIcon"], _leadingIconBounds);
+                g.FillRectangle(_iconsBrushes["_leadingIcon"], _leadingIconBounds);
         }
 
         //Trailing Icon
         if (TrailingIcon != null)
         {
             if (_errorState)
-                g.FillRectangle(iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
+                g.FillRectangle(_iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
             else
-                g.FillRectangle(iconsBrushes["_trailingIcon"], _trailingIconBounds);
+                g.FillRectangle(_iconsBrushes["_trailingIcon"], _trailingIconBounds);
         }
 
         // HintText
         bool userTextPresent = !string.IsNullOrEmpty(Text);
-        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, LINE_Y + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
+        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, _lineY + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
         Rectangle hintRect = new(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
         int hintTextSize = 12;
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, LINE_Y, Width, 1);
+        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (ReadOnly == false || (ReadOnly && AnimateReadOnly))
         {
@@ -896,9 +564,9 @@ public partial class MaterialTextBox : Control, IMaterialControl
                 // No animation
 
                 // bottom line
-                if (isFocused)
+                if (_isFocused)
                 {
-                    g.FillRectangle(_errorState ? SkinManager.BackgroundHoverRedBrush : isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, LINE_Y, Width, isFocused ? 2 : 1);
+                    g.FillRectangle(_errorState ? SkinManager.BackgroundHoverRedBrush : _isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
                 }
             }
             else
@@ -909,20 +577,20 @@ public partial class MaterialTextBox : Control, IMaterialControl
                 // Line Animation
                 int LineAnimationWidth = (int)(Width * animationProgress);
                 int LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, LINE_Y, LineAnimationWidth, 2);
+                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
             }
         }
 
         // Prefix:
-        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
+        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
         {
             using NativeTextRenderer NativeText = new(g);
             Rectangle prefixRect = new(
                 _left_padding - _prefix_padding,
-                hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+                _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
                 //                        NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width,
                 _prefix_padding,
-                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+                _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
             // Draw Prefix text 
             NativeText.DrawTransparentText(
@@ -935,77 +603,76 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
 
         // Suffix:
-        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
+        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
         {
-            using NativeTextRenderer NativeText = new(g);
-            Rectangle suffixRect = new(
+            using var NativeText = new NativeTextRenderer(g);
+            var suffixRect = new Rectangle(
                 Width - _right_padding,
-                hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+                _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
                 //NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING,
                 _suffix_padding,
-                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+                _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
             // Draw Suffix text 
             NativeText.DrawTransparentText(
-            _prefixsuffixText,
-            SkinManager.GetLogFontByType(FontType.Subtitle1),
-            Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
-            suffixRect.Location,
-            suffixRect.Size,
-            TextAlignFlags.Right | TextAlignFlags.Middle);
+                _prefixsuffixText,
+                SkinManager.GetLogFontByType(FontType.Subtitle1),
+                Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                suffixRect.Location,
+                suffixRect.Size,
+                TextAlignFlags.Right | TextAlignFlags.Middle);
         }
 
         // Draw hint text
-        if (hasHint && UseTallSize && (isFocused || userTextPresent))
+        if (_hasHint && UseTallSize && (_isFocused || userTextPresent))
         {
-            using NativeTextRenderer NativeText = new(g);
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            Hint,
-            SkinManager.GetTextBoxFontBySize(hintTextSize),
-            Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
-            SkinManager.ColorScheme.AccentColor : // Focus Accent
-            SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-            SkinManager.TextMediumEmphasisColor : // not focused
-            SkinManager.BackgroundHoverRedColor : // error state
-            SkinManager.TextDisabledOrHintColor, // Disabled
-            hintRect.Location,
-            hintRect.Size,
-            TextAlignFlags.Left | TextAlignFlags.Middle);
+                Hint,
+                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                Enabled ? !_errorState || (!userTextPresent && !_isFocused) ? _isFocused ? UseAccent ?
+                SkinManager.ColorScheme.AccentColor : // Focus Accent
+                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
+                SkinManager.TextMediumEmphasisColor : // not focused
+                SkinManager.BackgroundHoverRedColor : // error state
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                hintRect.Location,
+                hintRect.Size,
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // Draw helper text
-        if (_showAssistiveText && isFocused && !_errorState)
+        if (_showAssistiveText && _isFocused && !_errorState)
         {
-            using NativeTextRenderer NativeText = new(g);
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            HelperText,
-            SkinManager.GetTextBoxFontBySize(hintTextSize),
-            Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
-            SkinManager.ColorScheme.AccentColor : // Focus Accent
-            SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-            SkinManager.TextMediumEmphasisColor : // not focused
-            SkinManager.BackgroundHoverRedColor : // error state
-            SkinManager.TextDisabledOrHintColor, // Disabled
-            helperTextRect.Location,
-            helperTextRect.Size,
-            TextAlignFlags.Left | TextAlignFlags.Middle);
+                HelperText,
+                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                Enabled ? !_errorState || (!userTextPresent && !_isFocused) ? _isFocused ? UseAccent ?
+                SkinManager.ColorScheme.AccentColor : // Focus Accent
+                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
+                SkinManager.TextMediumEmphasisColor : // not focused
+                SkinManager.BackgroundHoverRedColor : // error state
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                helperTextRect.Location,
+                helperTextRect.Size,
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
         // Draw error message
         if (_showAssistiveText && _errorState && ErrorMessage != null)
         {
-            using NativeTextRenderer NativeText = new(g);
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            ErrorMessage,
-            SkinManager.GetTextBoxFontBySize(hintTextSize),
-            Enabled ?
-            SkinManager.BackgroundHoverRedColor : // error state
-            SkinManager.TextDisabledOrHintColor, // Disabled
-            helperTextRect.Location,
-            helperTextRect.Size,
-            TextAlignFlags.Left | TextAlignFlags.Middle);
+                ErrorMessage,
+                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                Enabled ?
+                SkinManager.BackgroundHoverRedColor : // error state
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                helperTextRect.Location,
+                helperTextRect.Size,
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
-
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
@@ -1045,7 +712,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
         else
         {
-            baseTextBox?.Focus();
+            _baseTextBox?.Focus();
         }
         base.OnMouseDown(e);
 
@@ -1080,10 +747,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
         base.OnResize(e);
 
         UpdateRects();
-        preProcessIcons();
+        PreProcessIcons();
 
-        Size = new Size(Width, HEIGHT);
-        LINE_Y = HEIGHT - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
+        Size = new Size(Width, _height);
+        _lineY = _height - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
 
     }
 
@@ -1138,12 +805,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
         };
     }
 
-    private void preProcessIcons()
+    private void PreProcessIcons()
     {
-        if (_trailingIcon == null && _leadingIcon == null) return;
+        if (_trailingIcon == null && _leadingIcon == null)
+            return;
 
         // Calculate lightness and color
-        float l = (SkinManager.Theme == Themes.LIGHT) ? 0f : 1f;
+        var l = (SkinManager.Theme == Themes.LIGHT) ? 0f : 1f;
 
         // Create matrices
         float[][] matrixGray = [
@@ -1160,62 +828,58 @@ public partial class MaterialTextBox : Control, IMaterialControl
                 [0,   0,   0,   1,  0], // alpha scale factor
                 [1,   0,   0,   0,  1]];// offset
 
-        ColorMatrix colorMatrixGray = new(matrixGray);
-        ColorMatrix colorMatrixRed = new(matrixRed);
+        var colorMatrixGray = new ColorMatrix(matrixGray);
+        var colorMatrixRed = new ColorMatrix(matrixRed);
 
-        ImageAttributes grayImageAttributes = new();
-        ImageAttributes redImageAttributes = new();
+        var grayImageAttributes = new ImageAttributes();
+        var redImageAttributes = new ImageAttributes();
 
         // Set color matrices
         grayImageAttributes.SetColorMatrix(colorMatrixGray, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
         redImageAttributes.SetColorMatrix(colorMatrixRed, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
         // Create brushes
-        iconsBrushes = new Dictionary<string, TextureBrush>(2);
-        iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
+        _iconsBrushes = new Dictionary<string, TextureBrush>(2);
+        _iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
 
         // Image Rect
-        Rectangle destRect = new(0, 0, ICON_SIZE, ICON_SIZE);
+        var destRect = new Rectangle(0, 0, ICON_SIZE, ICON_SIZE);
 
         if (_leadingIcon != null)
         {
-            // ********************
-            // *** _leadingIcon ***
-            // ********************
-
             //Resize icon if greater than ICON_SIZE
-            Size newSize_leadingIcon = ResizeIcon(_leadingIcon);
-            Bitmap _leadingIconIconResized = new(_leadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
+            var newSize_leadingIcon = ResizeIcon(_leadingIcon);
+            var _leadingIconIconResized = new Bitmap(_leadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
-            Bitmap bgray = new(destRect.Width, destRect.Height);
-            using (Graphics gGray = Graphics.FromImage(bgray))
+            var bgray = new Bitmap(destRect.Width, destRect.Height);
+            using (var gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_leadingIconIconResized,
                     [
-                                new Point(0, 0),
-                                new Point(destRect.Width, 0),
-                                new Point(0, destRect.Height),
+                        new Point(0, 0),
+                        new Point(destRect.Width, 0),
+                        new Point(0, destRect.Height),
                     ],
                     destRect, GraphicsUnit.Pixel, grayImageAttributes);
             }
 
             //Create a pre - processed copy of the image(RED)
-            Bitmap bred = new(destRect.Width, destRect.Height);
-            using (Graphics gred = Graphics.FromImage(bred))
+            var bred = new Bitmap(destRect.Width, destRect.Height);
+            using (var gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_leadingIconIconResized,
                     [
-                                new Point(0, 0),
-                                new Point(destRect.Width, 0),
-                                new Point(0, destRect.Height),
+                        new Point(0, 0),
+                        new Point(destRect.Width, 0),
+                        new Point(0, destRect.Height),
                     ],
                     destRect, GraphicsUnit.Pixel, redImageAttributes);
             }
 
             // added processed image to brush for drawing
-            TextureBrush textureBrushGray = new(bgray);
-            TextureBrush textureBrushRed = new(bred);
+            var textureBrushGray = new TextureBrush(bgray);
+            var textureBrushRed = new TextureBrush(bred);
 
             textureBrushGray.WrapMode = WrapMode.Clamp;
             textureBrushRed.WrapMode = WrapMode.Clamp;
@@ -1228,52 +892,46 @@ public partial class MaterialTextBox : Control, IMaterialControl
                                                  iconRect.Y + iconRect.Height / 2 - _leadingIconIconResized.Height / 2);
 
             // add to dictionary
-            iconsBrushes.Add("_leadingIcon", textureBrushGray);
-
-            iconsErrorBrushes.Add("_leadingIcon", textureBrushRed);
-
+            _iconsBrushes.Add("_leadingIcon", textureBrushGray);
+            _iconsErrorBrushes.Add("_leadingIcon", textureBrushRed);
         }
 
         if (_trailingIcon != null)
         {
-            // *********************
-            // *** _trailingIcon ***
-            // *********************
-
             //Resize icon if greater than ICON_SIZE
-            Size newSize_trailingIcon = ResizeIcon(_trailingIcon);
-            Bitmap _trailingIconResized = new(_trailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
+            var newSize_trailingIcon = ResizeIcon(_trailingIcon);
+            var _trailingIconResized = new Bitmap(_trailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
-            Bitmap bgray = new(destRect.Width, destRect.Height);
-            using (Graphics gGray = Graphics.FromImage(bgray))
+            var bgray = new Bitmap(destRect.Width, destRect.Height);
+            using (var gGray = Graphics.FromImage(bgray))
             {
                 gGray.DrawImage(_trailingIconResized,
                     [
-                                new Point(0, 0),
-                                new Point(destRect.Width, 0),
-                                new Point(0, destRect.Height),
+                        new Point(0, 0),
+                        new Point(destRect.Width, 0),
+                        new Point(0, destRect.Height),
                     ],
                     destRect, GraphicsUnit.Pixel, grayImageAttributes);
             }
 
             //Create a pre - processed copy of the image(RED)
-            Bitmap bred = new(destRect.Width, destRect.Height);
-            using (Graphics gred = Graphics.FromImage(bred))
+            var bred = new Bitmap(destRect.Width, destRect.Height);
+            using (var gred = Graphics.FromImage(bred))
             {
                 gred.DrawImage(_trailingIconResized,
                     [
-                                new Point(0, 0),
-                                new Point(destRect.Width, 0),
-                                new Point(0, destRect.Height),
+                        new Point(0, 0),
+                        new Point(destRect.Width, 0),
+                        new Point(0, destRect.Height),
                     ],
                     destRect, GraphicsUnit.Pixel, redImageAttributes);
             }
 
 
             // added processed image to brush for drawing
-            TextureBrush textureBrushGray = new(bgray);
-            TextureBrush textureBrushRed = new(bred);
+            var textureBrushGray = new TextureBrush(bgray);
+            var textureBrushRed = new TextureBrush(bred);
 
             textureBrushGray.WrapMode = WrapMode.Clamp;
             textureBrushRed.WrapMode = WrapMode.Clamp;
@@ -1286,30 +944,37 @@ public partial class MaterialTextBox : Control, IMaterialControl
                                                  iconRect.Y + iconRect.Height / 2 - _trailingIconResized.Height / 2);
 
             // add to dictionary
-            iconsBrushes.Add("_trailingIcon", textureBrushGray);
-            //iconsSelectedBrushes.Add(0, textureBrushColor);
-            iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
+            _iconsBrushes.Add("_trailingIcon", textureBrushGray);
+            _iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
         }
     }
 
     private void UpdateHeight()
     {
-        HEIGHT = _UseTallSize ? 48 : 36;
-        HEIGHT += _helperTextHeight;
-        Size = new Size(Size.Width, HEIGHT);
+        _height = _useTallSize ? 48 : 36;
+        _height += _helperTextHeight;
+        Size = new Size(Size.Width, _height);
     }
 
     private void UpdateRects()
     {
         if (LeadingIcon != null)
+        {
             _left_padding = LEFT_PADDING + ICON_SIZE;
+        }
         else
+        {
             _left_padding = LEFT_PADDING;
+        }
 
         if (_trailingIcon != null)
+        {
             _right_padding = RIGHT_PADDING + ICON_SIZE;
+        }
         else
+        {
             _right_padding = RIGHT_PADDING;
+        }
 
         if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
@@ -1318,7 +983,9 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _left_padding += _prefix_padding;
         }
         else
+        {
             _prefix_padding = 0;
+        }
 
         if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
@@ -1327,44 +994,47 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _right_padding += _suffix_padding;
         }
         else
-            _suffix_padding = 0;
-
-        if (hasHint && UseTallSize && (isFocused || !string.IsNullOrEmpty(Text)))
         {
-            baseTextBox.Location = new Point(_left_padding, 22);
-            baseTextBox.Width = Width - (_left_padding + _right_padding);
-            baseTextBox.Height = FONT_HEIGHT;
+            _suffix_padding = 0;
+        }
+
+        if (_hasHint && UseTallSize && (_isFocused || !string.IsNullOrEmpty(Text)))
+        {
+            _baseTextBox.Location = new Point(_left_padding, 22);
+            _baseTextBox.Width = Width - (_left_padding + _right_padding);
+            _baseTextBox.Height = FONT_HEIGHT;
         }
         else
         {
-            baseTextBox.Location = new Point(_left_padding, (LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2 - FONT_HEIGHT / 2);
-            baseTextBox.Width = Width - (_left_padding + _right_padding);
-            baseTextBox.Height = FONT_HEIGHT;
+            _baseTextBox.Location = new Point(_left_padding, (_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2 - FONT_HEIGHT / 2);
+            _baseTextBox.Width = Width - (_left_padding + _right_padding);
+            _baseTextBox.Height = FONT_HEIGHT;
         }
 
-        _leadingIconBounds = new Rectangle(8, ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
-        _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+        _leadingIconBounds = new Rectangle(8, ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+        _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
     }
 
     public void SetErrorState(bool ErrorState)
     {
         _errorState = ErrorState;
         if (_errorState)
-            baseTextBox.ForeColor = SkinManager.BackgroundHoverRedColor;
+        {
+            _baseTextBox.ForeColor = SkinManager.BackgroundHoverRedColor;
+        }
         else
-            baseTextBox.ForeColor = SkinManager.TextHighEmphasisColor;
-        baseTextBox.Invalidate();
+        {
+            _baseTextBox.ForeColor = SkinManager.TextHighEmphasisColor;
+        }
+
+        _baseTextBox.Invalidate();
         Invalidate();
     }
 
-    public bool GetErrorState()
-    {
-        return _errorState;
-    }
-
+    public bool GetErrorState() => _errorState;
     private void ContextMenuStripOnItemClickStart(object sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
-        switch (toolStripItemClickedEventArgs.ClickedItem.Text)
+        switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
         {
             case "Undo":
                 Undo();
@@ -1392,11 +1062,11 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
     }
 
-    private void ContextMenuStripOnOpening(object sender, CancelEventArgs cancelEventArgs)
+    private void ContextMenuStripOnOpening(object? sender, CancelEventArgs cancelEventArgs)
     {
         if (sender is BaseTextBoxContextMenuStrip strip)
         {
-            strip.undo.Enabled = baseTextBox.CanUndo && !ReadOnly;
+            strip.undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
             strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
             strip.copy.Enabled = !string.IsNullOrEmpty(SelectedText);
             strip.paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
@@ -1405,7 +1075,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
     }
 
-    private void LeaveOnEnterKey_KeyDown(object sender, KeyEventArgs e)
+    private void LeaveOnEnterKey_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Enter)
         {

@@ -136,29 +136,14 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public MaterialTabControl DrawerTabControl { get; set; }
 
+    [AllowNull]
     public override string Text
     {
         get => base.Text;
         set { base.Text = value; Invalidate(); }
     }
 
-    public new FormWindowState WindowState
-    {
-        get => base.WindowState; set => base.WindowState = value;
-    }
-
-    public new FormBorderStyle FormBorderStyle
-    {
-        get => base.FormBorderStyle; set => base.FormBorderStyle = value;
-    }
-
-    public Rectangle UserArea
-    {
-        get
-        {
-            return new Rectangle(ClientRectangle.X, ClientRectangle.Y + STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT, ClientSize.Width, ClientSize.Height - (STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT));
-        }
-    }
+    public Rectangle UserArea => new Rectangle(ClientRectangle.X, ClientRectangle.Y + STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT, ClientSize.Width, ClientSize.Height - (STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT));
 
     /// <summary>
     /// Various directions the form can be resized in

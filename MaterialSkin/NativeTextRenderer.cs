@@ -1,5 +1,6 @@
 namespace MaterialSkin;
 
+#pragma warning disable CA1806 // Do not ignore method results
 public sealed partial class NativeTextRenderer : IDisposable
 {
     private static readonly int[] _charFit = new int[1];
@@ -77,7 +78,7 @@ public sealed partial class NativeTextRenderer : IDisposable
     private void DrawTransparentText(IntPtr fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
     {
         // Create a memory DC so we can work off-screen
-        IntPtr memoryHdc = CreateCompatibleDC(_hdc);
+        var memoryHdc = CreateCompatibleDC(_hdc);
         SetBkMode(memoryHdc, 1);
 
         // Create a device-independent bitmap and select it into our DC
@@ -88,8 +89,8 @@ public sealed partial class NativeTextRenderer : IDisposable
         info.biPlanes = 1;
         info.biBitCount = 32;
         info.biCompression = 0; // BI_RGB
-        IntPtr ppvBits;
-        IntPtr dib = CreateDIBSection(_hdc, ref info, 0, out ppvBits, 0, 0);
+        nint ppvBits;
+        var dib = CreateDIBSection(_hdc, ref info, 0, out ppvBits, 0, 0);
         SelectObject(memoryHdc, dib);
 
         try
@@ -101,45 +102,64 @@ public sealed partial class NativeTextRenderer : IDisposable
             SelectObject(memoryHdc, fontHandle);
             SetTextColor(memoryHdc, (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R);
 
-            Size strSize = new();
-            Point pos = new();
+            var strSize = new Size();
+            var pos = new Point();
 
             if (multilineSupport)
             {
                 var fmtFlags = TextFormatFlags.WordBreak;
+
                 // Aligment
                 if (flags.HasFlag(TextAlignFlags.Center))
+                {
                     fmtFlags |= TextFormatFlags.Center;
+                }
                 if (flags.HasFlag(TextAlignFlags.Right))
+                {
                     fmtFlags |= TextFormatFlags.Right;
+                }
 
                 // Calculate the string size
-                Rect strRect = new(new Rectangle(point, size));
+                var strRect = new Rect(new Rectangle(point, size));
                 DrawText(memoryHdc, str, str.Length, ref strRect, TextFormatFlags.CalcRect | fmtFlags);
 
                 if (flags.HasFlag(TextAlignFlags.Middle))
+                {
                     pos.Y = ((size.Height) >> 1) - (strRect.Height >> 1);
+                }
                 if (flags.HasFlag(TextAlignFlags.Bottom))
+                {
                     pos.Y = size.Height - strRect.Height;
+                }
 
                 // Draw Text for multiline format
-                Rect region = new(new Rectangle(pos, size));
+                var region = new Rect(new Rectangle(pos, size));
                 DrawText(memoryHdc, str, -1, ref region, fmtFlags);
             }
             else
             {
                 // Calculate the string size
                 GetTextExtentPoint32(memoryHdc, str, str.Length, ref strSize);
+
                 // Aligment
                 if (flags.HasFlag(TextAlignFlags.Center))
+                {
                     pos.X = ((size.Width) >> 1) - (strSize.Width >> 1);
+                }
                 if (flags.HasFlag(TextAlignFlags.Right))
+                {
                     pos.X = size.Width - strSize.Width;
+                }
 
                 if (flags.HasFlag(TextAlignFlags.Middle))
+                {
                     pos.Y = ((size.Height) >> 1) - (strSize.Height >> 1);
+                }
+
                 if (flags.HasFlag(TextAlignFlags.Bottom))
+                {
                     pos.Y = size.Height - strSize.Height;
+                }
 
                 // Draw text to memory HDC
                 TextOut(memoryHdc, pos.X, pos.Y, str, str.Length);
@@ -288,13 +308,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         private readonly int _right = r.Right;
         private readonly int _bottom = r.Bottom;
 
-        public int Height
-        {
-            get
-            {
-                return _bottom - _top;
-            }
-        }
+        public int Height => _bottom - _top;
     }
 
     private struct BlendFunction(byte alpha)
@@ -324,3 +338,4 @@ public sealed partial class NativeTextRenderer : IDisposable
         public byte bmiColors_rgbReserved;
     }
 }
+#pragma warning restore CA1806 // Do not ignore method results

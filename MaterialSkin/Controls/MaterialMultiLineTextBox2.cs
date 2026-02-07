@@ -34,7 +34,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     public int SelectionLength { get => baseTextBox.SelectionLength; set => baseTextBox.SelectionLength = value; }
 
     [Browsable(false)]
-    public int TextLength { get { return baseTextBox.TextLength; } }
+    public int TextLength => baseTextBox.TextLength;
 
     [Browsable(false)]
     public override Color ForeColor { get; set; }
@@ -57,7 +57,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true), Description("Defines whether MaterialMultiLineTextBox allows scrolling of text. This property is independent of the ScrollBars property")]
     public bool AllowScroll { get; set; }
 
-    public override ContextMenuStrip ContextMenuStrip
+    public override ContextMenuStrip? ContextMenuStrip
     {
         get => baseTextBox.ContextMenuStrip;
         set
@@ -77,8 +77,9 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public override Color BackColor { get { return Parent == null ? SkinManager.BackgroundColor : Parent.BackColor; } }
+    public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
 
+    [AllowNull]
     public override string Text { get => baseTextBox.Text; set => baseTextBox.Text = value; }
 
     [Category("Appearance")]
@@ -231,20 +232,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     {
         add => baseTextBox.ClientSizeChanged += value; remove => baseTextBox.ClientSizeChanged -= value;
     }
-
-#if NETFRAMEWORK
-    public new event EventHandler ContextMenuChanged
-    {
-        add
-        {
-            baseTextBox.ContextMenuChanged += value;
-        }
-        remove
-        {
-            baseTextBox.ContextMenuChanged -= value;
-        }
-    }
-#endif
 
     public new event EventHandler ContextMenuStripChanged
     {

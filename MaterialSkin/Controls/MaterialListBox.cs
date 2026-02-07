@@ -77,15 +77,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Browsable(false), Category("Material Skin"),
      Description("Gets the currently selected Text in the ListBox.")]
-    public string SelectedText
-    {
-        get => _selectedText;
-        //set
-        //{
-        //    _selectedText = value;
-        //    Invalidate();
-        //}
-    }
+    public string SelectedText => _selectedText;
 
     [Browsable(false), Category("Material Skin"), Description("Gets or sets the zero-based index of the currently selected item in a ListBox.")]
     public int SelectedIndex
@@ -100,15 +92,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     }
 
     [Browsable(true), Category("Material Skin"), Description("Gets the value of the member property specified by the ValueMember property.")]
-    public object SelectedValue
-    {
-        get => _selectedValue;
-        //set
-        //{
-        //    _selectedValue = value;
-        //    Invalidate();
-        //}
-    }
+    public object SelectedValue => _selectedValue;
 
     [Category("Material Skin"), DefaultValue(false), Description("Gets or sets a value indicating whether the ListBox supports multiple rows.")]
     public bool MultiSelect
@@ -161,6 +145,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [AllowNull]
     public override string Text { get => base.Text; set => base.Text = value; }
 
     [Category("Material Skin"), Description("Gets or sets border color used by the control.")]

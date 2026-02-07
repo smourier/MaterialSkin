@@ -8,7 +8,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     [Browsable(false)]
     public int Depth { get; set; }
     [Browsable(false)]
-    public MaterialSkinManager SkinManager { get { return MaterialSkinManager.Instance; } }
+    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 

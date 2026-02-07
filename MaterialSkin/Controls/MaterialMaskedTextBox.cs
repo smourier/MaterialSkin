@@ -2,9 +2,43 @@
 
 public class MaterialMaskedTextBox : Control, IMaterialControl
 {
+    private const int PREFIX_SUFFIX_PADDING = 4;
+    private const int ICON_SIZE = 24;
+    private const int HINT_TEXT_SMALL_SIZE = 18;
+    private const int HINT_TEXT_SMALL_Y = 4;
+    private const int LEFT_PADDING = 16;
+    private const int RIGHT_PADDING = 12;
+    private const int ACTIVATION_INDICATOR_HEIGHT = 2;
+    private const int HELPER_TEXT_HEIGHT = 16;
+    private const int _fontHeight = 20;
 
-    readonly MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
-    ContextMenuStrip _lastContextMenuStrip = new();
+    private readonly MaterialContextMenuStrip _cms = new BaseTextBoxContextMenuStrip();
+    private readonly AnimationManager _animationManager;
+    private int _height = 48;
+    private int _lineY;
+    private bool _hasHint;
+    private bool _errorState;
+    private int _left_padding;
+    private int _right_padding;
+    private int _prefix_padding;
+    private int _suffix_padding;
+    private int _helperTextHeight;
+    private Rectangle _leadingIconBounds;
+    private Rectangle _trailingIconBounds;
+    private Dictionary<string, TextureBrush> _iconsBrushes;
+    private Dictionary<string, TextureBrush> _iconsErrorBrushes;
+    private ContextMenuStrip _lastContextMenuStrip = new();
+    private string _helperText;
+    private bool _showAssistiveText;
+    private string _errorMessage;
+    private bool _useTallSize;
+    private Image _leadingIcon;
+    private Image _trailingIcon;
+    private PrefixSuffixTypes _prefixsuffix;
+    private string _prefixsuffixText;
+    private bool _readonly;
+    private bool _animateReadOnly;
+    private bool _leaveOnEnterKey;
 
     //Properties for managing the material design properties
     [Browsable(false)]
@@ -18,6 +52,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     //Unused properties
     [Browsable(false)]
+    [AllowNull]
     public override Image BackgroundImage { get; set; }
 
     [Browsable(false)]
@@ -33,30 +68,24 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
     public int SelectionLength { get => baseTextBox.SelectionLength; set => baseTextBox.SelectionLength = value; }
 
     [Browsable(false)]
-    public int TextLength { get { return baseTextBox.TextLength; } }
+    public int TextLength => baseTextBox.TextLength;
 
     [Browsable(false)]
     public override Color ForeColor { get; set; }
 
-
-    //Material Skin properties
-
-    private bool _UseTallSize;
-
     [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
     public bool UseTallSize
     {
-        get => _UseTallSize;
+        get => _useTallSize;
         set
         {
-            _UseTallSize = value;
+            _useTallSize = value;
             UpdateHeight();
             UpdateRects();
             Invalidate();
         }
     }
 
-    private bool _showAssistiveText;
     [Category("Material Skin"), DefaultValue(false), Description("Assistive elements provide additional detail about text entered into text fields. Could be Helper text or Error message.")]
     public bool ShowAssistiveText
     {
@@ -74,8 +103,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private string _helperText;
-
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Helper text conveys additional guidance about the input field, such as how it will be used.")]
     public string HelperText
     {
@@ -86,8 +113,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             Invalidate();
         }
     }
-
-    private string _errorMessage;
 
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("When text input isn't accepted, an error message can display instructions on how to fix it. Error messages are displayed below the input line, replacing helper text until fixed.")]
     public string ErrorMessage
@@ -107,7 +132,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         set
         {
             baseTextBox.Hint = value;
-            hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
+            _hasHint = !string.IsNullOrEmpty(baseTextBox.Hint);
             UpdateRects();
             Invalidate();
         }
@@ -115,8 +140,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     [Category("Material Skin"), DefaultValue(true)]
     public bool UseAccent { get; set; }
-
-    private Image _leadingIcon;
 
     [Category("Material Skin"), Browsable(true), Localizable(false)]
     /// <summary>
@@ -134,8 +157,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private Image _trailingIcon;
-
     [Category("Material Skin"), Browsable(true), Localizable(false)]
     /// <summary>
     /// Gets or sets the trailing Icon
@@ -152,7 +173,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private PrefixSuffixTypes _prefixsuffix;
     [Category("Material Skin"), DefaultValue(PrefixSuffixTypes.None), Description("Set Prefix/Suffix/None")]
     public PrefixSuffixTypes PrefixSuffix
     {
@@ -169,25 +189,19 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private string _prefixsuffixText;
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Set Prefix or Suffix text")]
     public string PrefixSuffixText
     {
         get => _prefixsuffixText;
         set
         {
-            //if (_prefixsuffixText != value)
-            //{
             _prefixsuffixText = value;
             UpdateRects();
             Invalidate();
-            //}
         }
     }
 
-    //TextBox properties
-
-    public override ContextMenuStrip ContextMenuStrip
+    public override ContextMenuStrip? ContextMenuStrip
     {
         get => baseTextBox.ContextMenuStrip;
         set
@@ -199,16 +213,17 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             }
             else
             {
-                baseTextBox.ContextMenuStrip = cms;
-                base.ContextMenuStrip = cms;
+                baseTextBox.ContextMenuStrip = _cms;
+                base.ContextMenuStrip = _cms;
             }
             _lastContextMenuStrip = base.ContextMenuStrip;
         }
     }
 
     [Browsable(false)]
-    public override Color BackColor { get { return Parent == null ? SkinManager.BackgroundColor : Parent.BackColor; } }
+    public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
 
+    [AllowNull]
     public override string Text { get => baseTextBox.Text; set => baseTextBox.Text = value; }
 
     [Category("Appearance")]
@@ -216,9 +231,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     [Category("Appearance")]
     public char PromptChar { get => baseTextBox.PromptChar; set => baseTextBox.PromptChar = value; }
-
-    //[Category("Behavior")]
-    //public CharacterCasing CharacterCasing { get { return baseTextBox.CharacterCasing; } set { baseTextBox.CharacterCasing = value; } }
 
     [Category("Behavior")]
     public bool HideSelection { get => baseTextBox.HideSelection; set => baseTextBox.HideSelection = value; }
@@ -293,7 +305,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     public new object Tag { get => baseTextBox.Tag; set => baseTextBox.Tag = value; }
 
-    private bool _readonly;
     [Category("Behavior")]
     public bool ReadOnly
     {
@@ -309,8 +320,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private bool _animateReadOnly;
-
     [Category("Material Skin")]
     [Browsable(true)]
     public bool AnimateReadOnly
@@ -322,8 +331,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             Invalidate();
         }
     }
-
-    private bool _leaveOnEnterKey;
 
     [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed.")]
     public bool LeaveOnEnterKey
@@ -413,20 +420,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
     {
         add => baseTextBox.ClientSizeChanged += value; remove => baseTextBox.ClientSizeChanged -= value;
     }
-
-#if NETFRAMEWORK
-    public new event EventHandler ContextMenuChanged
-    {
-        add
-        {
-            baseTextBox.ContextMenuChanged += value;
-        }
-        remove
-        {
-            baseTextBox.ContextMenuChanged -= value;
-        }
-    }
-#endif
 
     public new event EventHandler ContextMenuStripChanged
     {
@@ -768,37 +761,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         add => baseTextBox.VisibleChanged += value; remove => baseTextBox.VisibleChanged -= value;
     }
 
-    private readonly AnimationManager _animationManager;
-
     public bool isFocused = false;
-    private const int PREFIX_SUFFIX_PADDING = 4;
-    private const int ICON_SIZE = 24;
-    private const int HINT_TEXT_SMALL_SIZE = 18;
-    private const int HINT_TEXT_SMALL_Y = 4;
-    private const int TOP_PADDING = 8; //10;
-    private const int BOTTOM_PADDING = 8; //10;
-    private const int LEFT_PADDING = 16;
-    private const int RIGHT_PADDING = 12;
-    private const int ACTIVATION_INDICATOR_HEIGHT = 2;
-    private const int HELPER_TEXT_HEIGHT = 16;
-    private const int FONT_HEIGHT = 20;
-
-    private int HEIGHT = 48;
-
-    private int LINE_Y;
-    private bool hasHint;
-    private bool _errorState = false;
-    private int _left_padding;
-    private int _right_padding;
-    private int _prefix_padding;
-    private int _suffix_padding;
-    private int _helperTextHeight;
-    private Rectangle _leadingIconBounds;
-    private Rectangle _trailingIconBounds;
-
-    private Dictionary<string, TextureBrush> iconsBrushes;
-    private Dictionary<string, TextureBrush> iconsErrorBrushes;
-
     protected readonly BaseMaskedTextBox baseTextBox;
 
     public MaterialMaskedTextBox()
@@ -837,14 +800,14 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             Font = base.Font,
             ForeColor = SkinManager.TextHighEmphasisColor,
             Multiline = false,
-            Location = new Point(LEFT_PADDING, HEIGHT / 2 - FONT_HEIGHT / 2),
+            Location = new Point(LEFT_PADDING, _height / 2 - _fontHeight / 2),
             Width = Width - (LEFT_PADDING + RIGHT_PADDING),
-            Height = FONT_HEIGHT
+            Height = _fontHeight
         };
 
         Enabled = true;
         ReadOnly = false;
-        Size = new Size(250, HEIGHT);
+        Size = new Size(250, _height);
 
         UseTallSize = true;
         PrefixSuffix = PrefixSuffixTypes.None;
@@ -881,9 +844,9 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         baseTextBox.TabStop = true;
         TabStop = false;
 
-        cms.Opening += ContextMenuStripOnOpening;
-        cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
-        ContextMenuStrip = cms;
+        _cms.Opening += ContextMenuStripOnOpening;
+        _cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
+        ContextMenuStrip = _cms;
 
     }
 
@@ -913,7 +876,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
             MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? SkinManager.BackgroundHoverBrush : // Hover
             backBrush, // Normal
-            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, LINE_Y);
+            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
         baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
             isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
@@ -924,28 +887,28 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         if (LeadingIcon != null)
         {
             if (_errorState)
-                g.FillRectangle(iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
+                g.FillRectangle(_iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
             else
-                g.FillRectangle(iconsBrushes["_leadingIcon"], _leadingIconBounds);
+                g.FillRectangle(_iconsBrushes["_leadingIcon"], _leadingIconBounds);
         }
 
         //Trailing Icon
         if (TrailingIcon != null)
         {
             if (_errorState)
-                g.FillRectangle(iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
+                g.FillRectangle(_iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
             else
-                g.FillRectangle(iconsBrushes["_trailingIcon"], _trailingIconBounds);
+                g.FillRectangle(_iconsBrushes["_trailingIcon"], _trailingIconBounds);
         }
 
         // HintText
         bool userTextPresent = !string.IsNullOrEmpty(Text);
-        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, LINE_Y + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
+        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, _lineY + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
         Rectangle hintRect = new(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
         int hintTextSize = 12;
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, LINE_Y, Width, 1);
+        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (ReadOnly == false || (ReadOnly && AnimateReadOnly))
         {
@@ -956,7 +919,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
                 // bottom line
                 if (isFocused)
                 {
-                    g.FillRectangle(_errorState ? SkinManager.BackgroundHoverRedBrush : isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, LINE_Y, Width, isFocused ? 2 : 1);
+                    g.FillRectangle(_errorState ? SkinManager.BackgroundHoverRedBrush : isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, _lineY, Width, isFocused ? 2 : 1);
                 }
             }
             else
@@ -967,19 +930,19 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
                 // Line Animation
                 int LineAnimationWidth = (int)(Width * animationProgress);
                 int LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, LINE_Y, LineAnimationWidth, 2);
+                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
             }
         }
 
         // Prefix:
-        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
+        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !_hasHint))
         {
             using NativeTextRenderer NativeText = new(g);
             Rectangle prefixRect = new(
                 _left_padding - _prefix_padding,
-                hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+                _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
                 _prefix_padding,
-                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+                _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
             // Draw Prefix text 
             NativeText.DrawTransparentText(
@@ -992,14 +955,14 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
 
         // Suffix:
-        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !hasHint))
+        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (isFocused || userTextPresent || !_hasHint))
         {
             using NativeTextRenderer NativeText = new(g);
             Rectangle suffixRect = new(
                 Width - _right_padding,
-                hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+                _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
                 _suffix_padding,
-                hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+                _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
             // Draw Suffix text 
             NativeText.DrawTransparentText(
@@ -1012,7 +975,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
 
         // Draw hint text
-        if (hasHint && UseTallSize && (isFocused || userTextPresent))
+        if (_hasHint && UseTallSize && (isFocused || userTextPresent))
         {
             using NativeTextRenderer NativeText = new(g);
             NativeText.DrawTransparentText(
@@ -1139,8 +1102,8 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         UpdateRects();
         preProcessIcons();
 
-        Size = new Size(Width, HEIGHT);
-        LINE_Y = HEIGHT - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
+        Size = new Size(Width, _height);
+        _lineY = _height - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
 
     }
 
@@ -1228,8 +1191,8 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         redImageAttributes.SetColorMatrix(colorMatrixRed, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
         // Create brushes
-        iconsBrushes = new Dictionary<string, TextureBrush>(2);
-        iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
+        _iconsBrushes = new Dictionary<string, TextureBrush>(2);
+        _iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
 
         // Image Rect
         Rectangle destRect = new(0, 0, ICON_SIZE, ICON_SIZE);
@@ -1285,9 +1248,9 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
                                                  iconRect.Y + iconRect.Height / 2 - _leadingIconIconResized.Height / 2);
 
             // add to dictionary
-            iconsBrushes.Add("_leadingIcon", textureBrushGray);
+            _iconsBrushes.Add("_leadingIcon", textureBrushGray);
 
-            iconsErrorBrushes.Add("_leadingIcon", textureBrushRed);
+            _iconsErrorBrushes.Add("_leadingIcon", textureBrushRed);
 
         }
 
@@ -1343,17 +1306,17 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
                                                  iconRect.Y + iconRect.Height / 2 - _trailingIconResized.Height / 2);
 
             // add to dictionary
-            iconsBrushes.Add("_trailingIcon", textureBrushGray);
+            _iconsBrushes.Add("_trailingIcon", textureBrushGray);
             //iconsSelectedBrushes.Add(0, textureBrushColor);
-            iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
+            _iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
         }
     }
 
     private void UpdateHeight()
     {
-        HEIGHT = _UseTallSize ? 48 : 36;
-        HEIGHT += _helperTextHeight;
-        Size = new Size(Size.Width, HEIGHT);
+        _height = _useTallSize ? 48 : 36;
+        _height += _helperTextHeight;
+        Size = new Size(Size.Width, _height);
     }
 
     private void UpdateRects()
@@ -1385,21 +1348,21 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         else
             _suffix_padding = 0;
 
-        if (hasHint && UseTallSize && (isFocused || !string.IsNullOrEmpty(Text)))
+        if (_hasHint && UseTallSize && (isFocused || !string.IsNullOrEmpty(Text)))
         {
             baseTextBox.Location = new Point(_left_padding, 22);
             baseTextBox.Width = Width - (_left_padding + _right_padding);
-            baseTextBox.Height = FONT_HEIGHT;
+            baseTextBox.Height = _fontHeight;
         }
         else
         {
-            baseTextBox.Location = new Point(_left_padding, (LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2 - FONT_HEIGHT / 2);
+            baseTextBox.Location = new Point(_left_padding, (_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2 - _fontHeight / 2);
             baseTextBox.Width = Width - (_left_padding + _right_padding);
-            baseTextBox.Height = FONT_HEIGHT;
+            baseTextBox.Height = _fontHeight;
         }
 
-        _leadingIconBounds = new Rectangle(8, ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
-        _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+        _leadingIconBounds = new Rectangle(8, ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+        _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
     }
 
     public void SetErrorState(bool ErrorState)
@@ -1413,10 +1376,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         Invalidate();
     }
 
-    public bool GetErrorState()
-    {
-        return _errorState;
-    }
+    public bool GetErrorState() => _errorState;
 
     private void ContextMenuStripOnItemClickStart(object sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
@@ -1425,18 +1385,23 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             case "Undo":
                 Undo();
                 break;
+
             case "Cut":
                 Cut();
                 break;
+
             case "Copy":
                 Copy();
                 break;
+
             case "Paste":
                 Paste();
                 break;
+
             case "Delete":
                 SelectedText = string.Empty;
                 break;
+
             case "Select All":
                 SelectAll();
                 break;
@@ -1456,7 +1421,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    private void LeaveOnEnterKey_KeyDown(object sender, KeyEventArgs e)
+    private void LeaveOnEnterKey_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.KeyData == Keys.Enter)
         {

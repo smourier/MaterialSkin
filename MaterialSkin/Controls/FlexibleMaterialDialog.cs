@@ -6,14 +6,14 @@ namespace MaterialSkin.Controls;
 /// </summary>
 public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
 {
-    private readonly MaterialSkinManager materialSkinManager;
+    private readonly MaterialSkinManager _materialSkinManager;
 
     /// <summary>
     /// Defines the font for all FlexibleMessageBox instances.
     ///
     /// Default is: SystemFonts.MessageBoxFont
     /// </summary>
-    public static Font FONT;
+    private static Font _font;
 
     /// <summary>
     /// Defines the maximum width for all FlexibleMessageBox instances in percent of the working area.
@@ -24,7 +24,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     ///
     /// Default is: 70% of the working area width.
     /// </summary>
-    public static double MAX_WIDTH_FACTOR = 0.7;
+    private const double _maxWidthFactor = 0.7;
 
     /// <summary>
     /// Defines the maximum height for all FlexibleMessageBox instances in percent of the working area.
@@ -35,49 +35,35 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     ///
     /// Default is: 90% of the working area height.
     /// </summary>
-    public static double MAX_HEIGHT_FACTOR = 0.9;
+    private const double _maxHeightFactor = 0.9;
 
-    private MaterialMultiLineTextBox richTextBoxMessage;
-    private MaterialLabel materialLabel1;
-    private MaterialButton leftButton;
-    private MaterialButton middleButton;
-    private MaterialButton rightButton;
+    private MaterialMultiLineTextBox _richTextBoxMessage;
+    private MaterialLabel _materialLabel1;
+    private MaterialButton _leftButton;
+    private MaterialButton _middleButton;
+    private MaterialButton _rightButton;
+    private IContainer? components = null;
 
-    public ButtonsPosition ButtonsPositionEnum { get; set; } = ButtonsPosition.Right;
-
-    /// <summary>
-    /// Erforderliche Designervariable.
-    /// </summary>
-    private IContainer components = null;
-
-    /// <summary>
-    /// Verwendete Ressourcen bereinigen.
-    /// </summary>
-    /// <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
     protected override void Dispose(bool disposing)
     {
-        if (disposing && (components != null))
+        if (disposing)
         {
-            components.Dispose();
+            components?.Dispose();
         }
         base.Dispose(disposing);
     }
 
-    /// <summary>
-    /// Erforderliche Methode für die Designerunterstützung.
-    /// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
-    /// </summary>
     private void InitializeComponent()
     {
         components = new Container();
         FlexibleMaterialFormBindingSource = new BindingSource(components);
         messageContainer = new Panel();
-        materialLabel1 = new MaterialLabel();
+        _materialLabel1 = new MaterialLabel();
         pictureBoxForIcon = new PictureBox();
-        richTextBoxMessage = new MaterialMultiLineTextBox();
-        leftButton = new MaterialButton();
-        middleButton = new MaterialButton();
-        rightButton = new MaterialButton();
+        _richTextBoxMessage = new MaterialMultiLineTextBox();
+        _leftButton = new MaterialButton();
+        _middleButton = new MaterialButton();
+        _rightButton = new MaterialButton();
         ((ISupportInitialize)FlexibleMaterialFormBindingSource).BeginInit();
         messageContainer.SuspendLayout();
         ((ISupportInitialize)pictureBoxForIcon).BeginInit();
@@ -89,9 +75,9 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         | AnchorStyles.Left
         | AnchorStyles.Right;
         messageContainer.BackColor = Color.White;
-        messageContainer.Controls.Add(materialLabel1);
+        messageContainer.Controls.Add(_materialLabel1);
         messageContainer.Controls.Add(pictureBoxForIcon);
-        messageContainer.Controls.Add(richTextBoxMessage);
+        messageContainer.Controls.Add(_richTextBoxMessage);
         messageContainer.Location = new Point(1, 65);
         messageContainer.Name = "messageContainer";
         messageContainer.Size = new Size(382, 89);
@@ -99,19 +85,19 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // materialLabel1
         // 
-        materialLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        _materialLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
         | AnchorStyles.Left
         | AnchorStyles.Right;
-        materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
-        materialLabel1.Depth = 0;
-        materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-        materialLabel1.Location = new Point(56, 12);
-        materialLabel1.MouseState = MouseState.HOVER;
-        materialLabel1.Name = "materialLabel1";
-        materialLabel1.Size = new Size(314, 65);
-        materialLabel1.TabIndex = 9;
-        materialLabel1.Text = "<Message>";
-        materialLabel1.Visible = false;
+        _materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        _materialLabel1.Depth = 0;
+        _materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+        _materialLabel1.Location = new Point(56, 12);
+        _materialLabel1.MouseState = MouseState.HOVER;
+        _materialLabel1.Name = "materialLabel1";
+        _materialLabel1.Size = new Size(314, 65);
+        _materialLabel1.TabIndex = 9;
+        _materialLabel1.Text = "<Message>";
+        _materialLabel1.Visible = false;
         // 
         // pictureBoxForIcon
         // 
@@ -124,103 +110,103 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // richTextBoxMessage
         // 
-        richTextBoxMessage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        _richTextBoxMessage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
         | AnchorStyles.Left
         | AnchorStyles.Right;
-        richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
-        richTextBoxMessage.BorderStyle = BorderStyle.None;
-        richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
-        richTextBoxMessage.Depth = 0;
-        richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
-        richTextBoxMessage.Location = new Point(56, 12);
-        richTextBoxMessage.Margin = new Padding(0);
-        richTextBoxMessage.MouseState = MouseState.HOVER;
-        richTextBoxMessage.Name = "richTextBoxMessage";
-        richTextBoxMessage.ReadOnly = true;
-        richTextBoxMessage.ScrollBars = RichTextBoxScrollBars.Vertical;
-        richTextBoxMessage.Size = new Size(314, 65);
-        richTextBoxMessage.TabIndex = 0;
-        richTextBoxMessage.TabStop = false;
-        richTextBoxMessage.Text = "<Message>";
-        richTextBoxMessage.LinkClicked += new LinkClickedEventHandler(richTextBoxMessage_LinkClicked);
+        _richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
+        _richTextBoxMessage.BorderStyle = BorderStyle.None;
+        _richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        _richTextBoxMessage.Depth = 0;
+        _richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        _richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
+        _richTextBoxMessage.Location = new Point(56, 12);
+        _richTextBoxMessage.Margin = new Padding(0);
+        _richTextBoxMessage.MouseState = MouseState.HOVER;
+        _richTextBoxMessage.Name = "richTextBoxMessage";
+        _richTextBoxMessage.ReadOnly = true;
+        _richTextBoxMessage.ScrollBars = RichTextBoxScrollBars.Vertical;
+        _richTextBoxMessage.Size = new Size(314, 65);
+        _richTextBoxMessage.TabIndex = 0;
+        _richTextBoxMessage.TabStop = false;
+        _richTextBoxMessage.Text = "<Message>";
+        _richTextBoxMessage.LinkClicked += new LinkClickedEventHandler(RichTextBoxMessage_LinkClicked);
         // 
         // leftButton
         // 
-        leftButton.Anchor = AnchorStyles.Bottom;
-        leftButton.AutoSize = false;
-        leftButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        leftButton.Density = MaterialButtonDensity.Default;
-        leftButton.Depth = 0;
-        leftButton.DialogResult = DialogResult.OK;
-        leftButton.HighEmphasis = false;
-        leftButton.Icon = null;
-        leftButton.Location = new Point(32, 163);
-        leftButton.Margin = new Padding(4, 6, 4, 6);
-        leftButton.MinimumSize = new Size(0, 24);
-        leftButton.MouseState = MouseState.HOVER;
-        leftButton.Name = "leftButton";
-        leftButton.Size = new Size(108, 36);
-        leftButton.TabIndex = 14;
-        leftButton.Text = "OK";
-        leftButton.Type = MaterialButtonType.Text;
-        leftButton.UseAccentColor = false;
-        leftButton.UseVisualStyleBackColor = true;
-        leftButton.Visible = false;
+        _leftButton.Anchor = AnchorStyles.Bottom;
+        _leftButton.AutoSize = false;
+        _leftButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        _leftButton.Density = MaterialButtonDensity.Default;
+        _leftButton.Depth = 0;
+        _leftButton.DialogResult = DialogResult.OK;
+        _leftButton.HighEmphasis = false;
+        _leftButton.Icon = null;
+        _leftButton.Location = new Point(32, 163);
+        _leftButton.Margin = new Padding(4, 6, 4, 6);
+        _leftButton.MinimumSize = new Size(0, 24);
+        _leftButton.MouseState = MouseState.HOVER;
+        _leftButton.Name = "leftButton";
+        _leftButton.Size = new Size(108, 36);
+        _leftButton.TabIndex = 14;
+        _leftButton.Text = "OK";
+        _leftButton.Type = MaterialButtonType.Text;
+        _leftButton.UseAccentColor = false;
+        _leftButton.UseVisualStyleBackColor = true;
+        _leftButton.Visible = false;
         // 
         // middleButton
         // 
-        middleButton.Anchor = AnchorStyles.Bottom;
-        middleButton.AutoSize = false;
-        middleButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        middleButton.Density = MaterialButtonDensity.Default;
-        middleButton.Depth = 0;
-        middleButton.DialogResult = DialogResult.OK;
-        middleButton.HighEmphasis = true;
-        middleButton.Icon = null;
-        middleButton.Location = new Point(148, 163);
-        middleButton.Margin = new Padding(4, 6, 4, 6);
-        middleButton.MinimumSize = new Size(0, 24);
-        middleButton.MouseState = MouseState.HOVER;
-        middleButton.Name = "middleButton";
-        middleButton.Size = new Size(102, 36);
-        middleButton.TabIndex = 15;
-        middleButton.Text = "OK";
-        middleButton.Type = MaterialButtonType.Text;
-        middleButton.UseAccentColor = false;
-        middleButton.UseVisualStyleBackColor = true;
-        middleButton.Visible = false;
+        _middleButton.Anchor = AnchorStyles.Bottom;
+        _middleButton.AutoSize = false;
+        _middleButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        _middleButton.Density = MaterialButtonDensity.Default;
+        _middleButton.Depth = 0;
+        _middleButton.DialogResult = DialogResult.OK;
+        _middleButton.HighEmphasis = true;
+        _middleButton.Icon = null;
+        _middleButton.Location = new Point(148, 163);
+        _middleButton.Margin = new Padding(4, 6, 4, 6);
+        _middleButton.MinimumSize = new Size(0, 24);
+        _middleButton.MouseState = MouseState.HOVER;
+        _middleButton.Name = "middleButton";
+        _middleButton.Size = new Size(102, 36);
+        _middleButton.TabIndex = 15;
+        _middleButton.Text = "OK";
+        _middleButton.Type = MaterialButtonType.Text;
+        _middleButton.UseAccentColor = false;
+        _middleButton.UseVisualStyleBackColor = true;
+        _middleButton.Visible = false;
         // 
         // rightButton
         // 
-        rightButton.Anchor = AnchorStyles.Bottom;
-        rightButton.AutoSize = false;
-        rightButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        rightButton.Density = MaterialButtonDensity.Default;
-        rightButton.Depth = 0;
-        rightButton.DialogResult = DialogResult.OK;
-        rightButton.HighEmphasis = true;
-        rightButton.Icon = null;
-        rightButton.Location = new Point(258, 163);
-        rightButton.Margin = new Padding(4, 6, 4, 6);
-        rightButton.MinimumSize = new Size(0, 24);
-        rightButton.MouseState = MouseState.HOVER;
-        rightButton.Name = "rightButton";
-        rightButton.Size = new Size(106, 36);
-        rightButton.TabIndex = 13;
-        rightButton.Text = "OK";
-        rightButton.Type = MaterialButtonType.Contained;
-        rightButton.UseAccentColor = false;
-        rightButton.UseVisualStyleBackColor = true;
-        rightButton.Visible = false;
+        _rightButton.Anchor = AnchorStyles.Bottom;
+        _rightButton.AutoSize = false;
+        _rightButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        _rightButton.Density = MaterialButtonDensity.Default;
+        _rightButton.Depth = 0;
+        _rightButton.DialogResult = DialogResult.OK;
+        _rightButton.HighEmphasis = true;
+        _rightButton.Icon = null;
+        _rightButton.Location = new Point(258, 163);
+        _rightButton.Margin = new Padding(4, 6, 4, 6);
+        _rightButton.MinimumSize = new Size(0, 24);
+        _rightButton.MouseState = MouseState.HOVER;
+        _rightButton.Name = "rightButton";
+        _rightButton.Size = new Size(106, 36);
+        _rightButton.TabIndex = 13;
+        _rightButton.Text = "OK";
+        _rightButton.Type = MaterialButtonType.Contained;
+        _rightButton.UseAccentColor = false;
+        _rightButton.UseVisualStyleBackColor = true;
+        _rightButton.Visible = false;
         // 
         // FlexibleMaterialForm
         // 
         BackColor = Color.White;
         ClientSize = new Size(384, 208);
-        Controls.Add(leftButton);
-        Controls.Add(middleButton);
-        Controls.Add(rightButton);
+        Controls.Add(_leftButton);
+        Controls.Add(_middleButton);
+        Controls.Add(_rightButton);
         Controls.Add(messageContainer);
         DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "CaptionText", true));
         MaximizeBox = false;
@@ -343,72 +329,31 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         pl
     };
 
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_ENGLISH_EN
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_GERMAN_DE
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_SPANISH_ES
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_ITALIAN_IT
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_ITALIAN_IT = ["OK", "Annulla", "&Sì", "&No", "&Interrompi", "&Riprova", "&Ignora"];
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_FRENCH_FR
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_ROMANIAN_RO
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
-
-    /// <summary>
-    /// Defines the BUTTON_TEXTS_ROMANIAN_PL
-    /// </summary>
     private static readonly string[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
 
-    /// <summary>
-    /// Defines the defaultButton
-    /// </summary>
-    private MessageBoxDefaultButton defaultButton;
+    private MessageBoxDefaultButton _defaultButton;
+    private int _visibleButtonsCount;
+    private readonly TwoLetterISOLanguageID _languageID = TwoLetterISOLanguageID.en;
 
-    /// <summary>
-    /// Defines the visibleButtonsCount
-    /// </summary>
-    private int visibleButtonsCount;
-
-    /// <summary>
-    /// Defines the languageID
-    /// </summary>
-    private readonly TwoLetterISOLanguageID languageID = TwoLetterISOLanguageID.en;
-
-    /// <summary>
-    /// Prevents a default instance of the <see cref="FlexibleMaterialForm"/> class from being created.
-    /// </summary>
     private FlexibleMaterialForm()
     {
         InitializeComponent();
 
         //Try to evaluate the language. If this fails, the fallback language English will be used
-        Enum.TryParse(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out languageID);
+        Enum.TryParse(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out _languageID);
 
         KeyPreview = true;
         KeyUp += FlexibleMaterialForm_KeyUp;
 
-        materialSkinManager = MaterialSkinManager.Instance;
-        materialSkinManager.AddFormToManage(this);
-        FONT = materialSkinManager.GetFontByType(FontType.Body1);
+        _materialSkinManager = MaterialSkinManager.Instance;
+        _materialSkinManager.AddFormToManage(this);
+        _font = _materialSkinManager.GetFontByType(FontType.Body1);
         messageContainer.BackColor = BackColor;
     }
 
@@ -417,12 +362,10 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The string rows as 1-dimensional array</returns>
-    private static string[] GetStringRows(string message)
+    private static string[]? GetStringRows(string message)
     {
         if (string.IsNullOrEmpty(message))
-        {
             return null;
-        }
 
         var messageRows = message.Split(['\n'], StringSplitOptions.None);
         return messageRows;
@@ -436,19 +379,17 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <returns>The button text</returns>
     private string GetButtonText(ButtonID buttonID)
     {
-        var buttonTextArrayIndex = Convert.ToInt32(buttonID);
-
-        switch (languageID)
+        var buttonTextArrayIndex = (int)buttonID;
+        return _languageID switch
         {
-            case TwoLetterISOLanguageID.de: return BUTTON_TEXTS_GERMAN_DE[buttonTextArrayIndex];
-            case TwoLetterISOLanguageID.es: return BUTTON_TEXTS_SPANISH_ES[buttonTextArrayIndex];
-            case TwoLetterISOLanguageID.it: return BUTTON_TEXTS_ITALIAN_IT[buttonTextArrayIndex];
-            case TwoLetterISOLanguageID.fr: return BUTTON_TEXTS_FRENCH_FR[buttonTextArrayIndex];
-            case TwoLetterISOLanguageID.ro: return BUTTON_TEXTS_ROMANIAN_RO[buttonTextArrayIndex];
-            case TwoLetterISOLanguageID.pl: return BUTTON_TEXTS_POLISH_PL[buttonTextArrayIndex];
-
-            default: return BUTTON_TEXTS_ENGLISH_EN[buttonTextArrayIndex];
-        }
+            TwoLetterISOLanguageID.de => BUTTON_TEXTS_GERMAN_DE[buttonTextArrayIndex],
+            TwoLetterISOLanguageID.es => BUTTON_TEXTS_SPANISH_ES[buttonTextArrayIndex],
+            TwoLetterISOLanguageID.it => BUTTON_TEXTS_ITALIAN_IT[buttonTextArrayIndex],
+            TwoLetterISOLanguageID.fr => BUTTON_TEXTS_FRENCH_FR[buttonTextArrayIndex],
+            TwoLetterISOLanguageID.ro => BUTTON_TEXTS_ROMANIAN_RO[buttonTextArrayIndex],
+            TwoLetterISOLanguageID.pl => BUTTON_TEXTS_POLISH_PL[buttonTextArrayIndex],
+            _ => BUTTON_TEXTS_ENGLISH_EN[buttonTextArrayIndex],
+        };
     }
 
     /// <summary>
@@ -461,18 +402,14 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <returns>The corrected given working area factor.</returns>
     private static double GetCorrectedWorkingAreaFactor(double workingAreaFactor)
     {
-        const double MIN_FACTOR = 0.2;
-        const double MAX_FACTOR = 1.0;
+        const double minFactor = 0.2;
+        const double maxFactor = 1;
 
-        if (workingAreaFactor < MIN_FACTOR)
-        {
-            return MIN_FACTOR;
-        }
+        if (workingAreaFactor < minFactor)
+            return minFactor;
 
-        if (workingAreaFactor > MAX_FACTOR)
-        {
-            return MAX_FACTOR;
-        }
+        if (workingAreaFactor > maxFactor)
+            return maxFactor;
 
         return workingAreaFactor;
     }
@@ -505,28 +442,27 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     private static void SetDialogSizes(FlexibleMaterialForm FlexibleMaterialForm, string text, string caption)
     {
         //First set the bounds for the maximum dialog size
-        FlexibleMaterialForm.MaximumSize = new Size(Convert.ToInt32(SystemInformation.WorkingArea.Width * GetCorrectedWorkingAreaFactor(MAX_WIDTH_FACTOR)),
-                                                      Convert.ToInt32(SystemInformation.WorkingArea.Height * GetCorrectedWorkingAreaFactor(MAX_HEIGHT_FACTOR)));
+        FlexibleMaterialForm.MaximumSize = new Size(
+            (int)(SystemInformation.WorkingArea.Width * GetCorrectedWorkingAreaFactor(_maxWidthFactor)),
+            (int)(SystemInformation.WorkingArea.Height * GetCorrectedWorkingAreaFactor(_maxHeightFactor)));
 
         //Get rows. Exit if there are no rows to render...
         var stringRows = GetStringRows(text);
         if (stringRows == null)
-        {
             return;
-        }
 
         //Calculate whole text height
-        var textHeight = Math.Min(TextRenderer.MeasureText(text, FONT).Height, 600);
+        var textHeight = Math.Min(TextRenderer.MeasureText(text, _font).Height, 600);
 
         //Calculate width for longest text line
         const int SCROLLBAR_WIDTH_OFFSET = 15;
-        var longestTextRowWidth = stringRows.Max(textForRow => TextRenderer.MeasureText(textForRow, FONT).Width);
+        var longestTextRowWidth = stringRows.Max(textForRow => TextRenderer.MeasureText(textForRow, _font).Width);
         var captionWidth = TextRenderer.MeasureText(caption, SystemFonts.CaptionFont).Width;
         var textWidth = Math.Max(longestTextRowWidth + SCROLLBAR_WIDTH_OFFSET, captionWidth);
 
         //Calculate margins
-        var marginWidth = FlexibleMaterialForm.Width - FlexibleMaterialForm.richTextBoxMessage.Width;
-        var marginHeight = FlexibleMaterialForm.Height - FlexibleMaterialForm.richTextBoxMessage.Height;
+        var marginWidth = FlexibleMaterialForm.Width - FlexibleMaterialForm._richTextBoxMessage.Width;
+        var marginHeight = FlexibleMaterialForm.Height - FlexibleMaterialForm._richTextBoxMessage.Height;
 
         var minimumHeight = FlexibleMaterialForm.messageContainer.Top + FlexibleMaterialForm.pictureBoxForIcon.Height + 2 * 8 + 54;
         if (marginHeight < minimumHeight) marginHeight = minimumHeight;
@@ -565,8 +501,8 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
             default:
                 //When no icon is used: Correct placement and width of rich text box.
                 FlexibleMaterialForm.pictureBoxForIcon.Visible = false;
-                FlexibleMaterialForm.richTextBoxMessage.Left -= FlexibleMaterialForm.pictureBoxForIcon.Width;
-                FlexibleMaterialForm.richTextBoxMessage.Width += FlexibleMaterialForm.pictureBoxForIcon.Width;
+                FlexibleMaterialForm._richTextBoxMessage.Left -= FlexibleMaterialForm.pictureBoxForIcon.Width;
+                FlexibleMaterialForm._richTextBoxMessage.Width += FlexibleMaterialForm.pictureBoxForIcon.Width;
                 break;
         }
     }
@@ -584,96 +520,96 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         switch (buttons)
         {
             case MessageBoxButtons.AbortRetryIgnore:
-                FlexibleMaterialForm.visibleButtonsCount = 3;
+                FlexibleMaterialForm._visibleButtonsCount = 3;
 
-                FlexibleMaterialForm.leftButton.Visible = true;
-                FlexibleMaterialForm.leftButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.ABORT);
-                FlexibleMaterialForm.leftButton.DialogResult = DialogResult.Abort;
+                FlexibleMaterialForm._leftButton.Visible = true;
+                FlexibleMaterialForm._leftButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.ABORT);
+                FlexibleMaterialForm._leftButton.DialogResult = DialogResult.Abort;
 
-                FlexibleMaterialForm.middleButton.Visible = true;
-                FlexibleMaterialForm.middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.RETRY);
-                FlexibleMaterialForm.middleButton.DialogResult = DialogResult.Retry;
+                FlexibleMaterialForm._middleButton.Visible = true;
+                FlexibleMaterialForm._middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.RETRY);
+                FlexibleMaterialForm._middleButton.DialogResult = DialogResult.Retry;
 
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.IGNORE);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.Ignore;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.IGNORE);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.Ignore;
 
                 FlexibleMaterialForm.ControlBox = false;
                 break;
 
             case MessageBoxButtons.OKCancel:
-                FlexibleMaterialForm.visibleButtonsCount = 2;
+                FlexibleMaterialForm._visibleButtonsCount = 2;
 
-                FlexibleMaterialForm.middleButton.Visible = true;
-                FlexibleMaterialForm.middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
-                FlexibleMaterialForm.middleButton.DialogResult = DialogResult.Cancel;
+                FlexibleMaterialForm._middleButton.Visible = true;
+                FlexibleMaterialForm._middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
+                FlexibleMaterialForm._middleButton.DialogResult = DialogResult.Cancel;
 
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.OK);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.OK;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.OK);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.OK;
 
-                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm.middleButton;
+                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm._middleButton;
                 break;
 
             case MessageBoxButtons.RetryCancel:
-                FlexibleMaterialForm.visibleButtonsCount = 2;
+                FlexibleMaterialForm._visibleButtonsCount = 2;
 
-                FlexibleMaterialForm.middleButton.Visible = true;
-                FlexibleMaterialForm.middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
-                FlexibleMaterialForm.middleButton.DialogResult = DialogResult.Cancel;
+                FlexibleMaterialForm._middleButton.Visible = true;
+                FlexibleMaterialForm._middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
+                FlexibleMaterialForm._middleButton.DialogResult = DialogResult.Cancel;
 
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.RETRY);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.Retry;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.RETRY);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.Retry;
 
-                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm.middleButton;
+                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm._middleButton;
                 break;
 
             case MessageBoxButtons.YesNo:
-                FlexibleMaterialForm.visibleButtonsCount = 2;
+                FlexibleMaterialForm._visibleButtonsCount = 2;
 
-                FlexibleMaterialForm.middleButton.Visible = true;
-                FlexibleMaterialForm.middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.NO);
-                FlexibleMaterialForm.middleButton.DialogResult = DialogResult.No;
+                FlexibleMaterialForm._middleButton.Visible = true;
+                FlexibleMaterialForm._middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.NO);
+                FlexibleMaterialForm._middleButton.DialogResult = DialogResult.No;
 
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.YES);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.Yes;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.YES);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.Yes;
 
                 //FlexibleMaterialForm.ControlBox = false;
                 break;
 
             case MessageBoxButtons.YesNoCancel:
-                FlexibleMaterialForm.visibleButtonsCount = 3;
+                FlexibleMaterialForm._visibleButtonsCount = 3;
 
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.YES);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.Yes;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.YES);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.Yes;
 
-                FlexibleMaterialForm.middleButton.Visible = true;
-                FlexibleMaterialForm.middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.NO);
-                FlexibleMaterialForm.middleButton.DialogResult = DialogResult.No;
+                FlexibleMaterialForm._middleButton.Visible = true;
+                FlexibleMaterialForm._middleButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.NO);
+                FlexibleMaterialForm._middleButton.DialogResult = DialogResult.No;
 
-                FlexibleMaterialForm.leftButton.Visible = true;
-                FlexibleMaterialForm.leftButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
-                FlexibleMaterialForm.leftButton.DialogResult = DialogResult.Cancel;
+                FlexibleMaterialForm._leftButton.Visible = true;
+                FlexibleMaterialForm._leftButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.CANCEL);
+                FlexibleMaterialForm._leftButton.DialogResult = DialogResult.Cancel;
 
-                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm.leftButton;
+                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm._leftButton;
                 break;
 
             case MessageBoxButtons.OK:
             default:
-                FlexibleMaterialForm.visibleButtonsCount = 1;
-                FlexibleMaterialForm.rightButton.Visible = true;
-                FlexibleMaterialForm.rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.OK);
-                FlexibleMaterialForm.rightButton.DialogResult = DialogResult.OK;
+                FlexibleMaterialForm._visibleButtonsCount = 1;
+                FlexibleMaterialForm._rightButton.Visible = true;
+                FlexibleMaterialForm._rightButton.Text = FlexibleMaterialForm.GetButtonText(ButtonID.OK);
+                FlexibleMaterialForm._rightButton.DialogResult = DialogResult.OK;
 
-                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm.rightButton;
+                FlexibleMaterialForm.CancelButton = FlexibleMaterialForm._rightButton;
                 break;
         }
 
         //Set default button (used in FlexibleMaterialForm_Shown)
-        FlexibleMaterialForm.defaultButton = defaultButton;
+        FlexibleMaterialForm._defaultButton = defaultButton;
 
         SetButtonsPosition(FlexibleMaterialForm, buttonsPosition);
     }
@@ -685,42 +621,33 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
     private void FlexibleMaterialForm_Shown(object sender, EventArgs e)
     {
-        int buttonIndexToFocus = 1;
+        var buttonIndexToFocus = 1;
         Button buttonToFocus;
 
         //Set the default button...
-        switch (defaultButton)
+        buttonIndexToFocus = _defaultButton switch
         {
-            case MessageBoxDefaultButton.Button1:
-            default:
-                buttonIndexToFocus = 1;
-                break;
+            MessageBoxDefaultButton.Button2 => 2,
+            MessageBoxDefaultButton.Button3 => 3,
+            _ => 1,
+        };
 
-            case MessageBoxDefaultButton.Button2:
-                buttonIndexToFocus = 2;
-                break;
-
-            case MessageBoxDefaultButton.Button3:
-                buttonIndexToFocus = 3;
-                break;
-        }
-
-        if (buttonIndexToFocus > visibleButtonsCount)
+        if (buttonIndexToFocus > _visibleButtonsCount)
         {
-            buttonIndexToFocus = visibleButtonsCount;
+            buttonIndexToFocus = _visibleButtonsCount;
         }
 
         if (buttonIndexToFocus == 3)
         {
-            buttonToFocus = rightButton;
+            buttonToFocus = _rightButton;
         }
         else if (buttonIndexToFocus == 2)
         {
-            buttonToFocus = middleButton;
+            buttonToFocus = _middleButton;
         }
         else
         {
-            buttonToFocus = leftButton;
+            buttonToFocus = _leftButton;
         }
 
         buttonToFocus.Focus();
@@ -731,12 +658,15 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="LinkClickedEventArgs"/> instance containing the event data.</param>
-    private void richTextBoxMessage_LinkClicked(object sender, LinkClickedEventArgs e)
+    private void RichTextBoxMessage_LinkClicked(object sender, LinkClickedEventArgs e)
     {
         try
         {
             Cursor.Current = Cursors.WaitCursor;
-            Process.Start(e.LinkText);
+            if (e.LinkText != null)
+            {
+                Process.Start(e.LinkText);
+            }
         }
         catch (Exception)
         {
@@ -759,15 +689,15 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         //Handle standard key strikes for clipboard copy: "Ctrl + C" and "Ctrl + Insert"
         if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.Insert))
         {
-            var buttonsTextLine = (leftButton.Visible ? leftButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
-                                + (middleButton.Visible ? middleButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
-                                + (rightButton.Visible ? rightButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty);
+            var buttonsTextLine = (_leftButton.Visible ? _leftButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
+                                + (_middleButton.Visible ? _middleButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
+                                + (_rightButton.Visible ? _rightButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty);
 
             //Build same clipboard text like the standard .Net MessageBox
             var textForClipboard = STANDARD_MESSAGEBOX_SEPARATOR_LINES
                                  + Text + Environment.NewLine
                                  + STANDARD_MESSAGEBOX_SEPARATOR_LINES
-                                 + richTextBoxMessage.Text + Environment.NewLine
+                                 + _richTextBoxMessage.Text + Environment.NewLine
                                  + STANDARD_MESSAGEBOX_SEPARATOR_LINES
                                  + buttonsTextLine.Replace("&", string.Empty) + Environment.NewLine
                                  + STANDARD_MESSAGEBOX_SEPARATOR_LINES;
@@ -818,11 +748,11 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         SetDialogIcon(FlexibleMaterialForm, icon);
 
         //Set the font for all controls
-        FlexibleMaterialForm.Font = FONT;
-        FlexibleMaterialForm.richTextBoxMessage.Font = FONT;
-        FlexibleMaterialForm.richTextBoxMessage.Visible = UseRichTextBox;
-        FlexibleMaterialForm.materialLabel1.Font = FONT;
-        FlexibleMaterialForm.materialLabel1.Visible = !UseRichTextBox;
+        FlexibleMaterialForm.Font = _font;
+        FlexibleMaterialForm._richTextBoxMessage.Font = _font;
+        FlexibleMaterialForm._richTextBoxMessage.Visible = UseRichTextBox;
+        FlexibleMaterialForm._materialLabel1.Font = _font;
+        FlexibleMaterialForm._materialLabel1.Visible = !UseRichTextBox;
 
         //Calculate the dialogs start size (Try to auto-size width to show longest text row). Also set the maximum dialog size.
         SetDialogSizes(FlexibleMaterialForm, text, caption);
@@ -849,44 +779,44 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         switch (buttonsPosition)
         {
             case ButtonsPosition.Center:
-                switch (fMF.visibleButtonsCount)
+                switch (fMF._visibleButtonsCount)
                 {
                     case 3:
-                        fMF.middleButton.Left = fMF.Width / 2 - fMF.middleButton.Width / 2;
-                        fMF.leftButton.Left = fMF.middleButton.Left - fMF.leftButton.Width - padding * 2;
-                        fMF.rightButton.Left = fMF.middleButton.Right + padding * 2;
-                        visibleButtonsWidth = fMF.leftButton.Width + fMF.middleButton.Width + fMF.rightButton.Width + padding * 6;
+                        fMF._middleButton.Left = fMF.Width / 2 - fMF._middleButton.Width / 2;
+                        fMF._leftButton.Left = fMF._middleButton.Left - fMF._leftButton.Width - padding * 2;
+                        fMF._rightButton.Left = fMF._middleButton.Right + padding * 2;
+                        visibleButtonsWidth = fMF._leftButton.Width + fMF._middleButton.Width + fMF._rightButton.Width + padding * 6;
                         break;
                     case 2:
-                        fMF.middleButton.Left = fMF.Width / 2 - fMF.middleButton.Width - padding;
-                        fMF.rightButton.Left = fMF.Width / 2 + padding;
-                        visibleButtonsWidth = fMF.middleButton.Width + fMF.rightButton.Width + padding * 4;
+                        fMF._middleButton.Left = fMF.Width / 2 - fMF._middleButton.Width - padding;
+                        fMF._rightButton.Left = fMF.Width / 2 + padding;
+                        visibleButtonsWidth = fMF._middleButton.Width + fMF._rightButton.Width + padding * 4;
                         break;
                     case 1:
-                        fMF.rightButton.Left = fMF.Width / 2 - fMF.rightButton.Width / 2;
-                        visibleButtonsWidth = fMF.rightButton.Width + padding * 2;
+                        fMF._rightButton.Left = fMF.Width / 2 - fMF._rightButton.Width / 2;
+                        visibleButtonsWidth = fMF._rightButton.Width + padding * 2;
                         break;
                     default:
                         break;
                 }
                 break;
             case ButtonsPosition.Left:
-                switch (fMF.visibleButtonsCount)
+                switch (fMF._visibleButtonsCount)
                 {
                     case 3:
-                        fMF.leftButton.Left = padding;
-                        fMF.middleButton.Left = fMF.leftButton.Right + padding * 2;
-                        fMF.rightButton.Left = fMF.middleButton.Right + padding * 2;
-                        visibleButtonsWidth = fMF.leftButton.Width + fMF.middleButton.Width + fMF.rightButton.Width + padding * 6;
+                        fMF._leftButton.Left = padding;
+                        fMF._middleButton.Left = fMF._leftButton.Right + padding * 2;
+                        fMF._rightButton.Left = fMF._middleButton.Right + padding * 2;
+                        visibleButtonsWidth = fMF._leftButton.Width + fMF._middleButton.Width + fMF._rightButton.Width + padding * 6;
                         break;
                     case 2:
-                        fMF.middleButton.Left = padding;
-                        fMF.rightButton.Left = fMF.middleButton.Right + padding * 2;
-                        visibleButtonsWidth = fMF.middleButton.Width + fMF.rightButton.Width + padding * 4;
+                        fMF._middleButton.Left = padding;
+                        fMF._rightButton.Left = fMF._middleButton.Right + padding * 2;
+                        visibleButtonsWidth = fMF._middleButton.Width + fMF._rightButton.Width + padding * 4;
                         break;
                     case 1:
-                        fMF.rightButton.Left = padding;
-                        visibleButtonsWidth = fMF.rightButton.Width + padding * 2;
+                        fMF._rightButton.Left = padding;
+                        visibleButtonsWidth = fMF._rightButton.Width + padding * 2;
                         break;
                     default:
                         break;
@@ -895,41 +825,41 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
             case ButtonsPosition.Right:
                 // This alignment is simplest, in this alignment doesn't care how many buttons are visible.
                 // Always the buttons visibility order is right, right + middle, right + middle + left
-                fMF.rightButton.Left = fMF.Width - fMF.rightButton.Width - padding;
-                fMF.middleButton.Left = fMF.rightButton.Left - fMF.middleButton.Width - padding * 2;
-                fMF.leftButton.Left = fMF.middleButton.Left - fMF.leftButton.Width - padding * 2;
-                switch (fMF.visibleButtonsCount)
+                fMF._rightButton.Left = fMF.Width - fMF._rightButton.Width - padding;
+                fMF._middleButton.Left = fMF._rightButton.Left - fMF._middleButton.Width - padding * 2;
+                fMF._leftButton.Left = fMF._middleButton.Left - fMF._leftButton.Width - padding * 2;
+                switch (fMF._visibleButtonsCount)
                 {
                     case 3:
-                        visibleButtonsWidth = fMF.leftButton.Width + fMF.middleButton.Width + fMF.rightButton.Width + padding * 6;
+                        visibleButtonsWidth = fMF._leftButton.Width + fMF._middleButton.Width + fMF._rightButton.Width + padding * 6;
                         break;
                     case 2:
-                        visibleButtonsWidth = fMF.middleButton.Width + fMF.rightButton.Width + padding * 4;
+                        visibleButtonsWidth = fMF._middleButton.Width + fMF._rightButton.Width + padding * 4;
                         break;
                     case 1:
-                        visibleButtonsWidth = fMF.rightButton.Width + padding * 2;
+                        visibleButtonsWidth = fMF._rightButton.Width + padding * 2;
                         break;
                     default:
                         break;
                 }
                 break;
             case ButtonsPosition.Fill:
-                switch (fMF.visibleButtonsCount)
+                switch (fMF._visibleButtonsCount)
                 {
                     case 3:
-                        fMF.leftButton.Left = padding;
-                        fMF.middleButton.Left = fMF.Width / 2 - fMF.middleButton.Width / 2;
-                        fMF.rightButton.Left = fMF.Width - fMF.rightButton.Width - padding * 2;
-                        visibleButtonsWidth = fMF.leftButton.Width + fMF.middleButton.Width + fMF.rightButton.Width + padding * 6;
+                        fMF._leftButton.Left = padding;
+                        fMF._middleButton.Left = fMF.Width / 2 - fMF._middleButton.Width / 2;
+                        fMF._rightButton.Left = fMF.Width - fMF._rightButton.Width - padding * 2;
+                        visibleButtonsWidth = fMF._leftButton.Width + fMF._middleButton.Width + fMF._rightButton.Width + padding * 6;
                         break;
                     case 2:
-                        fMF.middleButton.Left = padding;
-                        fMF.rightButton.Left = fMF.Width - fMF.rightButton.Width - padding * 2;
-                        visibleButtonsWidth = fMF.middleButton.Width + fMF.rightButton.Width + padding * 4;
+                        fMF._middleButton.Left = padding;
+                        fMF._rightButton.Left = fMF.Width - fMF._rightButton.Width - padding * 2;
+                        visibleButtonsWidth = fMF._middleButton.Width + fMF._rightButton.Width + padding * 4;
                         break;
                     case 1:
-                        fMF.rightButton.Left = fMF.Width / 2 - fMF.middleButton.Width / 2;
-                        visibleButtonsWidth = fMF.rightButton.Width + padding * 2;
+                        fMF._rightButton.Left = fMF.Width / 2 - fMF._middleButton.Width / 2;
+                        visibleButtonsWidth = fMF._rightButton.Width + padding * 2;
                         break;
                     default:
                         break;
