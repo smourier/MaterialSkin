@@ -89,7 +89,7 @@ public class MaterialToolStripMenuItem : ToolStripMenuItem
     }
 }
 
-internal class MaterialToolStripRender : ToolStripProfessionalRenderer, IMaterialControl
+internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, IMaterialControl
 {
     private const int LEFT_PADDING = 16;
     private const int RIGHT_PADDING = 8;

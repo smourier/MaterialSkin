@@ -197,9 +197,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     public void Paste() { baseTextBox.Paste(); }
 
-
-    #region Forwarding events to baseTextBox
-
     public event EventHandler AcceptsTabChanged
     {
         add
@@ -1101,7 +1098,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             baseTextBox.VisibleChanged -= value;
         }
     }
-    # endregion
 
     //private readonly AnimationManager animationManager;
     private readonly AnimationManager _animationManager;

@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines the <see cref="MaterialButton" />
 /// </summary>
-public class MaterialButton : Button, IMaterialControl
+public partial class MaterialButton : Button, IMaterialControl
 {
 
     private const int ICON_SIZE = 24;
@@ -32,19 +32,6 @@ public class MaterialButton : Button, IMaterialControl
     /// </summary>
     [Browsable(false)]
     public MouseState MouseState { get; set; }
-
-    public enum MaterialButtonType
-    {
-        Text,
-        Outlined,
-        Contained
-    }
-
-    public enum MaterialButtonDensity
-    {
-        Default,
-        Dense
-    }
 
     [Browsable(false)]
     public Color NoAccentTextColor { get; set; }
@@ -98,14 +85,6 @@ public class MaterialButton : Button, IMaterialControl
                 Size = new Size(Size.Width, HEIGHTDEFAULT);
             Invalidate();
         }
-    }
-
-    public enum CharacterCasingEnum
-    {
-        Normal,
-        Lower,
-        Upper,
-        Title
     }
 
     public CharacterCasingEnum _cc;

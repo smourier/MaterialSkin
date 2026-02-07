@@ -323,8 +323,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     public void Paste() { baseTextBox.Paste(); }
 
-    #region "Events"
-
     [Category("Action")]
     [Description("Fires when Leading Icon is clicked")]
     public event EventHandler LeadingIconClick;
@@ -332,10 +330,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Action")]
     [Description("Fires when Trailing Icon is clicked")]
     public event EventHandler TrailingIconClick;
-
-    #endregion
-
-    # region Forwarding events to baseTextBox
 
     public event EventHandler AcceptsTabChanged
     {
@@ -1238,7 +1232,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
             baseTextBox.VisibleChanged -= value;
         }
     }
-    # endregion
 
     private readonly AnimationManager _animationManager;
 
@@ -1616,8 +1609,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     }
 
-    #region Icon
-
     private static Size ResizeIcon(Image Icon)
     {
         int newWidth, newHeight;
@@ -1813,8 +1804,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
             iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
         }
     }
-
-    #endregion
 
     private void UpdateHeight()
     {

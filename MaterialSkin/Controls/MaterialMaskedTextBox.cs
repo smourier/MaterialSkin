@@ -152,13 +152,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    public enum PrefixSuffixTypes
-    {
-        None,
-        Prefix,
-        Suffix,
-    }
-
     private PrefixSuffixTypes _prefixsuffix;
     [Category("Material Skin"), DefaultValue(PrefixSuffixTypes.None), Description("Set Prefix/Suffix/None")]
     public PrefixSuffixTypes PrefixSuffix
@@ -364,8 +357,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     public void Paste() { baseTextBox.Paste(); }
 
-    #region "Events"
-
     [Category("Action")]
     [Description("Fires when Leading Icon is clicked")]
     public event EventHandler LeadingIconClick;
@@ -373,10 +364,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
     [Category("Action")]
     [Description("Fires when Trailing Icon is clicked")]
     public event EventHandler TrailingIconClick;
-
-    #endregion
-
-    # region Forwarding events to baseTextBox
 
     public event EventHandler AcceptsTabChanged
     {
@@ -1327,7 +1314,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             baseTextBox.VisibleChanged -= value;
         }
     }
-    # endregion
 
     private readonly AnimationManager _animationManager;
 
@@ -1707,7 +1693,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     }
 
-    #region Icon
     private static Size ResizeIcon(Image Icon)
     {
         int newWidth, newHeight;
@@ -1903,7 +1888,6 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             iconsErrorBrushes.Add("_trailingIcon", textureBrushRed);
         }
     }
-    #endregion
 
     private void UpdateHeight()
     {

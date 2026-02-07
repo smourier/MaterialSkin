@@ -1,8 +1,7 @@
 namespace MaterialSkin.Controls;
 
-public class MaterialForm : Form, IMaterialControl
+public partial class MaterialForm : Form, IMaterialControl
 {
-    #region Public Properties
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -21,7 +20,8 @@ public class MaterialForm : Form, IMaterialControl
         get => _formStyle;
         set
         {
-            if (_formStyle == value) return;
+            if (_formStyle == value)
+                return;
 
             _formStyle = value;
             RecalculateFormBoundaries();
@@ -160,21 +160,6 @@ public class MaterialForm : Form, IMaterialControl
         {
             return new Rectangle(ClientRectangle.X, ClientRectangle.Y + STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT, ClientSize.Width, ClientSize.Height - (STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT));
         }
-    }
-    #endregion
-
-    #region Enums
-    /// <summary>
-    /// Various options to control the top caption of a window
-    /// </summary>
-    public enum FormStyles
-    {
-        StatusAndActionBar_None,
-        ActionBar_None,
-        ActionBar_40,
-        ActionBar_48,
-        ActionBar_56,
-        ActionBar_64,
     }
 
     /// <summary>
@@ -336,9 +321,7 @@ public class MaterialForm : Form, IMaterialControl
         /// </summary>
         ReturnCommand = 0x0100,
     }
-    #endregion
 
-    #region Constants
     // Form Constants
     private const int BORDER_WIDTH = 7;
     private const int STATUS_BAR_BUTTON_WIDTH = 24;
@@ -348,9 +331,7 @@ public class MaterialForm : Form, IMaterialControl
     private const int TITLE_LEFT_PADDING = 72;
     private const int ACTION_BAR_PADDING = 16;
     private const int ACTION_BAR_HEIGHT_DEFAULT = 40;
-    #endregion
 
-    #region Private Fields
     private readonly Cursor[] _resizeCursors = [Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS];
 
     private ResizeDirection _resizeDir;
@@ -397,7 +378,6 @@ public class MaterialForm : Form, IMaterialControl
 
     private int STATUS_BAR_HEIGHT = 24;
     private int ACTION_BAR_HEIGHT = 40;
-    #endregion
 
     public MaterialForm()
     {
@@ -434,7 +414,6 @@ public class MaterialForm : Form, IMaterialControl
         };
     }
 
-    #region Private Methods
     protected void AddDrawerOverlayForm()
     {
         if (DrawerTabControl == null)
@@ -770,9 +749,7 @@ public class MaterialForm : Form, IMaterialControl
 
         Invalidate();
     }
-    #endregion
 
-    #region WinForms Methods
     protected override CreateParams CreateParams
     {
         get
@@ -1168,9 +1145,7 @@ public class MaterialForm : Form, IMaterialControl
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
     }
-    #endregion
 
-    #region Low Level Windows Methods
     /// <summary>
     ///     Provides a single method to call either the 32-bit or 64-bit method based on the size of an <see cref="IntPtr"/> for getting the
     ///     Window Style flags.<br/>
@@ -1220,26 +1195,4 @@ public class MaterialForm : Form, IMaterialControl
 
     [DllImport("user32.dll")]
     private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-    #endregion
-}
-
-public class MaterialDrawerForm : Form
-{
-    public MouseWheelRedirector MouseWheelRedirector;
-
-    public MaterialDrawerForm()
-    {
-        MouseWheelRedirector = new MouseWheelRedirector();
-        SetStyle(ControlStyles.Selectable | ControlStyles.OptimizedDoubleBuffer | ControlStyles.EnableNotifyMessage, true);
-    }
-
-    public void Attach(Control control)
-    {
-        MouseWheelRedirector.Attach(control);
-    }
-
-    public void Detach(Control control)
-    {
-        MouseWheelRedirector.Detach(control);
-    }
 }

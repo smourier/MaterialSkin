@@ -2,9 +2,6 @@ namespace MaterialSkin.Controls;
 
 public class MaterialExpansionPanel : Panel, IMaterialControl
 {
-
-    #region "Private members"
-
     private MaterialButton _validationButton;
     private MaterialButton _cancelButton;
 
@@ -52,12 +49,6 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     }
 
     private ButtonState _buttonState = ButtonState.None;
-
-
-    #endregion
-
-
-    #region "Public Properties"
 
     [Browsable(false)]
     public int Depth { get; set; }
@@ -176,12 +167,6 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         set { _savebuttonEnable = value; UpdateRects(); Invalidate(); }
     }
 
-
-    #endregion
-
-
-    #region "Events"
-
     [Category("Action")]
     [Description("Fires when Save button is clicked")]
     public event EventHandler SaveClick;
@@ -197,9 +182,6 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Category("Disposition")]
     [Description("Fires when Panel Expand")]
     public event EventHandler PanelExpand;
-
-
-    #endregion
 
     public MaterialExpansionPanel()
     {
@@ -228,7 +210,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         _validationButton = new MaterialButton
         {
             DrawShadows = false,
-            Type = MaterialButton.MaterialButtonType.Text,
+            Type = MaterialButtonType.Text,
             UseAccentColor = _useAccentColor,
             Enabled = ValidationButtonEnable,
             Visible = _showValidationButtons,
@@ -237,7 +219,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         _cancelButton = new MaterialButton
         {
             DrawShadows = false,
-            Type = MaterialButton.MaterialButtonType.Text,
+            Type = MaterialButtonType.Text,
             UseAccentColor = _useAccentColor,
             Visible = _showValidationButtons,
             Text = "CANCEL"

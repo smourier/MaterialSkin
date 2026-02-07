@@ -4,7 +4,7 @@ namespace MaterialSkin.Controls;
 /// The form to show the customized message box.
 /// It is defined as an internal class to keep the public interface of the FlexibleMessageBox clean.
 /// </summary>
-public class FlexibleMaterialForm : MaterialForm, IMaterialControl
+public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
 {
     private readonly MaterialSkinManager materialSkinManager;
 
@@ -42,18 +42,6 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     private MaterialButton leftButton;
     private MaterialButton middleButton;
     private MaterialButton rightButton;
-
-    [Browsable(false)]
-    /// <summary>
-    /// Defines position of buttons in Dialog window. By default, ButtonStyle is Fill
-    /// </summary>
-    public enum ButtonsPosition
-    {
-        Fill,
-        Left,
-        Right,
-        Center
-    }
 
     public ButtonsPosition ButtonsPositionEnum { get; set; } = ButtonsPosition.Right;
 
@@ -162,7 +150,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         leftButton.Anchor = AnchorStyles.Bottom;
         leftButton.AutoSize = false;
         leftButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        leftButton.Density = MaterialButton.MaterialButtonDensity.Default;
+        leftButton.Density = MaterialButtonDensity.Default;
         leftButton.Depth = 0;
         leftButton.DialogResult = DialogResult.OK;
         leftButton.HighEmphasis = false;
@@ -175,7 +163,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         leftButton.Size = new Size(108, 36);
         leftButton.TabIndex = 14;
         leftButton.Text = "OK";
-        leftButton.Type = MaterialButton.MaterialButtonType.Text;
+        leftButton.Type = MaterialButtonType.Text;
         leftButton.UseAccentColor = false;
         leftButton.UseVisualStyleBackColor = true;
         leftButton.Visible = false;
@@ -185,7 +173,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         middleButton.Anchor = AnchorStyles.Bottom;
         middleButton.AutoSize = false;
         middleButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        middleButton.Density = MaterialButton.MaterialButtonDensity.Default;
+        middleButton.Density = MaterialButtonDensity.Default;
         middleButton.Depth = 0;
         middleButton.DialogResult = DialogResult.OK;
         middleButton.HighEmphasis = true;
@@ -198,7 +186,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         middleButton.Size = new Size(102, 36);
         middleButton.TabIndex = 15;
         middleButton.Text = "OK";
-        middleButton.Type = MaterialButton.MaterialButtonType.Text;
+        middleButton.Type = MaterialButtonType.Text;
         middleButton.UseAccentColor = false;
         middleButton.UseVisualStyleBackColor = true;
         middleButton.Visible = false;
@@ -208,7 +196,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         rightButton.Anchor = AnchorStyles.Bottom;
         rightButton.AutoSize = false;
         rightButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        rightButton.Density = MaterialButton.MaterialButtonDensity.Default;
+        rightButton.Density = MaterialButtonDensity.Default;
         rightButton.Depth = 0;
         rightButton.DialogResult = DialogResult.OK;
         rightButton.HighEmphasis = true;
@@ -221,7 +209,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
         rightButton.Size = new Size(106, 36);
         rightButton.TabIndex = 13;
         rightButton.Text = "OK";
-        rightButton.Type = MaterialButton.MaterialButtonType.Contained;
+        rightButton.Type = MaterialButtonType.Contained;
         rightButton.UseAccentColor = false;
         rightButton.UseVisualStyleBackColor = true;
         rightButton.Visible = false;
@@ -811,7 +799,7 @@ public class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// <param name="icon">The icon.</param>
     /// <param name="defaultButton">The default button.</param>
     /// <returns>The dialog result.</returns>
-    public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, bool UseRichTextBox = true, ButtonsPosition buttonsPosition = ButtonsPosition.Right)
+    public static DialogResult Show(IWin32Window? owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, bool UseRichTextBox = true, ButtonsPosition buttonsPosition = ButtonsPosition.Right)
     {
         //Create a new instance of the FlexibleMessageBox form
         var FlexibleMaterialForm = new FlexibleMaterialForm();

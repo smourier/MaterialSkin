@@ -80,7 +80,7 @@ public class MaterialDialog : MaterialForm
             AutoSize = false,
             DialogResult = DialogResult.OK,
             DrawShadows = false,
-            Type = MaterialButton.MaterialButtonType.Text,
+            Type = MaterialButtonType.Text,
             UseAccentColor = UseAccentColor,
             Text = ValidationButtonText
         };
@@ -89,7 +89,7 @@ public class MaterialDialog : MaterialForm
             AutoSize = false,
             DialogResult = DialogResult.Cancel,
             DrawShadows = false,
-            Type = MaterialButton.MaterialButtonType.Text,
+            Type = MaterialButtonType.Text,
             UseAccentColor = UseAccentColor,
             Visible = ShowCancelButton,
             Text = CancelButtonText

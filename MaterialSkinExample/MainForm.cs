@@ -155,7 +155,7 @@ public partial class MainForm : MaterialForm
         }
 
         var batchOperationResults = "Simple text";
-        MaterialMessageBox.Show(batchOperationResults, "Batch Operation", MessageBoxButtons.YesNoCancel, FlexibleMaterialForm.ButtonsPosition.Center);
+        MaterialMessageBox.Show(batchOperationResults, "Batch Operation", MessageBoxButtons.YesNoCancel, ButtonsPosition.Center);
         materialComboBox1.Items.Add("this is a very long string");
     }
 

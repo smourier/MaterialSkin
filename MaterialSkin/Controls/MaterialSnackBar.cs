@@ -2,7 +2,6 @@
 
 public class MaterialSnackBar : MaterialForm
 {
-
     private const int TOP_PADDING_SINGLE_LINE = 6;
     private const int LEFT_RIGHT_PADDING = 16;
     private const int BUTTON_PADDING = 8;
@@ -16,14 +15,9 @@ public class MaterialSnackBar : MaterialForm
     private bool _useAccentColor;
     private bool CloseAnimation = false;
 
-    #region "Events"
-
     [Category("Action")]
     [Description("Fires when Action button is clicked")]
     public event EventHandler ActionButtonClick;
-
-    #endregion
-
 
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
@@ -146,7 +140,7 @@ public class MaterialSnackBar : MaterialForm
             AutoSize = false,
             NoAccentTextColor = SkinManager.SnackBarTextButtonNoAccentTextColor,
             DrawShadows = false,
-            Type = MaterialButton.MaterialButtonType.Text,
+            Type = MaterialButtonType.Text,
             UseAccentColor = _useAccentColor,
             Visible = _showActionButton,
             Text = _actionButtonText

@@ -2,7 +2,6 @@
 
 public class MaterialCheckbox : CheckBox, IMaterialControl
 {
-    #region Public properties
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -37,9 +36,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
     [Browsable(true)]
     public bool ReadOnly { get; set; }
-    #endregion
 
-    #region Private fields
     private readonly AnimationManager _checkAM;
     private readonly AnimationManager _rippleAM;
     private readonly AnimationManager _hoverAM;
@@ -52,9 +49,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     private static readonly Point[] CheckmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
     private bool hovered = false;
     private CheckState _oldCheckState;
-    #endregion
 
-    #region Constructor
     public MaterialCheckbox()
     {
         _checkAM = new AnimationManager
@@ -86,9 +81,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         Height = HEIGHT_RIPPLE;
         MouseLocation = new Point(-1, -1);
     }
-    #endregion
 
-    #region Overridden events
     protected override void OnSizeChanged(EventArgs e)
     {
         base.OnSizeChanged(e);
@@ -303,9 +296,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
         };
     }
-    #endregion
 
-    #region Private events and methods
     private Bitmap DrawCheckMarkBitmap()
     {
         Bitmap checkMark = new(CHECKBOX_SIZE, CHECKBOX_SIZE);
@@ -327,5 +318,4 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     {
         return ClientRectangle.Contains(MouseLocation);
     }
-    #endregion
 }

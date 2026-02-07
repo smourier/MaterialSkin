@@ -1,15 +1,10 @@
 namespace MaterialSkin.Controls;
 
-
-#region MaterialListBox
-
 [DefaultProperty("Items")]
 [DefaultEvent("SelectedIndexChanged")]
 [ComVisible(true)]
-public class MaterialListBox : Control, IMaterialControl
+public partial class MaterialListBox : Control, IMaterialControl
 {
-    #region Internal Vars
-
     private ObservableCollection<MaterialListBoxItem> _items = new();
     private List<object> _selectedItems;
     private List<object> _indicates;
@@ -34,27 +29,9 @@ public class MaterialListBox : Control, IMaterialControl
     private int _primaryTextBottomPadding = 0;
     private int _secondaryTextTopPadding = 0;
     private int _secondaryTextBottomPadding = 0;
-
-    public enum ListBoxStyle
-    {
-        SingleLine,
-        TwoLine,
-        ThreeLine
-    }
     private ListBoxStyle _style = ListBoxStyle.SingleLine;
 
-    public enum MaterialItemDensity
-    {
-        Default,
-        Dense
-    }
-
     private MaterialItemDensity _density;
-
-    #endregion Internal Vars
-
-
-    #region Properties
 
     //Properties for managing the material design properties
     [Browsable(false)]
@@ -225,10 +202,6 @@ public class MaterialListBox : Control, IMaterialControl
         }
     }
 
-    #endregion Properties
-
-    #region Constructors
-
     public MaterialListBox()
     {
         SetStyle
@@ -284,11 +257,6 @@ public class MaterialListBox : Control, IMaterialControl
         Style = ListBoxStyle.SingleLine;
         Density = MaterialItemDensity.Dense;
     }
-
-    #endregion Constructors
-
-    #region ApplyTheme
-
 
     private void UpdateProperties()
     {
@@ -348,10 +316,6 @@ public class MaterialListBox : Control, IMaterialControl
         }
 
     }
-
-    #endregion ApplyTheme
-
-    #region Draw Control
 
     protected override void OnPaint(PaintEventArgs e)
     {
@@ -490,10 +454,6 @@ public class MaterialListBox : Control, IMaterialControl
         }
     }
 
-    #endregion Draw Control
-
-    #region Methods
-
     public void AddItem(MaterialListBoxItem newItem)
     {
         _items.Add(newItem);
@@ -623,10 +583,6 @@ public class MaterialListBox : Control, IMaterialControl
         _updating = false;
     }
 
-    #endregion Methods
-
-    #region Events
-
     [Category("Behavior")]
     [Description("Occurs when selected index change.")]
     public event SelectedIndexChangedEventHandler SelectedIndexChanged;
@@ -642,8 +598,6 @@ public class MaterialListBox : Control, IMaterialControl
     [Category("Behavior")]
     [Description("Occurs when item is added or removed.")]
     public event EventHandler ItemsCountChanged;
-
-    #endregion Events
 
     protected override void OnSizeChanged(EventArgs e)
     {
@@ -830,5 +784,3 @@ public class MaterialListBox : Control, IMaterialControl
         base.WndProc(ref m);
     }
 }
-
-#endregion

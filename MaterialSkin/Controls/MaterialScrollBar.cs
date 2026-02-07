@@ -1,11 +1,5 @@
 namespace MaterialSkin.Controls;
 
-public enum MaterialScrollOrientation
-{
-    Horizontal,
-    Vertical
-}
-
 [DefaultEvent("Scroll")]
 [DefaultProperty("Value")]
 public class MaterialScrollBar : Control, IMaterialControl
@@ -31,8 +25,6 @@ public class MaterialScrollBar : Control, IMaterialControl
     public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
     internal const int SCROLLBAR_DEFAULT_SIZE = 10;
-
-    #region Events
 
     public event ScrollEventHandler Scroll;
 
@@ -76,10 +68,6 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         Scroll(this, new ScrollEventArgs(type, oldValue, newValue, orientation));
     }
-
-    #endregion
-
-    #region Properties
 
     private bool isFirstScrollEventVertical = true;
     private bool isFirstScrollEventHorizontal = true;
@@ -286,12 +274,9 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
     }
 
-    #region ValueChangeEvent
-    // Declare a delegate
     public delegate void ScrollValueChangedDelegate(object sender, int newValue);
 
     public event ScrollValueChangedDelegate ValueChanged;
-    #endregion
 
     private bool dontUpdateColor = false;
 
@@ -351,8 +336,6 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     private Timer autoHoverTimer = null;
 
-    #endregion
-
     public MaterialScrollBar()
     {
         SetStyle(ControlStyles.OptimizedDoubleBuffer |
@@ -391,8 +374,6 @@ public class MaterialScrollBar : Control, IMaterialControl
         return thumbRectangle.Contains(point);
     }
 
-    #region Update Methods
-
     public void BeginUpdate()
     {
         SendMessage(Handle, WM_SETREDRAW, 0, 0);
@@ -406,11 +387,6 @@ public class MaterialScrollBar : Control, IMaterialControl
         SetupScrollBar();
         Refresh();
     }
-
-    #endregion
-
-    #region Paint Methods
-
 
     protected override void OnPaintBackground(PaintEventArgs e)
     {
@@ -450,10 +426,6 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
     }
 
-    #endregion
-
-    #region Focus Methods
-
     protected override void OnGotFocus(EventArgs e)
     {
         Invalidate();
@@ -485,10 +457,6 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         base.OnLeave(e);
     }
-
-    #endregion
-
-    #region Mouse Methods
 
     protected override void OnMouseWheel(MouseEventArgs e)
     {
@@ -674,10 +642,6 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
     }
 
-    #endregion
-
-    #region Keyboard Methods
-
     protected override void OnKeyDown(KeyEventArgs e)
     {
         isHovered = true;
@@ -695,10 +659,6 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         base.OnKeyUp(e);
     }
-
-    #endregion
-
-    #region Management Methods
 
     protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
     {
@@ -1005,6 +965,4 @@ public class MaterialScrollBar : Control, IMaterialControl
             }
         }
     }
-
-    #endregion
 }
