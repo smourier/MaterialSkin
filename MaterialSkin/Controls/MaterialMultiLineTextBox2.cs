@@ -637,7 +637,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     protected readonly BaseTextBox baseTextBox;
 
-    private void Redraw(object sencer, EventArgs e)
+    private void Redraw(object sender, EventArgs e)
     {
         SuspendLayout();
         Invalidate();
