@@ -8,6 +8,7 @@
 		<AssemblyName>MaterialSkin</AssemblyName>
 		<RootNamespace>$(AssemblyName)</RootNamespace>
 		<IsAotCompatible>true</IsAotCompatible>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>$(NoWarn);WFO1000</NoWarn>
 
 		<Title>MaterialSkin Core</Title>
@@ -36,6 +37,7 @@
 		<Using Include="MaterialSkin" />
 		<Using Include="MaterialSkin.Animations" />
 		<Using Include="MaterialSkin.Controls" />
+		<Using Include="MaterialSkin.Interop" />
 		<Using Include="MaterialSkin.Properties" />
 		<Using Include="System" />
 		<Using Include="System.Collections.Generic" />
@@ -51,10 +53,21 @@
 		<Using Include="System.Drawing.Imaging" />
 		<Using Include="System.Drawing.Text" />
 		<Using Include="System.Globalization" />
+		<Using Include="System.Runtime.CompilerServices" />
 		<Using Include="System.Runtime.InteropServices" />
+		<Using Include="System.Runtime.InteropServices.Marshalling" />
+		<Using Include="System.Runtime.Versioning" />
 		<Using Include="System.Windows.Forms" />
 
-		<Using Alias="Timer" Include="System.Windows.Forms.Timer"  />
+		<Using Alias="Timer" Include="System.Windows.Forms.Timer" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.DisableRuntimeMarshallingAttribute"></AssemblyAttribute>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+			<_Parameter1>PublishSingleFile</_Parameter1>
+			<_Parameter2>$(PublishSingleFile)</_Parameter2>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>

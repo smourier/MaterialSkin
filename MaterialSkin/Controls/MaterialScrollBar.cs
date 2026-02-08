@@ -78,9 +78,6 @@ public class MaterialScrollBar : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor { get; set { field = value; Invalidate(); } }
 
-    [DllImport("user32.dll")]
-    public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
     private void OnScroll(ScrollEventType type, int oldValue, int newValue, ScrollOrientation orientation)
     {
         if (oldValue != newValue)
@@ -334,13 +331,13 @@ public class MaterialScrollBar : Control, IMaterialControl
     public bool HitTest(Point point) => _thumbRectangle.Contains(point);
     public void BeginUpdate()
     {
-        SendMessage(Handle, WM_SETREDRAW, 0, 0);
+        Functions.SendMessageW(Handle, WM_SETREDRAW, 0, 0);
         _inUpdate = true;
     }
 
     public void EndUpdate()
     {
-        SendMessage(Handle, WM_SETREDRAW, 1, 0);
+        Functions.SendMessageW(Handle, WM_SETREDRAW, 1, 0);
         _inUpdate = false;
         SetupScrollBar();
         Refresh();

@@ -87,12 +87,9 @@ public class MouseWheelRedirector : IMessageFilter
     {
         if (_currentControl != null && m.Msg == WM_MOUSEWHEEL)
         {
-            SendMessage(_currentControl.Handle, m.Msg, m.WParam, m.LParam);
+            Functions.SendMessageW(_currentControl.Handle, m.Msg, m.WParam, m.LParam);
             return true;
         }
         return false;
     }
-
-    [DllImport("user32.dll", SetLastError = false)]
-    private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 }

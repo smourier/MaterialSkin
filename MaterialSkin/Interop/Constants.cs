@@ -1,0 +1,11 @@
+﻿namespace MaterialSkin.Interop;
+
+internal static class Constants
+{
+    public const int WM_SETCURSOR = 0x0020;
+    public const int IDC_HAND = 32649;
+    public const int SB_LINEUP = 0;
+    public const int SB_LINEDOWN = 1;
+    public const int WM_VSCROLL = 0x0115;
+    public const int EM_SETCUEBANNER = 0x1501;
+}

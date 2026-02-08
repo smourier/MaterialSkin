@@ -684,10 +684,10 @@ public partial class MaterialForm : Form, IMaterialControl
                 break;
         }
 
-        ReleaseCapture();
+        Functions.ReleaseCapture();
         if (dir != -1)
         {
-            SendMessage(Handle, (int)WM.NonClientLeftButtonDown, dir, 0);
+            Functions.SendMessageW(Handle, (int)WM.NonClientLeftButtonDown, dir, 0);
         }
     }
 
@@ -757,8 +757,8 @@ public partial class MaterialForm : Form, IMaterialControl
 
         // Sets the Window Style for having a Size Frame after the form is created
         // This prevents unexpected sizing while still allowing for Aero Snapping
-        var flags = GetWindowLongPtr(Handle, -16).ToInt64();
-        SetWindowLongPtr(Handle, -16, (nint)(flags | (int)WS.SizeFrame));
+        var flags = GetWindowLongPtr(Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE).ToInt64();
+        SetWindowLongPtr(Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (nint)(flags | (int)WS.SizeFrame));
     }
 
     protected override void WndProc(ref Message m)
@@ -801,8 +801,8 @@ public partial class MaterialForm : Form, IMaterialControl
         // Treat the Caption as if it was Non-Client
         else if (message == WM.LeftButtonDown && isOverCaption)
         {
-            ReleaseCapture();
-            SendMessage(Handle, (int)WM.NonClientLeftButtonDown, (int)HT.Caption, 0);
+            Functions.ReleaseCapture();
+            Functions.SendMessageW(Handle, (int)WM.NonClientLeftButtonDown, (int)HT.Caption, 0);
         }
         // Default context menu
         else if (message == WM.RightButtonDown)
@@ -815,10 +815,10 @@ public partial class MaterialForm : Form, IMaterialControl
                 base.ContextMenuStrip = null;
 
                 // Show default system menu when right clicking titlebar
-                var id = TrackPopupMenuEx(GetSystemMenu(Handle, false), (int)TPM.LeftAlign | (int)TPM.ReturnCommand, Cursor.Position.X, Cursor.Position.Y, Handle, 0);
+                var id = Functions.TrackPopupMenuEx(Functions.GetSystemMenu(Handle, false), (int)TPM.LeftAlign | (int)TPM.ReturnCommand, Cursor.Position.X, Cursor.Position.Y, Handle, 0);
 
                 // Pass the command as a WM_SYSCOMMAND message
-                SendMessage(Handle, (int)WM.SystemCommand, id, 0);
+                Functions.SendMessageW(Handle, (int)WM.SystemCommand, id, 0);
 
                 // restore user defined ContextMenuStrip
                 base.ContextMenuStrip = user_cms;
@@ -943,7 +943,7 @@ public partial class MaterialForm : Form, IMaterialControl
 
         UpdateButtons(e.Button, e.Location, true);
         base.OnMouseUp(e);
-        ReleaseCapture();
+        Functions.ReleaseCapture();
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -1160,43 +1160,19 @@ public partial class MaterialForm : Form, IMaterialControl
         }
     }
 
-    private static nint GetWindowLongPtr(nint hWnd, int nIndex)
+    private static nint GetWindowLongPtr(nint hWnd, WINDOW_LONG_PTR_INDEX nIndex)
     {
         if (nint.Size == 8)
-            return GetWindowLongPtr64(hWnd, nIndex);
+            return Functions.GetWindowLongPtrW(hWnd, nIndex);
 
-        return GetWindowLong(hWnd, nIndex);
+        return Functions.GetWindowLongW(hWnd, nIndex);
     }
 
-    private static nint SetWindowLongPtr(nint hWnd, int nIndex, nint dwNewLong)
+    private static nint SetWindowLongPtr(nint hWnd, WINDOW_LONG_PTR_INDEX nIndex, nint dwNewLong)
     {
         if (nint.Size == 8)
-            return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+            return Functions.SetWindowLongPtrW(hWnd, nIndex, dwNewLong);
 
-        return SetWindowLong(hWnd, nIndex, dwNewLong.ToInt32());
+        return Functions.SetWindowLongW(hWnd, nIndex, dwNewLong.ToInt32());
     }
-
-    [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-    private static extern nint GetWindowLong(nint hWnd, int nIndex);
-
-    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
-    private static extern nint GetWindowLongPtr64(nint hWnd, int nIndex);
-
-    [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-    private static extern nint SetWindowLong(nint hWnd, int nIndex, int dwNewLong);
-
-    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-    private static extern nint SetWindowLongPtr64(nint hWnd, int nIndex, nint dwNewLong);
-
-    [DllImport("user32.dll")]
-    private static extern int SendMessage(nint hWnd, int Msg, int wParam, int lParam);
-
-    [DllImport("user32.dll")]
-    private static extern bool ReleaseCapture();
-
-    [DllImport("user32.dll")]
-    private static extern int TrackPopupMenuEx(nint hmenu, uint fuFlags, int x, int y, nint hwnd, nint lptpm);
-
-    [DllImport("user32.dll")]
-    private static extern nint GetSystemMenu(nint hWnd, bool bRevert);
 }

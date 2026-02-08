@@ -2,10 +2,10 @@
 
 public class MaterialSnackBar : MaterialForm
 {
-    private const int TOP_PADDING_SINGLE_LINE = 6;
-    private const int LEFT_RIGHT_PADDING = 16;
-    private const int BUTTON_PADDING = 8;
-    private const int BUTTON_HEIGHT = 36;
+    private const int _topPaddingSingleLine = 6;
+    private const int _leftRightPadding = 16;
+    private const int _buttonPadding = 8;
+    private const int _buttonHeight = 36;
 
     private readonly MaterialButton _actionButton = new();
     private readonly Timer _duration = new();      // Timer that checks when the drop down is fully visible
@@ -70,7 +70,7 @@ public class MaterialSnackBar : MaterialForm
 
         ShowActionButton = showActionButton;
 
-        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
         _animationManager = new AnimationManager
         {
@@ -133,23 +133,12 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue("OK")]
     public string ActionButtonText { get; set { field = value; Invalidate(); } }
 
-    [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-    private static extern IntPtr CreateRoundRectRgn
-    (
-        int nLeftRect,     // x-coordinate of upper-left corner
-        int nTopRect,      // y-coordinate of upper-left corner
-        int nRightRect,    // x-coordinate of lower-right corner
-        int nBottomRect,   // y-coordinate of lower-right corner
-        int nWidthEllipse, // width of ellipse
-        int nHeightEllipse // height of ellipse
-    );
-
     private void UpdateRects()
     {
         if (ShowActionButton == true)
         {
             var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
-            var _actionbuttonBounds = new Rectangle(Width - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
+            var _actionbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, _topPaddingSingleLine, _buttonWidth, _buttonHeight);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
             _actionButton.Text = ActionButtonText;
@@ -161,10 +150,10 @@ public class MaterialSnackBar : MaterialForm
             _actionButton.Width = 0;
         }
 
-        _actionButton.Left = Width - BUTTON_PADDING - _actionButton.Width;  //Button minimum width management
+        _actionButton.Left = Width - _buttonPadding - _actionButton.Width;  //Button minimum width management
         _actionButton.Visible = ShowActionButton;
-        Width = TextRenderer.MeasureText(Text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
-        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Width = TextRenderer.MeasureText(Text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * _leftRightPadding) + _actionButton.Width + 48;
+        Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
     }
 
     private void Duration_Tick(object? sender, EventArgs e)
@@ -216,9 +205,9 @@ public class MaterialSnackBar : MaterialForm
 
         // Calc text Rect
         var textRect = new Rectangle(
-            LEFT_RIGHT_PADDING,
+            _leftRightPadding,
             0,
-            Width - (2 * LEFT_RIGHT_PADDING) - _actionButton.Width,
+            Width - (2 * _leftRightPadding) - _actionButton.Width,
             Height);
 
         //Draw  Text

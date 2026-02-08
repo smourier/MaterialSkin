@@ -16,17 +16,6 @@ public class MaterialDialog : MaterialForm
     private readonly string _text;
     private readonly string _title;
 
-    [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-    private static extern IntPtr CreateRoundRectRgn
-    (
-        int nLeftRect,     // x-coordinate of upper-left corner
-        int nTopRect,      // y-coordinate of upper-left corner
-        int nRightRect,    // x-coordinate of lower-right corner
-        int nBottomRect,   // y-coordinate of lower-right corner
-        int nWidthEllipse, // width of ellipse
-        int nHeightEllipse // height of ellipse
-    );
-
     public MaterialDialog(Form ParentForm)
     : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
     {
@@ -149,7 +138,7 @@ public class MaterialDialog : MaterialForm
             RectHeight + 9);
 
         Height = _header_Height + _textTopPadding + textRect.Height + _textBottomPadding + 52; //560;
-        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
+        Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
         var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
         var _validationbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);

@@ -9,6 +9,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     private static readonly string _standardMessageBoxSeparatorLines = "---------------------------\n";
     private static readonly string _standardMessageBoxSeparatorSpaces = "   ";
 
+#pragma warning disable IDE1006 // Naming Styles
     private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
     private static readonly string[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
     private static readonly string[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
@@ -16,6 +17,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     private static readonly string[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
     private static readonly string[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
     private static readonly string[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
+#pragma warning restore IDE1006 // Naming Styles
 
     /// <summary>
     /// Defines the font for all FlexibleMessageBox instances.

@@ -305,7 +305,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             g.FillRectangle(SkinManager.BackgroundHoverBrush, e.Bounds);
         }
 
-        string? text = null;
+        string? text;
         if (!string.IsNullOrWhiteSpace(DisplayMember))
         {
 #pragma warning disable IL2075 // 'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.

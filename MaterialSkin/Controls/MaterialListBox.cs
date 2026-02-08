@@ -712,20 +712,11 @@ public partial class MaterialListBox : Control, IMaterialControl
         InvalidateScroll(this, e);
     }
 
-    public const int WM_SETCURSOR = 0x0020;
-    public const int IDC_HAND = 32649;
-
-    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
-
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern IntPtr SetCursor(IntPtr hCursor);
-
     protected override void WndProc(ref Message m)
     {
-        if (m.Msg == WM_SETCURSOR)
+        if (m.Msg == Constants.WM_SETCURSOR)
         {
-            SetCursor(LoadCursor(0, IDC_HAND));
+            Functions.SetCursor(Functions.LoadCursorW(0, new PWSTR { Value = Constants.IDC_HAND }));
             m.Result = 0;
             return;
         }

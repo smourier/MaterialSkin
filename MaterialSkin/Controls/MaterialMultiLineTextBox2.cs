@@ -8,10 +8,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     private const int _leftPadding = 16;
     private const int _rightPadding = 12;
 
-    private const int SB_LINEUP = 0;
-    private const int SB_LINEDOWN = 1;
-    private const uint WM_VSCROLL = 277;
-
     private readonly MaterialContextMenuStrip _cms = new BaseTextBoxContextMenuStrip();
     private readonly AnimationManager _animationManager;
     private readonly BaseTextBox _baseTextBox;
@@ -395,10 +391,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         }
     }
 
-
-    [DllImport("User32.dll", CharSet = CharSet.Auto, EntryPoint = "SendMessage")]
-    protected static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
     protected void OnMouseWheel(object? sender, MouseEventArgs e)
     {
         if (AllowScroll)
@@ -411,14 +403,14 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             //Down Movement
             if (v < 0)
             {
-                var ptrWparam = new IntPtr(SB_LINEDOWN);
-                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, 0);
+                var ptrWparam = new IntPtr(Constants.SB_LINEDOWN);
+                Functions.SendMessageW(_baseTextBox.Handle, Constants.WM_VSCROLL, ptrWparam, 0);
             }
             //Up Movement
             else if (v > 0)
             {
-                var ptrWparam = new IntPtr(SB_LINEUP);
-                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, 0);
+                var ptrWparam = new IntPtr(Constants.SB_LINEUP);
+                Functions.SendMessageW(_baseTextBox.Handle, Constants.WM_VSCROLL, ptrWparam, 0);
             }
 
             _baseTextBox?.Focus();

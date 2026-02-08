@@ -66,10 +66,9 @@ public partial class MaterialSkinManager
     // Destructor
     ~MaterialSkinManager()
     {
-        // RemoveFontMemResourceEx
-        foreach (nint handle in _logicalFonts.Values)
+        foreach (var handle in _logicalFonts.Values)
         {
-            NativeTextRenderer.DeleteObject(handle);
+            Functions.DeleteObject(handle);
         }
     }
 
@@ -103,6 +102,7 @@ public partial class MaterialSkinManager
     }
 
     // Text
+#pragma warning disable IDE1006 // Naming Styles
     private static readonly Color TEXT_HIGH_EMPHASIS_LIGHT = Color.FromArgb(222, 255, 255, 255); // Alpha 87%
     private static readonly Brush TEXT_HIGH_EMPHASIS_LIGHT_BRUSH = new SolidBrush(TEXT_HIGH_EMPHASIS_LIGHT);
     private static readonly Color TEXT_HIGH_EMPHASIS_DARK = Color.FromArgb(222, 0, 0, 0); // Alpha 87%
@@ -192,6 +192,7 @@ public partial class MaterialSkinManager
     //Other colors
     private static readonly Color CARD_BLACK = Color.FromArgb(255, 42, 42, 42);
     private static readonly Color CARD_WHITE = Color.White;
+#pragma warning restore IDE1006 // Naming Styles
 
     // Getters - Using these makes handling the dark theme switching easier
     // Text
@@ -299,7 +300,8 @@ public partial class MaterialSkinManager
         Marshal.Copy(fontdata, 0, ptrFont, dataLength);
 
         // GDI Font
-        NativeTextRenderer.AddFontMemResourceEx(fontdata, dataLength, 0, out _);
+        uint num = 0;
+        Functions.AddFontMemResourceEx(ptrFont, dataLength, 0, num);
 
         // GDI+ Font
         _privateFontCollection.AddMemoryFont(ptrFont, dataLength);
@@ -307,14 +309,14 @@ public partial class MaterialSkinManager
 
     private static nint AreateLogicalFont(string fontName, int size, LogFontWeight weight, byte lfItalic = 0)
     {
-        var lfont = new NativeTextRenderer.LogFont
+        var lfont = new LOGFONTW
         {
             lfFaceName = fontName,
             lfHeight = -size,
             lfWeight = (int)weight,
             lfItalic = lfItalic
         };
-        return NativeTextRenderer.CreateFontIndirect(lfont);
+        return Functions.CreateFontIndirectW(lfont);
     }
 
     // Dyanmic Themes

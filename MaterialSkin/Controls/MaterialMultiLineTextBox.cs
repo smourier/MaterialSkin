@@ -2,8 +2,6 @@
 
 public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
 {
-    private const int _emSetCueBanner = 0x1501;
-
     public MaterialMultiLineTextBox()
     {
         base.OnCreateControl();
@@ -27,9 +25,6 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, string lParam);
-
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
@@ -37,7 +32,8 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         set
         {
             field = value;
-            SendMessage(Handle, _emSetCueBanner, (int)0, Hint);
+            var pwstr = PWSTR.From(Hint);
+            Functions.SendMessageW(Handle, Constants.EM_SETCUEBANNER, 0, pwstr.Value);
         }
     } = string.Empty;
 
