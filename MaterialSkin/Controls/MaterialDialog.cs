@@ -237,17 +237,14 @@ public class MaterialDialog : MaterialForm
         }
     }
 
-    /// <summary>
-    /// Overrides the Closing Event to Animate the Slide Out
-    /// </summary>
-    protected override void OnClosing(CancelEventArgs e)
+    // Overrides the Closing Event to Animate the Slide Out
+    protected override void OnFormClosing(FormClosingEventArgs e)
     {
         _formOverlay.Visible = false;
         _formOverlay.Close();
         _formOverlay.Dispose();
         _ = DialogResult;
-
-        base.OnClosing(e);
+        base.OnFormClosing(e);
     }
 
     protected override bool ProcessDialogKey(Keys keyData)

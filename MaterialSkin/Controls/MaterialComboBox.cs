@@ -308,16 +308,18 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         string? text = null;
         if (!string.IsNullOrWhiteSpace(DisplayMember))
         {
-            if (!Items[e.Index].GetType().Equals(typeof(DataRowView)))
+#pragma warning disable IL2075 // 'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.
+            if (!Items[e.Index]?.GetType().Equals(typeof(DataRowView)) == true)
             {
-                var item = Items[e.Index].GetType().GetProperty(DisplayMember).GetValue(Items[e.Index]);
+                var item = Items[e.Index]?.GetType()?.GetProperty(DisplayMember)?.GetValue(Items[e.Index]);
                 text = item?.ToString();
             }
             else
             {
-                var table = ((DataRow)Items[e.Index].GetType().GetProperty("Row").GetValue(Items[e.Index])).Table;
+                var table = (Items[e.Index]?.GetType()?.GetProperty("Row")?.GetValue(Items[e.Index]) as DataRow)?.Table;
                 text = table?.Rows[e.Index][DisplayMember].ToString();
             }
+#pragma warning restore IL2075 // 'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.
         }
         else
         {

@@ -76,9 +76,8 @@ public partial class MaterialSkinManager
     /// <summary>
     /// Set this property to false to stop enforcing the backcolor on non-materialSkin components
     /// </summary>
-    public bool EnforceBackcolorOnAllComponents = true;
-
-    public int FORM_PADDING = 14;
+    public bool EnforceBackcolorOnAllComponents { get; set; } = true;
+    public int FORM_PADDING { get; set; } = 14;
 
     public Themes Theme
     {

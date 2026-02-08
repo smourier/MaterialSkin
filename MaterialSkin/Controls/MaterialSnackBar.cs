@@ -233,10 +233,8 @@ public class MaterialSnackBar : MaterialForm
             TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
-    /// <summary>
-    /// Overrides the Closing Event to Animate the Slide Out
-    /// </summary>
-    protected override void OnClosing(CancelEventArgs e)
+    // Overrides the Closing Event to Animate the Slide Out
+    protected override void OnFormClosing(FormClosingEventArgs e)
     {
         e.Cancel = !_closingAnimationDone;
         if (!_closingAnimationDone)
@@ -246,12 +244,10 @@ public class MaterialSnackBar : MaterialForm
             _animationManager.OnAnimationFinished += AnimationManager_OnAnimationFinished;
             _animationManager.StartNewAnimation(AnimationDirection.Out);
         }
-        base.OnClosing(e);
+        base.OnFormClosing(e);
     }
 
-    /// <summary>
-    /// Closes the Form after the pull out animation
-    /// </summary>
+    // Closes the Form after the pull out animation
     private void AnimationManager_OnAnimationFinished(object? sender, EventArgs e)
     {
         _closingAnimationDone = true;
@@ -265,9 +261,7 @@ public class MaterialSnackBar : MaterialForm
         Close();
     }
 
-    /// <summary>
-    /// Prevents the Form from beeing dragged
-    /// </summary>
+    // Prevents the Form from beeing dragged
     protected override void WndProc(ref Message message)
     {
         const int WM_SYSCOMMAND = 0x0112;
