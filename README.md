@@ -1,6 +1,6 @@
 # MaterialSkin 2 for .NET WinForms 10+
 
-Theming .NET WinForms, C# or VB.Net, to Google's Material Design Principles.
+Theming .NET WinForms to Google's Material Design Principles.
 
 This project was initially developed here from multiple forks https://github.com/leocb/MaterialSkin.
 
