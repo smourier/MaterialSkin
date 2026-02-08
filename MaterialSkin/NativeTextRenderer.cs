@@ -68,7 +68,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         DrawText(_hdc, str, str.Length, ref rect2, (uint)flags);
     }
 
-    public void DrawTransparentText(string? str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
+    public void DrawTransparentText(string? str, Font? font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
     public void DrawTransparentText(string? str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
     public void DrawMultilineTransparentText(string? str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
     public void DrawMultilineTransparentText(string? str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
@@ -187,9 +187,11 @@ public sealed partial class NativeTextRenderer : IDisposable
     }
 
     private void SetFont(Font font) => SelectObject(_hdc, GetCachedHFont(font));
-    private static nint GetCachedHFont(Font font)
+    private static nint GetCachedHFont(Font? font)
     {
         nint hfont = 0;
+        font ??= SystemFonts.DefaultFont;
+
         if (_fontsCache.TryGetValue(font.Name, out var dic1))
         {
             if (dic1.TryGetValue(font.Size, out var dic2))

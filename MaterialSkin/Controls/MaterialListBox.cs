@@ -34,19 +34,19 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Category("Behavior")]
     [Description("Occurs when selected index change.")]
-    public event SelectedIndexChangedEventHandler SelectedIndexChanged;
+    public event SelectedIndexChangedEventHandler? SelectedIndexChanged;
 
     public delegate void SelectedIndexChangedEventHandler(object sender, MaterialListBoxItem selectedItem);
 
     [Category("Behavior")]
     [Description("Occurs when selected value change.")]
-    public event SelectedValueEventHandler SelectedValueChanged;
+    public event SelectedValueEventHandler? SelectedValueChanged;
 
     public delegate void SelectedValueEventHandler(object sender, MaterialListBoxItem selectedItem);
 
     [Category("Behavior")]
     [Description("Occurs when item is added or removed.")]
-    public event EventHandler ItemsCountChanged;
+    public event EventHandler? ItemsCountChanged;
 
     public MaterialListBox()
     {
@@ -87,7 +87,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     public MouseState MouseState { get; set; }
 
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
-    public bool UseAccentColor { get => _useAccentColor; set { _useAccentColor = value; _scrollBar.UseAccentColor = value; Invalidate(); } }
+    public bool UseAccentColor { get => _useAccentColor; set { _useAccentColor = value; _scrollBar?.UseAccentColor = value; Invalidate(); } }
 
     [TypeConverter(typeof(CollectionConverter))]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -107,7 +107,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             _selectedItem = value;
             _selectedIndex = _selectedItem != null ? _items.IndexOf(_selectedItem) : -1;
-            update_selection();
+            UpdateSelection();
             Invalidate();
         }
     }
@@ -122,7 +122,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         set
         {
             _selectedIndex = value;
-            update_selection();
+            UpdateSelection();
             Invalidate();
         }
     }
@@ -298,13 +298,16 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             //SingleLine
             if (_density == MaterialItemDensity.Dense)
+            {
                 _itemHeight = 40;
+            }
             else
+            {
                 _itemHeight = 48;
+            }
             _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
             _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
         }
-
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -316,8 +319,8 @@ public partial class MaterialListBox : Control, IMaterialControl
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
         var mainRect = new Rectangle(0, 0, Width - (ShowBorder ? 1 : 0), Height - (ShowBorder ? 1 : 0));
 
-        var lastItem = (_scrollBar.Value / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (_scrollBar.Value / _itemHeight) + (Height / _itemHeight) + 1;
-        var firstItem = _scrollBar.Value / _itemHeight < 0 ? 0 : (_scrollBar.Value / _itemHeight);
+        var lastItem = (_scrollBar?.Value ?? 0 / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (_scrollBar?.Value ?? 0 / _itemHeight) + (Height / _itemHeight) + 1;
+        var firstItem = (_scrollBar?.Value ?? 0) / _itemHeight < 0 ? 0 : (_scrollBar?.Value ?? 0 / _itemHeight);
 
         g.FillRectangle(Enabled ? SkinManager.BackgroundBrush : SkinManager.BackgroundDisabledBrush, mainRect);
 
@@ -335,7 +338,6 @@ public partial class MaterialListBox : Control, IMaterialControl
         }
 
         //Set color and brush
-        _ = new Color();
         Color selectedColor;
         if (UseAccentColor)
         {
@@ -353,8 +355,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             var itemText = Items[i].Text;
             var itemSecondaryText = Items[i].SecondaryText;
-
-            var itemRect = new Rectangle(0, (i - firstItem) * _itemHeight, Width - (_showScrollBar && _scrollBar.Visible ? _scrollBar.Width : 0), _itemHeight);
+            var itemRect = new Rectangle(0, (i - firstItem) * _itemHeight, Width - (_showScrollBar && _scrollBar?.Visible == true ? _scrollBar.Width : 0), _itemHeight);
 
             if (_indicates != null && MultiSelect && _indicates.Count != 0)
             {
@@ -387,7 +388,6 @@ public partial class MaterialListBox : Control, IMaterialControl
 
             //Define primary & secondary Text Rect
             var primaryTextRect = new Rectangle(itemRect.X + _leftrightPadding, itemRect.Y, itemRect.Width - (2 * _leftrightPadding), itemRect.Height);
-            _ = new Rectangle();
 
             if (_style == ListBoxStyle.TwoLine)
             {
@@ -404,46 +404,46 @@ public partial class MaterialListBox : Control, IMaterialControl
                     primaryTextRect.Height = 30 - _primaryTextBottomPadding;
                 }
             }
-            Rectangle secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
+
+            var secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
 
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            itemText,
-            _primaryFont,
-            Enabled ? (i != SelectedIndex || UseAccentColor) ?
-            SkinManager.TextHighEmphasisColor :
-            SkinManager.ColorScheme.TextColor :
-            SkinManager.TextDisabledOrHintColor, // Disabled
-            primaryTextRect.Location,
-            primaryTextRect.Size,
-            primaryTextAlignFlags);
+                itemText,
+                _primaryFont,
+                Enabled ? (i != SelectedIndex || UseAccentColor) ?
+                SkinManager.TextHighEmphasisColor :
+                SkinManager.ColorScheme.TextColor :
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                primaryTextRect.Location,
+                primaryTextRect.Size,
+                primaryTextAlignFlags);
             if (_style == ListBoxStyle.TwoLine)
             {
                 NativeText.DrawTransparentText(
-                itemSecondaryText,
-                _secondaryFont,
-                Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                SkinManager.TextDisabledOrHintColor :
-                SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                secondaryTextRect.Location,
-                secondaryTextRect.Size,
-                secondaryTextAlignFlags);
+                    itemSecondaryText,
+                    _secondaryFont,
+                    Enabled ? (i != SelectedIndex || UseAccentColor) ?
+                    SkinManager.TextDisabledOrHintColor :
+                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
+                    SkinManager.TextDisabledOrHintColor, // Disabled
+                    secondaryTextRect.Location,
+                    secondaryTextRect.Size,
+                    secondaryTextAlignFlags);
             }
             else if (_style == ListBoxStyle.ThreeLine)
             {
                 NativeText.DrawMultilineTransparentText(
-                itemSecondaryText,
-                _secondaryFont,
-                Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                SkinManager.TextDisabledOrHintColor :
-                SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                SkinManager.TextDisabledOrHintColor, // Disabled
-                secondaryTextRect.Location,
-                secondaryTextRect.Size,
-                secondaryTextAlignFlags);
+                    itemSecondaryText,
+                    _secondaryFont,
+                    Enabled ? (i != SelectedIndex || UseAccentColor) ?
+                    SkinManager.TextDisabledOrHintColor :
+                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
+                    SkinManager.TextDisabledOrHintColor, // Disabled
+                    secondaryTextRect.Location,
+                    secondaryTextRect.Size,
+                    secondaryTextAlignFlags);
             }
-
         }
 
         if (ShowBorder)
@@ -498,7 +498,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         if (index <= _selectedIndex)
         {
             _selectedIndex -= 1;
-            update_selection();
+            UpdateSelection();
         }
 
         _items.RemoveAt(index);
@@ -511,7 +511,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         if (_items.IndexOf(item) <= _selectedIndex)
         {
             _selectedIndex -= 1;
-            update_selection();
+            UpdateSelection();
         }
 
         _items.Remove(item);
@@ -528,17 +528,17 @@ public partial class MaterialListBox : Control, IMaterialControl
             if (_items.IndexOf(item) <= _selectedIndex)
             {
                 _selectedIndex -= 1;
-                update_selection();
+                UpdateSelection();
             }
             _items.Remove(item);
         }
         _updating = false;
 
-        InvalidateScroll(this, null);
+        InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
 
-    private void update_selection()
+    private void UpdateSelection()
     {
         if (_selectedIndex >= 0)
         {
@@ -557,27 +557,20 @@ public partial class MaterialListBox : Control, IMaterialControl
     public void Clear()
     {
         _updating = true;
-        for (int i = _items.Count - 1; i >= 0; i += -1)
+        for (var i = _items.Count - 1; i >= 0; i += -1)
         {
             _items.RemoveAt(i);
         }
         _updating = false;
-        _selectedIndex = -1;
-        update_selection();
 
+        _selectedIndex = -1;
+        UpdateSelection();
         InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
 
-    public void BeginUpdate()
-    {
-        _updating = true;
-    }
-
-    public void EndUpdate()
-    {
-        _updating = false;
-    }
+    public void BeginUpdate() => _updating = true;
+    public void EndUpdate() => _updating = false;
 
     protected override void OnSizeChanged(EventArgs e)
     {
@@ -589,20 +582,20 @@ public partial class MaterialListBox : Control, IMaterialControl
     protected override void OnMouseDown(MouseEventArgs e)
     {
         Focus();
-        if (e.Button == MouseButtons.Left)
+        if (e.Button == MouseButtons.Left && _scrollBar != null)
         {
-            int index = _scrollBar.Value / _itemHeight + e.Location.Y / _itemHeight;
+            var index = _scrollBar.Value / _itemHeight + e.Location.Y / _itemHeight;
             if (index >= 0 && index < _items.Count)
             {
                 if (MultiSelect && _multiKeyDown)
                 {
-                    _indicates.Add(index);
-                    _selectedItems.Add(Items[index]);
+                    _indicates?.Add(index);
+                    _selectedItems?.Add(Items[index]);
                 }
                 else
                 {
-                    _indicates.Clear();
-                    _selectedItems.Clear();
+                    _indicates?.Clear();
+                    _selectedItems?.Clear();
                     _selectedItem = Items[index];
                     _selectedIndex = index;
                     _selectedValue = Items[index];
@@ -618,51 +611,61 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     private void HandleScroll(object? sender, ScrollEventArgs e)
     {
-        if (_scrollBar.Maximum < _scrollBar.Value + Height) _scrollBar.Value = _scrollBar.Maximum - Height;
+        if (_scrollBar != null && _scrollBar.Maximum < _scrollBar.Value + Height)
+        {
+            _scrollBar.Value = _scrollBar.Maximum - Height;
+        }
+
         Invalidate();
     }
 
     private void InvalidateScroll(object? sender, EventArgs e)
     {
-        _scrollBar.Maximum = _items.Count * _itemHeight;
-        _scrollBar.SmallChange = _itemHeight;
-        _scrollBar.LargeChange = Height;
-        _scrollBar.Visible = (_items.Count * _itemHeight) > Height;
-        if (_items.Count == 0)
+        if (_scrollBar != null)
         {
-            _scrollBar.Value = 0;
+            _scrollBar.Maximum = _items.Count * _itemHeight;
+            _scrollBar.SmallChange = _itemHeight;
+            _scrollBar.LargeChange = Height;
+            _scrollBar.Visible = (_items.Count * _itemHeight) > Height;
+            if (_items.Count == 0)
+            {
+                _scrollBar.Value = 0;
+            }
         }
 
         Invalidate();
     }
 
     private void HandleMouseDown(object? sender, MouseEventArgs e) => Focus();
-
     private void InvalidateLayout()
     {
-        _scrollBar.Size = new Size(12, Height - (ShowBorder ? 2 : 0));
-        _scrollBar.Location = new Point(Width - (_scrollBar.Width + (ShowBorder ? 1 : 0)), ShowBorder ? 1 : 0);
+        _scrollBar?.Size = new Size(12, Height - (ShowBorder ? 2 : 0));
+        _scrollBar?.Location = new Point(Width - (_scrollBar.Width + (ShowBorder ? 1 : 0)), ShowBorder ? 1 : 0);
         Invalidate();
     }
 
     protected override void OnMouseWheel(MouseEventArgs e)
     {
-        if (_scrollBar.Visible == true)
+        if (_scrollBar?.Visible == true)
         {
             if (_scrollBar.Minimum > _scrollBar.Value - e.Delta / 2)
+            {
                 _scrollBar.Value = _scrollBar.Minimum;
+            }
             else if (_scrollBar.Maximum < _scrollBar.Value + Height)
             {
                 if (e.Delta > 0)
+                {
                     _scrollBar.Value -= e.Delta / 2;
-                else
-                { } //Do nothing, maximum reached
+                }
+                // else Do nothing, maximum reached
             }
             else
+            {
                 _scrollBar.Value -= e.Delta / 2;
+            }
 
-            _updateHoveredItem(e);
-
+            UpdateHoveredItem(e);
             Invalidate();
             base.OnMouseWheel(e);
             ((HandledMouseEventArgs)e).Handled = true;
@@ -671,34 +674,38 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     protected override bool IsInputKey(Keys keyData)
     {
-        switch (keyData)
+        if (_selectedItems != null)
         {
-            case Keys.Down:
-                try
-                {
-                    _selectedItems.Remove(_items[SelectedIndex]);
-                    SelectedIndex += 1;
-                    _selectedItems.Add(_items[SelectedIndex]);
-                }
-                catch
-                {
-                    //
-                }
-                break;
+            switch (keyData)
+            {
+                case Keys.Down:
+                    try
+                    {
+                        _selectedItems.Remove(_items[SelectedIndex]);
+                        SelectedIndex += 1;
+                        _selectedItems.Add(_items[SelectedIndex]);
+                    }
+                    catch
+                    {
+                        //
+                    }
+                    break;
 
-            case Keys.Up:
-                try
-                {
-                    _selectedItems.Remove(_items[SelectedIndex]);
-                    SelectedIndex -= 1;
-                    _selectedItems.Add(_items[SelectedIndex]);
-                }
-                catch
-                {
-                    //
-                }
-                break;
+                case Keys.Up:
+                    try
+                    {
+                        _selectedItems.Remove(_items[SelectedIndex]);
+                        SelectedIndex -= 1;
+                        _selectedItems.Add(_items[SelectedIndex]);
+                    }
+                    catch
+                    {
+                        //
+                    }
+                    break;
+            }
         }
+
         Invalidate();
         return base.IsInputKey(keyData);
     }
@@ -707,15 +714,13 @@ public partial class MaterialListBox : Control, IMaterialControl
     {
         base.OnMouseMove(e);
         Cursor = Cursors.Hand;
-        _updateHoveredItem(e);
-
+        UpdateHoveredItem(e);
         Invalidate();
     }
 
-    private void _updateHoveredItem(MouseEventArgs e)
+    private void UpdateHoveredItem(MouseEventArgs e)
     {
-        int index = _scrollBar.Value / _itemHeight + e.Location.Y / _itemHeight;
-
+        var index = (_scrollBar?.Value ?? 0) / _itemHeight + e.Location.Y / _itemHeight;
         if (index >= Items.Count)
         {
             index = -1;
@@ -725,7 +730,6 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             _hoveredItem = index;
         }
-
     }
 
     protected override void OnMouseLeave(EventArgs e)
@@ -739,8 +743,12 @@ public partial class MaterialListBox : Control, IMaterialControl
     protected override void OnHandleCreated(EventArgs e)
     {
         base.OnHandleCreated(e);
-        _scrollBar.Size = new Size(12, Height - (ShowBorder ? 2 : 0));
-        _scrollBar.Location = new Point(Width - (_scrollBar.Width + (ShowBorder ? 1 : 0)), ShowBorder ? 1 : 0);
+        if (_scrollBar != null)
+        {
+            _scrollBar.Size = new Size(12, Height - (ShowBorder ? 2 : 0));
+            _scrollBar.Location = new Point(Width - (_scrollBar.Width + (ShowBorder ? 1 : 0)), ShowBorder ? 1 : 0);
+        }
+
         InvalidateScroll(this, e);
     }
 
