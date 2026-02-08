@@ -2,6 +2,19 @@
 
 public class MaterialCard : Panel, IMaterialControl
 {
+    private Control? _oldParent;
+    private bool _shadowDrawEventSubscribed;
+
+    public MaterialCard()
+    {
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        Paint += PaintControl;
+        BackColor = SkinManager.BackgroundColor;
+        ForeColor = SkinManager.TextHighEmphasisColor;
+        Margin = new Padding(SkinManager.FORM_PADDING);
+        Padding = new Padding(SkinManager.FORM_PADDING);
+    }
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -11,27 +24,17 @@ public class MaterialCard : Panel, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    public MaterialCard()
-    {
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-        Paint += new PaintEventHandler(paintControl);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
-        Margin = new Padding(SkinManager.FORM_PADDING);
-        Padding = new Padding(SkinManager.FORM_PADDING);
-    }
-
-    private void drawShadowOnParent(object sender, PaintEventArgs e)
+    private void DrawShadowOnParent(object? sender, PaintEventArgs e)
     {
         if (Parent == null)
         {
-            RemoveShadowPaintEvent((Control)sender, drawShadowOnParent);
+            RemoveShadowPaintEvent((Control)sender!, DrawShadowOnParent);
             return;
         }
 
         // paint shadow on parent
-        Graphics gp = e.Graphics;
-        Rectangle rect = new(Location, ClientRectangle.Size);
+        var gp = e.Graphics;
+        var rect = new Rectangle(Location, ClientRectangle.Size);
         gp.SmoothingMode = SmoothingMode.AntiAlias;
         DrawHelper.DrawSquareShadow(gp, rect);
     }
@@ -45,28 +48,40 @@ public class MaterialCard : Panel, IMaterialControl
     protected override void OnParentChanged(EventArgs e)
     {
         base.OnParentChanged(e);
-        if (Parent != null) AddShadowPaintEvent(Parent, drawShadowOnParent);
-        if (_oldParent != null) RemoveShadowPaintEvent(_oldParent, drawShadowOnParent);
+        if (Parent != null)
+        {
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+
+        if (_oldParent != null)
+        {
+            RemoveShadowPaintEvent(_oldParent, DrawShadowOnParent);
+        }
+
         _oldParent = Parent;
     }
-
-    private Control _oldParent;
 
     protected override void OnVisibleChanged(EventArgs e)
     {
         base.OnVisibleChanged(e);
-        if (Parent == null) return;
-        if (Visible)
-            AddShadowPaintEvent(Parent, drawShadowOnParent);
-        else
-            RemoveShadowPaintEvent(Parent, drawShadowOnParent);
-    }
+        if (Parent == null)
+            return;
 
-    private bool _shadowDrawEventSubscribed = false;
+        if (Visible)
+        {
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+        else
+        {
+            RemoveShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+    }
 
     private void AddShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (_shadowDrawEventSubscribed) return;
+        if (_shadowDrawEventSubscribed)
+            return;
+
         control.Paint += shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = true;
@@ -74,7 +89,9 @@ public class MaterialCard : Panel, IMaterialControl
 
     private void RemoveShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (!_shadowDrawEventSubscribed) return;
+        if (!_shadowDrawEventSubscribed)
+            return;
+
         control.Paint -= shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = false;
@@ -86,24 +103,27 @@ public class MaterialCard : Panel, IMaterialControl
         BackColor = SkinManager.BackgroundColor;
     }
 
-    private void paintControl(object sender, PaintEventArgs e)
+    private void PaintControl(object? sender, PaintEventArgs e)
     {
-        Graphics g = e.Graphics;
+        var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
 
-        g.Clear(Parent.BackColor);
+        if (Parent != null)
+        {
+            g.Clear(Parent.BackColor);
+        }
 
         // card rectangle path
-        RectangleF cardRectF = new(ClientRectangle.Location, ClientRectangle.Size);
+        var cardRectF = new RectangleF(ClientRectangle.Location, ClientRectangle.Size);
         cardRectF.X -= 0.5f;
         cardRectF.Y -= 0.5f;
-        GraphicsPath cardPath = DrawHelper.CreateRoundRect(cardRectF, 4);
+        var cardPath = DrawHelper.CreateRoundRect(cardRectF, 4);
 
         // button shadow (blend with form shadow)
         DrawHelper.DrawSquareShadow(g, ClientRectangle);
 
         // Draw card
-        using SolidBrush normalBrush = new(BackColor);
+        using var normalBrush = new SolidBrush(BackColor);
         g.FillPath(normalBrush, cardPath);
     }
 }

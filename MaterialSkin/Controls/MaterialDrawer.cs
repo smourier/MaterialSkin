@@ -208,19 +208,15 @@ public class MaterialDrawer : Control, IMaterialControl
             {
                 _previousSelectedTabIndex = _baseTabControl.SelectedIndex;
             };
+
             _baseTabControl.SelectedIndexChanged += (sender, args) =>
             {
                 _clickAnimManager.SetProgress(0);
                 _clickAnimManager.StartNewAnimation(AnimationDirection.In);
             };
-            _baseTabControl.ControlAdded += delegate
-            {
-                Invalidate();
-            };
-            _baseTabControl.ControlRemoved += delegate
-            {
-                Invalidate();
-            };
+
+            _baseTabControl.ControlAdded += (s, e) => Invalidate();
+            _baseTabControl.ControlRemoved += (s, e) => Invalidate();
         }
     }
 

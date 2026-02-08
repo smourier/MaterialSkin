@@ -2,6 +2,14 @@
 
 public class MaterialCheckedListBox : Panel, IMaterialControl
 {
+    public MaterialCheckedListBox()
+        : base()
+    {
+        DoubleBuffered = true;
+        Items = new ItemsList(this);
+        AutoScroll = true;
+    }
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -10,23 +18,16 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
-
     public bool Striped { get; set; }
-
     public Color StripeDarkColor { get; set; }
-
     public ItemsList Items { get; set; }
-
-    public MaterialCheckedListBox() : base()
-    {
-        DoubleBuffered = true;
-        Items = new ItemsList(this);
-        AutoScroll = true;
-    }
 
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
+        if (Parent == null)
+            return;
+
         if (DesignMode)
         {
             BackColorChanged += (sender, args) => BackColor = Parent.BackColor;
@@ -39,16 +40,11 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
         }
     }
 
-    public CheckState GetItemCheckState(int Index)
-    {
-        return Items[Index].CheckState;
-    }
+    public CheckState GetItemCheckState(int Index) => Items[Index].CheckState;
 
     public class ItemsList(Panel parent) : List<MaterialCheckbox>
     {
         private readonly Panel _parent = parent;
-
-        public delegate void SelectedIndexChangedEventHandler(int Index);
 
         public void Add(string text)
         {
@@ -57,7 +53,7 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
 
         public void Add(string text, bool defaultValue)
         {
-            MaterialCheckbox cb = new();
+            var cb = new MaterialCheckbox();
             Add(cb);
             cb.Checked = defaultValue;
             cb.Text = text;

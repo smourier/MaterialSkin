@@ -198,8 +198,8 @@ public partial class MaterialTextBox : Control, IMaterialControl
             UpdateRects();
         };
 
-        _baseTextBox.TextChanged += new EventHandler(Redraw);
-        _baseTextBox.BackColorChanged += new EventHandler(Redraw);
+        _baseTextBox.TextChanged += Redraw;
+        _baseTextBox.BackColorChanged += Redraw;
 
         _baseTextBox.TabStop = true;
         TabStop = false;
@@ -476,7 +476,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _leaveOnEnterKey = value;
             if (value)
             {
-                _baseTextBox.KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
+                _baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
             }
             else
             {
@@ -531,15 +531,21 @@ public partial class MaterialTextBox : Control, IMaterialControl
             DrawHelper.BlendColor(BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A); // Normal
 
         //Leading Icon
+        Brush? brush;
         if (LeadingIcon != null)
         {
             if (_errorState)
             {
-                g.FillRectangle(_iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
+                brush = _iconsErrorBrushes?["_leadingIcon"];
             }
             else
             {
-                g.FillRectangle(_iconsBrushes["_leadingIcon"], _leadingIconBounds);
+                brush = _iconsBrushes?["_leadingIcon"];
+            }
+
+            if (brush != null)
+            {
+                g.FillRectangle(brush, _leadingIconBounds);
             }
         }
 
@@ -548,11 +554,16 @@ public partial class MaterialTextBox : Control, IMaterialControl
         {
             if (_errorState)
             {
-                g.FillRectangle(_iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
+                brush = _iconsErrorBrushes?["_trailingIcon"];
             }
             else
             {
-                g.FillRectangle(_iconsBrushes["_trailingIcon"], _trailingIconBounds);
+                brush = _iconsBrushes?["_trailingIcon"];
+            }
+
+            if (brush != null)
+            {
+                g.FillRectangle(brush, _trailingIconBounds);
             }
         }
 
@@ -1040,7 +1051,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
     }
 
     public bool GetErrorState() => _errorState;
-    private void ContextMenuStripOnItemClickStart(object sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
+    private void ContextMenuStripOnItemClickStart(object? sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
         switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
         {

@@ -2,91 +2,19 @@
 
 public class MaterialComboBox : ComboBox, IMaterialControl
 {
+    private const int _textSmallSize = 18;
+    private const int _textSmallY = 4;
+    private const int _bottomPadding = 3;
+
     // For some reason, even when overriding the AutoSize property, it doesn't appear on the properties panel, so we have to create a new one.
-    [Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Category("Layout")]
-    private bool _AutoResize;
-
-    public bool AutoResize
-    {
-        get => _AutoResize;
-        set
-        {
-            _AutoResize = value;
-            recalculateAutoSize();
-        }
-    }
-
-    //Properties for managing the material design properties
-    [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    private bool _UseTallSize;
-
-    [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
-    public bool UseTallSize
-    {
-        get => _UseTallSize;
-        set
-        {
-            _UseTallSize = value;
-            setHeightVars();
-            Invalidate();
-        }
-    }
-
-    [Category("Material Skin"), DefaultValue(true)]
-    public bool UseAccent { get; set; }
-
-    private string _hint = string.Empty;
-
-    [Category("Material Skin"), DefaultValue(""), Localizable(true)]
-    public string Hint
-    {
-        get => _hint;
-        set
-        {
-            _hint = value;
-            hasHint = !string.IsNullOrEmpty(Hint);
-            Invalidate();
-        }
-    }
-
-    private int _startIndex;
-    public int StartIndex
-    {
-        get => _startIndex;
-        set
-        {
-            _startIndex = value;
-            try
-            {
-                if (Items.Count > 0)
-                {
-                    base.SelectedIndex = value;
-                }
-            }
-            catch
-            {
-            }
-            Invalidate();
-        }
-    }
-
-    private const int TEXT_SMALL_SIZE = 18;
-    private const int TEXT_SMALL_Y = 4;
-    private const int BOTTOM_PADDING = 3;
-    private int HEIGHT = 50;
-    private int LINE_Y;
-
-    private bool hasHint;
-
     private readonly AnimationManager _animationManager;
+    private bool _autoResize;
+    private bool _useTallSize;
+    private int _startIndex;
+    private string _hint = string.Empty;
+    private int _height = 50;
+    private int _lineY;
+    private bool _hasHint;
 
     public MaterialComboBox()
     {
@@ -165,32 +93,107 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         };
     }
 
+    [Category("Material Skin"), DefaultValue(""), Localizable(true)]
+    public string Hint
+    {
+        get => _hint;
+        set
+        {
+            _hint = value;
+            _hasHint = !string.IsNullOrEmpty(Hint);
+            Invalidate();
+        }
+    }
+
+    public int StartIndex
+    {
+        get => _startIndex;
+        set
+        {
+            _startIndex = value;
+            try
+            {
+                if (Items.Count > 0)
+                {
+                    base.SelectedIndex = value;
+                }
+            }
+            catch
+            {
+            }
+            Invalidate();
+        }
+    }
+    [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
+    public bool UseTallSize
+    {
+        get => _useTallSize;
+        set
+        {
+            _useTallSize = value;
+            SetHeightVars();
+            Invalidate();
+        }
+    }
+
+    [Category("Material Skin"), DefaultValue(true)]
+    public bool UseAccent { get; set; }
+
+    [Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Category("Layout")]
+    public bool AutoResize
+    {
+        get => _autoResize;
+        set
+        {
+            _autoResize = value;
+            RecalculateAutoSize();
+        }
+    }
+
+    //Properties for managing the material design properties
+    [Browsable(false)]
+    public int Depth { get; set; }
+
+    [Browsable(false)]
+    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
+    [Browsable(false)]
+    public MouseState MouseState { get; set; }
+
     protected override void OnPaint(PaintEventArgs pevent)
     {
-        Graphics g = pevent.Graphics;
+        var g = pevent.Graphics;
 
-        g.Clear(Parent.BackColor);
+        if (Parent != null)
+        {
+            g.Clear(Parent.BackColor);
+        }
+
         g.FillRectangle(Enabled ? Focused ?
             SkinManager.BackgroundFocusBrush : // Focused
             MouseState == MouseState.HOVER ?
             SkinManager.BackgroundHoverBrush : // Hover
             SkinManager.BackgroundAlternativeBrush : // normal
             SkinManager.BackgroundDisabledBrush // Disabled
-            , ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, LINE_Y);
+            , ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        //Set color and brush
-        Color SelectedColor = new();
+        Color SelectedColor;
         if (UseAccent)
+        {
             SelectedColor = SkinManager.ColorScheme.AccentColor;
+        }
         else
+        {
             SelectedColor = SkinManager.ColorScheme.PrimaryColor;
-        SolidBrush SelectedBrush = new(SelectedColor);
+        }
+
+        var SelectedBrush = new SolidBrush(SelectedColor);
 
         // Create and Draw the arrow
-        GraphicsPath pth = new();
-        PointF TopRight = new(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
-        PointF MidBottom = new(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
-        PointF TopLeft = new(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        var pth = new GraphicsPath();
+        var TopRight = new PointF(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        var MidBottom = new PointF(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
+        var TopLeft = new PointF(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
         pth.AddLine(TopLeft, TopRight);
         pth.AddLine(TopRight, MidBottom);
 
@@ -203,61 +206,61 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         g.SmoothingMode = SmoothingMode.None;
 
         // HintText
-        bool userTextPresent = SelectedIndex >= 0;
-        Rectangle hintRect = new(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, LINE_Y);
-        int hintTextSize = 16;
+        var userTextPresent = SelectedIndex >= 0;
+        var hintRect = new Rectangle(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, _lineY);
+        var hintTextSize = 16;
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, LINE_Y, Width, 1);
+        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (!_animationManager.IsAnimating())
         {
             // No animation
-            if (hasHint && UseTallSize && (DroppedDown || Focused || SelectedIndex >= 0))
+            if (_hasHint && UseTallSize && (DroppedDown || Focused || SelectedIndex >= 0))
             {
                 // hint text
-                hintRect = new Rectangle(SkinManager.FORM_PADDING, TEXT_SMALL_Y, Width, TEXT_SMALL_SIZE);
+                hintRect = new Rectangle(SkinManager.FORM_PADDING, _textSmallY, Width, _textSmallSize);
                 hintTextSize = 12;
             }
 
             // bottom line
             if (DroppedDown || Focused)
             {
-                g.FillRectangle(SelectedBrush, 0, LINE_Y, Width, 2);
+                g.FillRectangle(SelectedBrush, 0, _lineY, Width, 2);
             }
         }
         else
         {
             // Animate - Focus got/lost
-            double animationProgress = _animationManager.GetProgress();
+            var animationProgress = _animationManager.GetProgress();
 
             // hint Animation
-            if (hasHint && UseTallSize)
+            if (_hasHint && UseTallSize)
             {
                 hintRect = new Rectangle(
                     SkinManager.FORM_PADDING,
-                    userTextPresent && !_animationManager.IsAnimating() ? TEXT_SMALL_Y : ClientRectangle.Y + (int)((TEXT_SMALL_Y - ClientRectangle.Y) * animationProgress),
+                    userTextPresent && !_animationManager.IsAnimating() ? _textSmallY : ClientRectangle.Y + (int)((_textSmallY - ClientRectangle.Y) * animationProgress),
                     Width,
-                    userTextPresent && !_animationManager.IsAnimating() ? TEXT_SMALL_SIZE : (int)(LINE_Y + (TEXT_SMALL_SIZE - LINE_Y) * animationProgress));
+                    userTextPresent && !_animationManager.IsAnimating() ? _textSmallSize : (int)(_lineY + (_textSmallSize - _lineY) * animationProgress));
                 hintTextSize = userTextPresent && !_animationManager.IsAnimating() ? 12 : (int)(16 + (12 - 16) * animationProgress);
             }
 
             // Line Animation
-            int LineAnimationWidth = (int)(Width * animationProgress);
-            int LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-            g.FillRectangle(SelectedBrush, LineAnimationX, LINE_Y, LineAnimationWidth, 2);
+            var LineAnimationWidth = (int)(Width * animationProgress);
+            var LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
+            g.FillRectangle(SelectedBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
         }
 
         // Calc text Rect
-        Rectangle textRect = new(
+        var textRect = new Rectangle(
             SkinManager.FORM_PADDING,
-            hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+            _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
             ClientRectangle.Width - SkinManager.FORM_PADDING * 3 - 8,
-            hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
+            _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
         g.Clip = new Region(textRect);
 
-        using (NativeTextRenderer NativeText = new(g))
+        using (var NativeText = new NativeTextRenderer(g))
         {
             // Draw user text
             NativeText.DrawTransparentText(
@@ -272,32 +275,33 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         g.ResetClip();
 
         // Draw hint text
-        if (hasHint && (UseTallSize || string.IsNullOrEmpty(Text)))
+        if (_hasHint && (UseTallSize || string.IsNullOrEmpty(Text)))
         {
-            using NativeTextRenderer NativeText = new(g);
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            Hint,
-            SkinManager.GetTextBoxFontBySize(hintTextSize),
-            Enabled ? DroppedDown || Focused ?
-            SelectedColor : // Focus 
-            SkinManager.TextMediumEmphasisColor : // not focused
-            SkinManager.TextDisabledOrHintColor, // Disabled
-            hintRect.Location,
-            hintRect.Size,
-            TextAlignFlags.Left | TextAlignFlags.Middle);
+                Hint,
+                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                Enabled ? DroppedDown || Focused ?
+                SelectedColor : // Focus 
+                SkinManager.TextMediumEmphasisColor : // not focused
+                SkinManager.TextDisabledOrHintColor, // Disabled
+                hintRect.Location,
+                hintRect.Size,
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
     }
 
-    private void CustomMeasureItem(object sender, MeasureItemEventArgs e)
+    private void CustomMeasureItem(object? sender, MeasureItemEventArgs e)
     {
-        e.ItemHeight = HEIGHT - 7;
+        e.ItemHeight = _height - 7;
     }
 
-    private void CustomDrawItem(object sender, DrawItemEventArgs e)
+    private void CustomDrawItem(object? sender, DrawItemEventArgs e)
     {
-        if (e.Index < 0 || e.Index > Items.Count || !Focused) return;
+        if (e.Index < 0 || e.Index > Items.Count || !Focused)
+            return;
 
-        Graphics g = e.Graphics;
+        var g = e.Graphics;
 
         // Draw the background of the item.
         g.FillRectangle(SkinManager.BackgroundBrush, e.Bounds);
@@ -308,33 +312,33 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             g.FillRectangle(SkinManager.BackgroundHoverBrush, e.Bounds);
         }
 
-        string Text = "";
+        string? text = null;
         if (!string.IsNullOrWhiteSpace(DisplayMember))
         {
             if (!Items[e.Index].GetType().Equals(typeof(DataRowView)))
             {
                 var item = Items[e.Index].GetType().GetProperty(DisplayMember).GetValue(Items[e.Index]);
-                Text = item.ToString();
+                text = item?.ToString();
             }
             else
             {
                 var table = ((DataRow)Items[e.Index].GetType().GetProperty("Row").GetValue(Items[e.Index])).Table;
-                Text = table.Rows[e.Index][DisplayMember].ToString();
+                text = table?.Rows[e.Index][DisplayMember].ToString();
             }
         }
         else
         {
-            Text = Items[e.Index].ToString();
+            text = Items[e.Index]?.ToString();
         }
 
-        using NativeTextRenderer NativeText = new(g);
+        using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(
-        Text,
-        SkinManager.GetFontByType(FontType.Subtitle1),
-        SkinManager.TextHighEmphasisNoAlphaColor,
-        new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
-        new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
-        TextAlignFlags.Left | TextAlignFlags.Middle); ;
+            text,
+            SkinManager.GetFontByType(FontType.Subtitle1),
+            SkinManager.TextHighEmphasisNoAlphaColor,
+            new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
+            new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     protected override void OnCreateControl()
@@ -345,42 +349,49 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         DrawItem += CustomDrawItem;
         DropDownStyle = ComboBoxStyle.DropDownList;
         DrawMode = DrawMode.OwnerDrawVariable;
-        recalculateAutoSize();
-        setHeightVars();
+        RecalculateAutoSize();
+        SetHeightVars();
     }
 
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
-        recalculateAutoSize();
-        setHeightVars();
+        RecalculateAutoSize();
+        SetHeightVars();
     }
 
-    private void setHeightVars()
+    private void SetHeightVars()
     {
-        HEIGHT = UseTallSize ? 50 : 36;
-        Size = new Size(Size.Width, HEIGHT);
-        LINE_Y = HEIGHT - BOTTOM_PADDING;
-        ItemHeight = HEIGHT - 7;
+        _height = UseTallSize ? 50 : 36;
+        Size = new Size(Size.Width, _height);
+        _lineY = _height - _bottomPadding;
+        ItemHeight = _height - 7;
         DropDownHeight = ItemHeight * MaxDropDownItems + 2;
     }
 
-    public void recalculateAutoSize()
+    public void RecalculateAutoSize()
     {
-        if (!AutoResize) return;
+        if (!AutoResize)
+            return;
 
-        int w = DropDownWidth;
-        int padding = SkinManager.FORM_PADDING * 3;
-        int vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
+        var w = DropDownWidth;
+        var padding = SkinManager.FORM_PADDING * 3;
+        var vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
 
-        Graphics g = CreateGraphics();
-        using (NativeTextRenderer NativeText = new(g))
+        var g = CreateGraphics();
+        using (var NativeText = new NativeTextRenderer(g))
         {
             var itemsList = Items.Cast<object>().Select(item => item.ToString());
-            foreach (string s in itemsList)
+            foreach (var s in itemsList)
             {
-                int newWidth = NativeText.MeasureLogString(s, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
-                if (w < newWidth) w = newWidth;
+                if (s == null)
+                    continue;
+
+                var newWidth = NativeText.MeasureLogString(s, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+                if (w < newWidth)
+                {
+                    w = newWidth;
+                }
             }
         }
 

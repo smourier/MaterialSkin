@@ -122,7 +122,7 @@ public class MaterialSnackBar : MaterialForm
         };
         _AnimationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
 
-        _duration.Tick += new EventHandler(duration_Tick);
+        _duration.Tick += Duration_Tick;
 
         _actionButton = new MaterialButton
         {
@@ -202,7 +202,7 @@ public class MaterialSnackBar : MaterialForm
 
     }
 
-    private void duration_Tick(object sender, EventArgs e)
+    private void Duration_Tick(object sender, EventArgs e)
     {
         _duration.Stop();
         _closingAnimationDone = false;

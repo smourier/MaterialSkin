@@ -170,7 +170,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _richTextBoxMessage.TabIndex = 0;
         _richTextBoxMessage.TabStop = false;
         _richTextBoxMessage.Text = "<Message>";
-        _richTextBoxMessage.LinkClicked += new LinkClickedEventHandler(RichTextBoxMessage_LinkClicked);
+        _richTextBoxMessage.LinkClicked += RichTextBoxMessage_LinkClicked;
         // 
         // leftButton
         // 
@@ -258,7 +258,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         SizeGripStyle = SizeGripStyle.Show;
         StartPosition = FormStartPosition.CenterParent;
         Text = "<Caption>";
-        Shown += new EventHandler(FlexibleMaterialForm_Shown);
+        Shown += FlexibleMaterialForm_Shown;
         ((ISupportInitialize)_flexibleMaterialFormBindingSource).EndInit();
         _messageContainer.ResumeLayout(false);
         ((ISupportInitialize)_pictureBoxForIcon).EndInit();

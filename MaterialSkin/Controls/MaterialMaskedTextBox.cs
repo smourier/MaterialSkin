@@ -341,7 +341,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             _leaveOnEnterKey = value;
             if (value)
             {
-                baseTextBox.KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
+                baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
             }
             else
             {
@@ -838,8 +838,8 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             UpdateRects();
         };
 
-        baseTextBox.TextChanged += new EventHandler(Redraw);
-        baseTextBox.BackColorChanged += new EventHandler(Redraw);
+        baseTextBox.TextChanged += Redraw;
+        baseTextBox.BackColorChanged += Redraw;
 
         baseTextBox.TabStop = true;
         TabStop = false;

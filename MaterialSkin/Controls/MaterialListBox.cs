@@ -335,7 +335,8 @@ public partial class MaterialListBox : Control, IMaterialControl
         }
 
         //Set color and brush
-        var selectedColor = new Color();
+        _ = new Color();
+        Color selectedColor;
         if (UseAccentColor)
         {
             selectedColor = SkinManager.ColorScheme.AccentColor;
@@ -386,7 +387,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
             //Define primary & secondary Text Rect
             var primaryTextRect = new Rectangle(itemRect.X + _leftrightPadding, itemRect.Y, itemRect.Width - (2 * _leftrightPadding), itemRect.Height);
-            var secondaryTextRect = new Rectangle();
+            _ = new Rectangle();
 
             if (_style == ListBoxStyle.TwoLine)
             {
@@ -403,7 +404,7 @@ public partial class MaterialListBox : Control, IMaterialControl
                     primaryTextRect.Height = 30 - _primaryTextBottomPadding;
                 }
             }
-            secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
+            Rectangle secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
 
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(

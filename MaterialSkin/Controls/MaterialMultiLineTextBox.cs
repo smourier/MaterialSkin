@@ -47,7 +47,7 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
             _leaveOnEnterKey = value;
             if (value)
             {
-                KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
+                KeyDown += LeaveOnEnterKey_KeyDown;
             }
             else
             {

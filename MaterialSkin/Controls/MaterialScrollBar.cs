@@ -119,7 +119,8 @@ public class MaterialScrollBar : Control, IMaterialControl
     private bool useBarColor = false;
     [DefaultValue(false)]
     public bool UseBarColor
-    { get => useBarColor; set => useBarColor = value;
+    {
+        get => useBarColor; set => useBarColor = value;
     }
 
     [DefaultValue(SCROLLBAR_DEFAULT_SIZE)]
@@ -138,7 +139,8 @@ public class MaterialScrollBar : Control, IMaterialControl
     private bool highlightOnWheel = false;
     [DefaultValue(false)]
     public bool HighlightOnWheel
-    { get => highlightOnWheel; set => highlightOnWheel = value;
+    {
+        get => highlightOnWheel; set => highlightOnWheel = value;
     }
 
     private MaterialScrollOrientation MaterialOrientation = MaterialScrollOrientation.Vertical;
@@ -307,7 +309,7 @@ public class MaterialScrollBar : Control, IMaterialControl
                     {
                         Interval = 1000
                     };
-                    autoHoverTimer.Tick += new EventHandler(autoHoverTimer_Tick);
+                    autoHoverTimer.Tick += AutoHoverTimer_Tick;
                     autoHoverTimer.Start();
                 }
                 else
@@ -325,7 +327,7 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
     }
 
-    private void autoHoverTimer_Tick(object sender, EventArgs e)
+    private void AutoHoverTimer_Tick(object sender, EventArgs e)
     {
         isHovered = false;
         Invalidate();

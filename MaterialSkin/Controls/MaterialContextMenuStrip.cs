@@ -5,11 +5,9 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
 {
     internal AnimationManager _animationManager;
     internal Point _animationSource;
-    private ToolStripItemClickedEventArgs _delayesArgs;
+    private ToolStripItemClickedEventArgs? _delayedArgs;
 
-    public delegate void ItemClickStart(object sender, ToolStripItemClickedEventArgs e);
-
-    public event ItemClickStart OnItemClickStart;
+    public event EventHandler<ToolStripItemClickedEventArgs>? OnItemClickStart;
 
     public MaterialContextMenuStrip()
     {
@@ -22,7 +20,7 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
         };
 
         _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
-        _animationManager.OnAnimationFinished += (sender, e) => OnItemClicked(_delayesArgs);
+        _animationManager.OnAnimationFinished += (sender, e) => OnItemClicked(_delayedArgs);
 
         BackColor = SkinManager.BackdropColor;
     }
@@ -43,11 +41,14 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
         _animationSource = mea.Location;
     }
 
-    protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
+    protected override void OnItemClicked(ToolStripItemClickedEventArgs? e)
     {
+        if (e == null)
+            return;
+
         if (e.ClickedItem != null && e.ClickedItem is not ToolStripSeparator)
         {
-            if (e == _delayesArgs)
+            if (e == _delayedArgs)
             {
                 //The event has been fired manualy because the args are the ones we saved for delay
                 base.OnItemClicked(e);
@@ -55,7 +56,7 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
             else
             {
                 //Interrupt the default on click, saving the args for the delay which is needed to display the animaton
-                _delayesArgs = e;
+                _delayedArgs = e;
 
                 //Fire custom event to trigger actions directly but keep cms open
                 OnItemClickStart?.Invoke(this, e);
@@ -79,6 +80,9 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
 
     protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
     {
+        if (e.Text == null)
+            return;
+
         var g = e.Graphics;
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
@@ -142,7 +146,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         const int arrowSize = 4;
 
         var arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
-        var arrowBrush = e.Item.Enabled ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
+        var arrowBrush = e.Item?.Enabled == true ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
         using var arrowPath = new GraphicsPath();
         arrowPath.AddLines(
             [

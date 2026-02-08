@@ -68,12 +68,15 @@ public sealed partial class NativeTextRenderer : IDisposable
         DrawText(_hdc, str, str.Length, ref rect2, (uint)flags);
     }
 
-    public void DrawTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
-    public void DrawTransparentText(string str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
-    public void DrawMultilineTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
-    public void DrawMultilineTransparentText(string str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
-    private void DrawTransparentText(nint fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
+    public void DrawTransparentText(string? str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
+    public void DrawTransparentText(string? str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
+    public void DrawMultilineTransparentText(string? str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
+    public void DrawMultilineTransparentText(string? str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
+    private void DrawTransparentText(nint fontHandle, string? str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
     {
+        if (str == null)
+            return;
+
         // Create a memory DC so we can work off-screen
         var memoryHdc = CreateCompatibleDC(_hdc);
         SetBkMode(memoryHdc, 1);
@@ -86,7 +89,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         info.biPlanes = 1;
         info.biBitCount = 32;
         info.biCompression = 0; // BI_RGB
-        var dib = CreateDIBSection(_hdc, ref info, 0, out nint ppvBits, 0, 0);
+        var dib = CreateDIBSection(_hdc, ref info, 0, out _, 0, 0);
         SelectObject(memoryHdc, dib);
 
         try

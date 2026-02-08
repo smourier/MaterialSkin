@@ -2,6 +2,60 @@
 
 public class MaterialListView : ListView, IMaterialControl
 {
+    private const int _pad = 16;
+    private ListViewItem? _hoveredItem;
+
+    public MaterialListView()
+    {
+        GridLines = false;
+        FullRowSelect = true;
+        View = View.Details;
+        OwnerDraw = true;
+        ResizeRedraw = true;
+        BorderStyle = BorderStyle.None;
+        MinimumSize = new Size(200, 100);
+
+        SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
+        BackColor = SkinManager.BackgroundColor;
+
+        // Fix for hovers, by default it doesn't redraw
+        MouseLocation = new Point(-1, -1);
+        MouseState = MouseState.OUT;
+        MouseEnter += (s, e) =>
+        {
+            MouseState = MouseState.HOVER;
+        };
+
+        MouseLeave += (s, e) =>
+        {
+            MouseState = MouseState.OUT;
+            MouseLocation = new Point(-1, -1);
+            _hoveredItem = null;
+            Invalidate();
+        };
+
+        MouseDown += (s, e) =>
+        {
+            MouseState = MouseState.DOWN;
+        };
+
+        MouseUp += (s, e) =>
+        {
+            MouseState = MouseState.HOVER;
+        };
+
+        MouseMove += (s, e) =>
+        {
+            MouseLocation = e.Location;
+            var currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
+            if (_hoveredItem != currentHoveredItem)
+            {
+                _hoveredItem = currentHoveredItem;
+                Invalidate();
+            }
+        };
+    }
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -27,81 +81,26 @@ public class MaterialListView : ListView, IMaterialControl
         }
     }
 
-    [Browsable(false)]
-    private ListViewItem HoveredItem { get; set; }
-
-    private const int PAD = 16;
-    private const int ITEMS_HEIGHT = 52;
-
-    public MaterialListView()
-    {
-        GridLines = false;
-        FullRowSelect = true;
-        View = View.Details;
-        OwnerDraw = true;
-        ResizeRedraw = true;
-        BorderStyle = BorderStyle.None;
-        MinimumSize = new Size(200, 100);
-
-        SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
-        BackColor = SkinManager.BackgroundColor;
-
-        // Fix for hovers, by default it doesn't redraw
-        MouseLocation = new Point(-1, -1);
-        MouseState = MouseState.OUT;
-        MouseEnter += delegate
-        {
-            MouseState = MouseState.HOVER;
-        };
-        MouseLeave += delegate
-        {
-            MouseState = MouseState.OUT;
-            MouseLocation = new Point(-1, -1);
-            HoveredItem = null;
-            Invalidate();
-        };
-        MouseDown += delegate
-        {
-            MouseState = MouseState.DOWN;
-        };
-        MouseUp += delegate
-        {
-            MouseState = MouseState.HOVER;
-        };
-        MouseMove += delegate (object sender, MouseEventArgs args)
-        {
-            MouseLocation = args.Location;
-            var currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
-            if (HoveredItem != currentHoveredItem)
-            {
-                HoveredItem = currentHoveredItem;
-                Invalidate();
-            }
-        };
-    }
-
     protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
     {
-        Graphics g = e.Graphics;
-
+        var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-
         g.FillRectangle(new SolidBrush(BackColor), e.Bounds);
+
         // Draw Text
-        using NativeTextRenderer NativeText = new(g);
+        using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(
-            e.Header.Text,
+            e.Header?.Text,
             SkinManager.GetLogFontByType(FontType.Subtitle2),
             Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
-            new Point(e.Bounds.Location.X + PAD, e.Bounds.Location.Y),
-            new Size(e.Bounds.Size.Width - PAD * 2, e.Bounds.Size.Height),
+            new Point(e.Bounds.Location.X + _pad, e.Bounds.Location.Y),
+            new Size(e.Bounds.Size.Width - _pad * 2, e.Bounds.Size.Height),
             TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     protected override void OnDrawItem(DrawListViewItemEventArgs e)
     {
-        Graphics g = e.Graphics;
-
+        var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Always draw default background
@@ -124,13 +123,13 @@ public class MaterialListView : ListView, IMaterialControl
         foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
         {
             // Draw Text
-            using NativeTextRenderer NativeText = new(g);
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 subItem.Text,
                 SkinManager.GetLogFontByType(FontType.Body2),
                 Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
-                new Point(subItem.Bounds.X + PAD, subItem.Bounds.Y),
-                new Size(subItem.Bounds.Width - PAD * 2, subItem.Bounds.Height),
+                new Point(subItem.Bounds.X + _pad, subItem.Bounds.Y),
+                new Size(subItem.Bounds.Width - _pad * 2, subItem.Bounds.Height),
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
     }
@@ -156,18 +155,23 @@ public class MaterialListView : ListView, IMaterialControl
 
     private void AutoResize()
     {
-        if (!AutoSizeTable) return;
+        if (!AutoSizeTable)
+            return;
 
         // Width
-        int w = 0;
+        var w = 0;
         foreach (ColumnHeader col in Columns)
         {
             w += col.Width;
         }
 
         // Height
-        int h = 50; //Header size
-        if (Items.Count > 0) h = TopItem.Bounds.Top;
+        var h = 50; //Header size
+        if (Items.Count > 0)
+        {
+            h = TopItem?.Bounds.Top ?? 0;
+        }
+
         foreach (ListViewItem item in Items)
         {
             h += item.Bounds.Height;
@@ -187,11 +191,6 @@ public class MaterialListView : ListView, IMaterialControl
         OwnerDraw = true;
         ResizeRedraw = true;
         BorderStyle = BorderStyle.None;
-    }
-
-    protected override void OnCreateControl()
-    {
-        base.OnCreateControl();
     }
 
     protected override void OnBackColorChanged(EventArgs e)

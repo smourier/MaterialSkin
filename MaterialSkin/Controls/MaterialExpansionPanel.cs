@@ -2,9 +2,6 @@ namespace MaterialSkin.Controls;
 
 public class MaterialExpansionPanel : Panel, IMaterialControl
 {
-    private readonly MaterialButton _validationButton;
-    private readonly MaterialButton _cancelButton;
-
     private const int _expansionPanelDefaultPadding = 16;
     private const int _leftrightPadding = 24;
     private const int _buttonPadding = 8;
@@ -15,20 +12,17 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     private const int _footerHeight = 68;
     private const int _footerButtonHeight = 36;
     private const int _minHeight = 200;
-    private int _headerHeight;
 
+    private readonly MaterialButton _validationButton;
+    private readonly MaterialButton _cancelButton;
+    private int _headerHeight;
     private bool _collapse;
     private bool _useAccentColor;
     private int _expandHeight;
-
-
-    private string _titleHeader;
-    private string _descriptionHeader;
-    private string _validationButtonText;
-    private string _cancelButtonText;
-
-
-
+    private string? _titleHeader;
+    private string? _descriptionHeader;
+    private string? _validationButtonText;
+    private string? _cancelButtonText;
     private bool _showValidationButtons;
     private bool _showCollapseExpand;
     private bool _drawShadows;
@@ -38,22 +32,87 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     private Rectangle _savebuttonBounds;
     private Rectangle _cancelbuttonBounds;
     private bool _savebuttonEnable;
-
-    private enum ButtonState
-    {
-        SaveOver,
-        CancelOver,
-        ColapseExpandOver,
-        HeaderOver,
-        None
-    }
-
     private ButtonState _buttonState = ButtonState.None;
+    private Control? _oldParent;
+
+    [Description("Fires when Save button is clicked")]
+    public event EventHandler? SaveClick;
+
+    [Category("Action")]
+    [Description("Fires when Cancel button is clicked")]
+    public event EventHandler? CancelClick;
+
+    [Category("Disposition")]
+    [Description("Fires when Panel Collapse")]
+    public event EventHandler? PanelCollapse;
+
+    [Category("Disposition")]
+    [Description("Fires when Panel Expand")]
+    public event EventHandler? PanelExpand;
+
+    public MaterialExpansionPanel()
+    {
+        ShowValidationButtons = true;
+        ValidationButtonEnable = false;
+        ValidationButtonText = "SAVE";
+        CancelButtonText = "CANCEL";
+        ShowCollapseExpand = true;
+        Collapse = false;
+        Title = "Title";
+        Description = "Description";
+        DrawShadows = true;
+        ExpandHeight = 240;
+        AutoScroll = false;
+
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        BackColor = SkinManager.BackgroundColor;
+        ForeColor = SkinManager.TextHighEmphasisColor;
+
+        Padding = new Padding(24, 64, 24, 16);
+        Margin = new Padding(3, 16, 3, 16);
+        Size = new Size(480, ExpandHeight);
+
+        _validationButton = new MaterialButton
+        {
+            DrawShadows = false,
+            Type = MaterialButtonType.Text,
+            UseAccentColor = _useAccentColor,
+            Enabled = ValidationButtonEnable,
+            Visible = _showValidationButtons,
+            Text = "SAVE"
+        };
+
+        _cancelButton = new MaterialButton
+        {
+            DrawShadows = false,
+            Type = MaterialButtonType.Text,
+            UseAccentColor = _useAccentColor,
+            Visible = _showValidationButtons,
+            Text = "CANCEL"
+        };
+
+        if (!Controls.Contains(_validationButton))
+        {
+            Controls.Add(_validationButton);
+        }
+
+        if (!Controls.Contains(_cancelButton))
+        {
+            Controls.Add(_cancelButton);
+        }
+
+        _validationButton.Click += ValidationButton_Click;
+        _cancelButton.Click += CancelButton_Click;
+
+        UpdateRects();
+    }
 
     [Browsable(false)]
     public int Depth { get; set; }
+
     [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
@@ -81,7 +140,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [DefaultValue("Title")]
     [Category("Material Skin"), DisplayName("Title")]
     [Description("Title to show in expansion panel's header")]
-    public string Title
+    public string? Title
     {
         get => _titleHeader;
         set
@@ -94,7 +153,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [DefaultValue("Description")]
     [Category("Material Skin"), DisplayName("Description")]
     [Description("Description to show in expansion panel's header")]
-    public string Description
+    public string? Description
     {
         get => _descriptionHeader;
         set
@@ -143,7 +202,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [DefaultValue("SAVE")]
     [Category("Material Skin"), DisplayName("Validation button text")]
     [Description("Set Validation button text")]
-    public string ValidationButtonText
+    public string? ValidationButtonText
     {
         get => _validationButtonText;
         set { _validationButtonText = value; UpdateRects(); Invalidate(); }
@@ -152,7 +211,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [DefaultValue("CANCEL")]
     [Category("Material Skin"), DisplayName("Cancel button text")]
     [Description("Set Cancel button text")]
-    public string CancelButtonText
+    public string? CancelButtonText
     {
         get => _cancelButtonText;
         set { _cancelButtonText = value; UpdateRects(); Invalidate(); }
@@ -168,96 +227,19 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     }
 
     [Category("Action")]
-    [Description("Fires when Save button is clicked")]
-    public event EventHandler SaveClick;
-
-    [Category("Action")]
-    [Description("Fires when Cancel button is clicked")]
-    public event EventHandler CancelClick;
-
-    [Category("Disposition")]
-    [Description("Fires when Panel Collapse")]
-    public event EventHandler PanelCollapse;
-
-    [Category("Disposition")]
-    [Description("Fires when Panel Expand")]
-    public event EventHandler PanelExpand;
-
-    public MaterialExpansionPanel()
+    private void CancelButton_Click(object? sender, EventArgs e)
     {
-        ShowValidationButtons = true;
-        ValidationButtonEnable = false;
-        ValidationButtonText = "SAVE";
-        CancelButtonText = "CANCEL";
-        ShowCollapseExpand = true;
-        Collapse = false;
-        Title = "Title";
-        Description = "Description";
-        DrawShadows = true;
-        ExpandHeight = 240;
-        AutoScroll = false;
-
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
-
-        Padding = new Padding(24, 64, 24, 16);
-        Margin = new Padding(3, 16, 3, 16);
-        Size = new Size(480, ExpandHeight);
-
-        //CollapseOrExpand();
-
-        _validationButton = new MaterialButton
-        {
-            DrawShadows = false,
-            Type = MaterialButtonType.Text,
-            UseAccentColor = _useAccentColor,
-            Enabled = ValidationButtonEnable,
-            Visible = _showValidationButtons,
-            Text = "SAVE"
-        };
-        _cancelButton = new MaterialButton
-        {
-            DrawShadows = false,
-            Type = MaterialButtonType.Text,
-            UseAccentColor = _useAccentColor,
-            Visible = _showValidationButtons,
-            Text = "CANCEL"
-        };
-
-        if (!Controls.Contains(_validationButton))
-        {
-            Controls.Add(_validationButton);
-        }
-        if (!Controls.Contains(_cancelButton))
-        {
-            Controls.Add(_cancelButton);
-        }
-
-        _validationButton.Click += _validationButton_Click;
-        _cancelButton.Click += _cancelButton_Click;
-
-        UpdateRects();
-    }
-
-    private void _cancelButton_Click(object sender, EventArgs e)
-    {
-        //throw new NotImplementedException();
         CancelClick?.Invoke(this, new EventArgs());
         Collapse = true;
         CollapseOrExpand();
-
     }
 
-    private void _validationButton_Click(object sender, EventArgs e)
+    private void ValidationButton_Click(object? sender, EventArgs e)
     {
-        //throw new NotImplementedException();
         SaveClick?.Invoke(this, new EventArgs());
         Collapse = true;
         CollapseOrExpand();
-
     }
-
 
     protected override void OnCreateControl()
     {
@@ -274,36 +256,49 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     protected override void OnParentChanged(EventArgs e)
     {
         base.OnParentChanged(e);
-        if (Parent != null) AddShadowPaintEvent(Parent, drawShadowOnParent);
-        if (_oldParent != null) RemoveShadowPaintEvent(_oldParent, drawShadowOnParent);
+        if (Parent != null)
+        {
+            AddShadowPaintEvent(Parent, DawShadowOnParent);
+        }
+
+        if (_oldParent != null)
+        {
+            RemoveShadowPaintEvent(_oldParent, DawShadowOnParent);
+        }
+
         _oldParent = Parent;
     }
-
-    private Control _oldParent;
 
     protected override void OnVisibleChanged(EventArgs e)
     {
         base.OnVisibleChanged(e);
-        if (Parent == null) return;
+        if (Parent == null)
+            return;
+
         if (Visible)
-            AddShadowPaintEvent(Parent, drawShadowOnParent);
+        {
+            AddShadowPaintEvent(Parent, DawShadowOnParent);
+        }
         else
-            RemoveShadowPaintEvent(Parent, drawShadowOnParent);
+        {
+            RemoveShadowPaintEvent(Parent, DawShadowOnParent);
+        }
     }
 
-    private void drawShadowOnParent(object sender, PaintEventArgs e)
+    private void DawShadowOnParent(object? sender, PaintEventArgs e)
     {
         if (Parent == null)
         {
-            RemoveShadowPaintEvent((Control)sender, drawShadowOnParent);
+            RemoveShadowPaintEvent((Control)sender!, DawShadowOnParent);
             return;
         }
 
-        if (!_drawShadows || Parent == null) return;
+        if (!_drawShadows || Parent == null)
+            return;
 
         // paint shadow on parent
-        Graphics gp = e.Graphics;
-        Rectangle rect = new(Location, ClientRectangle.Size);
+        var gp = e.Graphics;
+        var rect = new Rectangle(Location, ClientRectangle.Size);
         gp.SmoothingMode = SmoothingMode.AntiAlias;
         DrawHelper.DrawSquareShadow(gp, rect);
     }
@@ -311,7 +306,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     private void AddShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (_shadowDrawEventSubscribed) return;
+        if (_shadowDrawEventSubscribed)
+            return;
+
         control.Paint += shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = true;
@@ -319,7 +316,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     private void RemoveShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
-        if (!_shadowDrawEventSubscribed) return;
+        if (!_shadowDrawEventSubscribed)
+            return;
+
         control.Paint -= shadowPaintEvent;
         control.Invalidate();
         _shadowDrawEventSubscribed = false;
@@ -355,8 +354,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
         if (Parent != null)
         {
-            RemoveShadowPaintEvent(Parent, drawShadowOnParent);
-            AddShadowPaintEvent(Parent, drawShadowOnParent);
+            RemoveShadowPaintEvent(Parent, DawShadowOnParent);
+            AddShadowPaintEvent(Parent, DawShadowOnParent);
         }
     }
 
@@ -370,9 +369,13 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         var oldState = _buttonState;
 
         if (_savebuttonBounds.Contains(e.Location))
+        {
             _buttonState = ButtonState.SaveOver;
+        }
         else if (_cancelbuttonBounds.Contains(e.Location))
+        {
             _buttonState = ButtonState.CancelOver;
+        }
         else if (_expandcollapseBounds.Contains(e.Location))
         {
             Cursor = Cursors.Hand;
@@ -389,8 +392,10 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             _buttonState = ButtonState.None;
         }
 
-        if (oldState != _buttonState) Invalidate();
-
+        if (oldState != _buttonState)
+        {
+            Invalidate();
+        }
     }
 
     protected override void OnMouseDown(MouseEventArgs e)
@@ -420,39 +425,43 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         Invalidate();
     }
 
-
     protected override void OnPaint(PaintEventArgs e)
     {
         var g = e.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
 
-        g.Clear(Parent.BackColor);
+        if (Parent != null)
+        {
+            g.Clear(Parent.BackColor);
+        }
 
         // card rectangle path
-        RectangleF expansionPanelRectF = new(ClientRectangle.Location, ClientRectangle.Size);
+        var expansionPanelRectF = new RectangleF(ClientRectangle.Location, ClientRectangle.Size);
         expansionPanelRectF.X -= 0.5f;
         expansionPanelRectF.Y -= 0.5f;
-        GraphicsPath expansionPanelPath = DrawHelper.CreateRoundRect(expansionPanelRectF, 2);
+        var expansionPanelPath = DrawHelper.CreateRoundRect(expansionPanelRectF, 2);
 
         // button shadow (blend with form shadow)
         DrawHelper.DrawSquareShadow(g, ClientRectangle);
 
         // Draw expansion panel
-        // Disabled
         if (!Enabled)
         {
-            using SolidBrush disabledBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundDisabledColor, SkinManager.BackgroundDisabledColor.A));
-            g.FillPath(disabledBrush, expansionPanelPath);
+            if (Parent != null)
+            {
+                using var disabledBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundDisabledColor, SkinManager.BackgroundDisabledColor.A));
+                g.FillPath(disabledBrush, expansionPanelPath);
+            }
         }
         // Mormal
         else
         {
             if ((_buttonState == ButtonState.HeaderOver | _buttonState == ButtonState.ColapseExpandOver) && _collapse)
             {
-                RectangleF expansionPanelBorderRectF = new(ClientRectangle.X + 1, ClientRectangle.Y + 1, ClientRectangle.Width - 2, ClientRectangle.Height - 2);
+                var expansionPanelBorderRectF = new RectangleF(ClientRectangle.X + 1, ClientRectangle.Y + 1, ClientRectangle.Width - 2, ClientRectangle.Height - 2);
                 expansionPanelBorderRectF.X -= 0.5f;
                 expansionPanelBorderRectF.Y -= 0.5f;
-                GraphicsPath expansionPanelBoarderPath = DrawHelper.CreateRoundRect(expansionPanelBorderRectF, 2);
+                var expansionPanelBoarderPath = DrawHelper.CreateRoundRect(expansionPanelBorderRectF, 2);
 
                 g.FillPath(SkinManager.ExpansionPanelFocusBrush, expansionPanelBoarderPath);
             }
@@ -464,14 +473,14 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         }
 
         // Calc text Rect
-        Rectangle headerRect = new(
+        var headerRect = new Rectangle(
             _leftrightPadding,
             (_headerHeight - _textHeaderHeight) / 2,
             TextRenderer.MeasureText(_titleHeader, Font).Width + _expansionPanelDefaultPadding,
             _textHeaderHeight);
 
         //Draw  headers
-        using (NativeTextRenderer NativeText = new(g))
+        using (var NativeText = new NativeTextRenderer(g))
         {
             // Draw header text
             NativeText.DrawTransparentText(
@@ -486,47 +495,45 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         if (!string.IsNullOrEmpty(_descriptionHeader))
         {
             //Draw description header text 
-
-            Rectangle headerDescriptionRect = new(
+            var headerDescriptionRect = new Rectangle(
                 headerRect.Right + _expansionPanelDefaultPadding,
                 (_headerHeight - _textHeaderHeight) / 2,
                 _expandcollapseBounds.Left - (headerRect.Right + _expansionPanelDefaultPadding) - _expansionPanelDefaultPadding,
                 _textHeaderHeight);
 
-            using NativeTextRenderer NativeText = new(g);
-            // Draw description header text 
+            using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-            _descriptionHeader,
-            SkinManager.GetLogFontByType(FontType.Body1),
-             SkinManager.TextDisabledOrHintColor,
-            headerDescriptionRect.Location,
-            headerDescriptionRect.Size,
-            TextAlignFlags.Left | TextAlignFlags.Middle);
+                _descriptionHeader,
+                SkinManager.GetLogFontByType(FontType.Body1),
+                 SkinManager.TextDisabledOrHintColor,
+                headerDescriptionRect.Location,
+                headerDescriptionRect.Size,
+                TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
-        if (_showCollapseExpand == true)
+        if (_showCollapseExpand)
         {
             using var formButtonsPen = new Pen(_useAccentColor && Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.TextDisabledOrHintColor, 2);
             if (_collapse)
             {
                 //Draw Expand button
-                GraphicsPath pth = new();
-                PointF TopLeft = new(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 9);
-                PointF MidBottom = new(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 15);
-                PointF TopRight = new(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 9);
-                pth.AddLine(TopLeft, MidBottom);
-                pth.AddLine(TopRight, MidBottom);
+                var pth = new GraphicsPath();
+                var topLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 9);
+                var midBottom = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 15);
+                var topRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 9);
+                pth.AddLine(topLeft, midBottom);
+                pth.AddLine(topRight, midBottom);
                 g.DrawPath(formButtonsPen, pth);
             }
             else
             {
                 // Draw Collapse button
-                GraphicsPath pth = new();
-                PointF BottomLeft = new(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 15);
-                PointF MidTop = new(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 9);
-                PointF BottomRight = new(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 15);
-                pth.AddLine(BottomLeft, MidTop);
-                pth.AddLine(BottomRight, MidTop);
+                var pth = new GraphicsPath();
+                var bottomLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 15);
+                var midTop = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 9);
+                var bottomRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 15);
+                pth.AddLine(bottomLeft, midTop);
+                pth.AddLine(bottomRight, midTop);
                 g.DrawPath(formButtonsPen, pth);
             }
         }
@@ -540,18 +547,13 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     private void CollapseOrExpand()
     {
-        //if (!useAnimation)
-        //{
         if (_collapse)
         {
             _headerHeight = _headerHeightCollapse;
             Height = _headerHeightCollapse;
             Margin = new Padding(16, 1, 16, 0);
 
-            // Is the event registered?
-            if (PanelCollapse != null)
-                // Raise the event
-                PanelCollapse(this, new EventArgs());
+            PanelCollapse?.Invoke(this, new EventArgs());
         }
         else
         {
@@ -559,10 +561,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             Height = _expandHeight;
             Margin = new Padding(16, 16, 16, 16);
 
-            // Is the event registered?
-            if (PanelExpand != null)
-                // Raise the event
-                PanelExpand(this, new EventArgs());
+            PanelExpand?.Invoke(this, new EventArgs());
         }
 
         Refresh();
@@ -572,7 +571,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     {
         if (!_collapse && _showValidationButtons)
         {
-            int _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
             _savebuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
             _buttonWidth = TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
             _cancelbuttonBounds = new Rectangle(_savebuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
@@ -590,21 +589,25 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             if (_cancelButton != null)
             {
                 _cancelButton.Width = _cancelbuttonBounds.Width;
-                _cancelButton.Left = _validationButton.Left - _buttonPadding - _cancelbuttonBounds.Width;  //Button minimum width management
+                _cancelButton.Left = _validationButton?.Left ?? 0 - _buttonPadding - _cancelbuttonBounds.Width;  //Button minimum width management
                 _cancelButton.Top = _cancelbuttonBounds.Top;
                 _cancelButton.Height = _cancelbuttonBounds.Height;
                 _cancelButton.Text = _cancelButtonText;
                 _cancelButton.UseAccentColor = _useAccentColor;
             }
         }
-        if (_validationButton != null)
-        {
-            _validationButton.Visible = _showValidationButtons;
-        }
-        if (_cancelButton != null)
-        {
-            _cancelButton.Visible = _showValidationButtons;
-        }
+
+        _validationButton?.Visible = _showValidationButtons;
+
+        _cancelButton?.Visible = _showValidationButtons;
     }
 
+    private enum ButtonState
+    {
+        SaveOver,
+        CancelOver,
+        ColapseExpandOver,
+        HeaderOver,
+        None
+    }
 }

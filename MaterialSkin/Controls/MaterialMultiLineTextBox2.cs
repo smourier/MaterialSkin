@@ -2,8 +2,74 @@
 
 public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 {
-    readonly MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
-    ContextMenuStrip _lastContextMenuStrip = new();
+    private readonly MaterialContextMenuStrip _cms = new BaseTextBoxContextMenuStrip();
+    private ContextMenuStrip _lastContextMenuStrip = new();
+
+    public MaterialMultiLineTextBox2()
+    {
+        AllowScroll = true;
+        // Material Properties
+        UseAccent = true;
+        MouseState = MouseState.OUT;
+
+        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.DoubleBuffer, true);
+
+        // Animations
+        _animationManager = new AnimationManager
+        {
+            Increment = 0.06,
+            AnimationType = AnimationType.EaseInOut,
+            InterruptAnimation = false
+        };
+
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
+
+        baseTextBox = new BaseTextBox
+        {
+            BorderStyle = BorderStyle.None,
+            Font = SkinManager.GetFontByType(FontType.Subtitle1),
+            ForeColor = SkinManager.TextHighEmphasisColor,
+            Multiline = true
+        };
+
+        Cursor = Cursors.IBeam;
+        Enabled = true;
+        ReadOnly = false;
+        ScrollBars = ScrollBars.None;
+        Size = new Size(250, 100);
+
+        if (!Controls.Contains(baseTextBox) && !DesignMode)
+        {
+            Controls.Add(baseTextBox);
+        }
+
+        baseTextBox.GotFocus += (sender, args) =>
+        {
+            if (Enabled)
+            {
+                isFocused = true;
+                _animationManager.StartNewAnimation(AnimationDirection.In);
+            }
+            else
+                Focus();
+        };
+        baseTextBox.LostFocus += (sender, args) =>
+        {
+            isFocused = false;
+            _animationManager.StartNewAnimation(AnimationDirection.Out);
+        };
+
+        baseTextBox.TextChanged += Redraw;
+        baseTextBox.BackColorChanged += Redraw;
+
+        baseTextBox.TabStop = true;
+        TabStop = false;
+
+        _cms.Opening += ContextMenuStripOnOpening;
+        _cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
+        ContextMenuStrip = _cms;
+        MouseWheel += OnMouseWheel;
+    }
 
     //Properties for managing the material design properties
 
@@ -19,6 +85,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     //Unused properties
 
     [Browsable(false)]
+    [AllowNull]
     public override Image BackgroundImage { get; set; }
 
     [Browsable(false)]
@@ -69,8 +136,8 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             }
             else
             {
-                baseTextBox.ContextMenuStrip = cms;
-                base.ContextMenuStrip = cms;
+                baseTextBox.ContextMenuStrip = _cms;
+                base.ContextMenuStrip = _cms;
             }
             _lastContextMenuStrip = base.ContextMenuStrip;
         }
@@ -123,7 +190,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     [Category("Behavior")]
     public bool UseSystemPasswordChar { get => baseTextBox.UseSystemPasswordChar; set => baseTextBox.UseSystemPasswordChar = value; }
 
-    public new object Tag { get => baseTextBox.Tag; set => baseTextBox.Tag = value; }
+    public new object? Tag { get => baseTextBox.Tag; set => baseTextBox.Tag = value; }
 
     private bool _readonly;
     [Category("Behavior")]
@@ -166,7 +233,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             _leaveOnEnterKey = value;
             if (value)
             {
-                baseTextBox.KeyDown += new KeyEventHandler(LeaveOnEnterKey_KeyDown);
+                baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
             }
             else
             {
@@ -569,72 +636,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     private readonly IntPtr ptrLparam = new(0);
 
     protected readonly BaseTextBox baseTextBox;
-
-    public MaterialMultiLineTextBox2()
-    {
-        AllowScroll = true;
-        // Material Properties
-        UseAccent = true;
-        MouseState = MouseState.OUT;
-
-        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.DoubleBuffer, true);
-
-        // Animations
-        _animationManager = new AnimationManager
-        {
-            Increment = 0.06,
-            AnimationType = AnimationType.EaseInOut,
-            InterruptAnimation = false
-        };
-
-        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
-
-        baseTextBox = new BaseTextBox
-        {
-            BorderStyle = BorderStyle.None,
-            Font = SkinManager.GetFontByType(FontType.Subtitle1),
-            ForeColor = SkinManager.TextHighEmphasisColor,
-            Multiline = true
-        };
-
-        Cursor = Cursors.IBeam;
-        Enabled = true;
-        ReadOnly = false;
-        ScrollBars = ScrollBars.None;
-        Size = new Size(250, 100);
-
-        if (!Controls.Contains(baseTextBox) && !DesignMode)
-        {
-            Controls.Add(baseTextBox);
-        }
-
-        baseTextBox.GotFocus += (sender, args) =>
-        {
-            if (Enabled)
-            {
-                isFocused = true;
-                _animationManager.StartNewAnimation(AnimationDirection.In);
-            }
-            else
-                Focus();
-        };
-        baseTextBox.LostFocus += (sender, args) =>
-        {
-            isFocused = false;
-            _animationManager.StartNewAnimation(AnimationDirection.Out);
-        };
-
-        baseTextBox.TextChanged += new EventHandler(Redraw);
-        baseTextBox.BackColorChanged += new EventHandler(Redraw);
-
-        baseTextBox.TabStop = true;
-        TabStop = false;
-
-        cms.Opening += ContextMenuStripOnOpening;
-        cms.OnItemClickStart += ContextMenuStripOnItemClickStart;
-        ContextMenuStrip = cms;
-        MouseWheel += OnMouseWheel;
-    }
 
     private void Redraw(object sencer, EventArgs e)
     {

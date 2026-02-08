@@ -2,70 +2,18 @@
 
 public class MaterialFloatingActionButton : Button, IMaterialControl
 {
-    [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    private const int FAB_SIZE = 56;
-    private const int FAB_MINI_SIZE = 40;
-    private const int FAB_ICON_MARGIN = 16;
-    private const int FAB_MINI_ICON_MARGIN = 8;
-    private const int FAB_ICON_SIZE = 24;
-
-    private bool _mouseHover = false;
-
-    [DefaultValue(true)]
-    [Category("Material Skin"), DisplayName("Draw Shadows")]
-    [Description("Draw Shadows around control")]
-    public bool DrawShadows { get; set; }
-
-    [DefaultValue(false)]
-    [Category("Material Skin"), DisplayName("Size Mini")]
-    [Description("Set control size to default or mini")]
-    public bool Mini
-    {
-        get => _mini;
-        set
-        {
-            if (Parent != null)
-                Parent.Invalidate();
-            SetSize(value);
-        }
-    }
-
-    private bool _mini;
-
-    [DefaultValue(false)]
-    [Category("Material Skin"), DisplayName("Animate Show HideButton")]
-    public bool AnimateShowHideButton
-    {
-        get => _animateShowButton;
-        set { _animateShowButton = value; Refresh(); }
-    }
-
-    private bool _animateShowButton;
-
-    [DefaultValue(false)]
-    [Category("Material Skin")]
-    [Description("Define icon to display")]
-    public Image Icon
-    {
-        get => _icon;
-        set { _icon = value; Refresh(); }
-    }
-
-    private Image _icon;
-
-    private bool _isHiding = false;
+    private const int _fabSize = 56;
+    private const int _fabMiniSize = 40;
 
     private readonly AnimationManager _animationManager;
-
     private readonly AnimationManager _showAnimationManager;
+    private Image? _icon;
+    private bool _isHiding;
+    private bool _mouseHover;
+    private bool _mini;
+    private bool _animateShowButton;
+    private bool _shadowDrawEventSubscribed;
+    private Rectangle _fabBounds;
 
     public MaterialFloatingActionButton()
     {
@@ -74,7 +22,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         DrawShadows = true;
         SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 
-        Size = new Size(FAB_SIZE, FAB_SIZE);
+        Size = new Size(_fabSize, _fabSize);
         _animationManager = new AnimationManager(false)
         {
             Increment = 0.03,
@@ -91,16 +39,64 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         _showAnimationManager.OnAnimationFinished += ShowAnimationManager_OnAnimationFinished;
     }
 
-    protected override void InitLayout()
+    [Browsable(false)]
+    public int Depth { get; set; }
+
+    [Browsable(false)]
+    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
+    [Browsable(false)]
+    public MouseState MouseState { get; set; }
+
+    [DefaultValue(true)]
+    [Category("Material Skin"), DisplayName("Draw Shadows")]
+    [Description("Draw Shadows around control")]
+    public bool DrawShadows { get; set; }
+
+    [DefaultValue(false)]
+    [Category("Material Skin"), DisplayName("Size Mini")]
+    [Description("Set control size to default or mini")]
+    public bool Mini
     {
-        LocationChanged += (sender, e) => { if (DrawShadows) Parent?.Invalidate(); };
+        get => _mini;
+        set
+        {
+            Parent?.Invalidate();
+            SetSize(value);
+        }
     }
 
+    [DefaultValue(false)]
+    [Category("Material Skin"), DisplayName("Animate Show HideButton")]
+    public bool AnimateShowHideButton
+    {
+        get => _animateShowButton;
+        set { _animateShowButton = value; Refresh(); }
+    }
+
+
+    [DefaultValue(false)]
+    [Category("Material Skin")]
+    [Description("Define icon to display")]
+    public Image? Icon
+    {
+        get => _icon;
+        set { _icon = value; Refresh(); }
+    }
+
+    protected override void InitLayout() => LocationChanged += (sender, e) => { if (DrawShadows) Parent?.Invalidate(); };
     protected override void OnParentChanged(EventArgs e)
     {
         base.OnParentChanged(e);
-        if (DrawShadows && Parent != null) AddShadowPaintEvent(Parent, DrawShadowOnParent);
-        if (_oldParent != null) RemoveShadowPaintEvent(_oldParent, DrawShadowOnParent);
+        if (DrawShadows && Parent != null)
+        {
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+
+        if (_oldParent != null)
+        {
+            RemoveShadowPaintEvent(_oldParent, DrawShadowOnParent);
+        }
         _oldParent = Parent;
     }
 
@@ -109,14 +105,18 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     protected override void OnVisibleChanged(EventArgs e)
     {
         base.OnVisibleChanged(e);
-        if (Parent == null) return;
-        if (Visible)
-            AddShadowPaintEvent(Parent, DrawShadowOnParent);
-        else
-            RemoveShadowPaintEvent(Parent, DrawShadowOnParent);
-    }
+        if (Parent == null)
+            return;
 
-    private bool _shadowDrawEventSubscribed = false;
+        if (Visible)
+        {
+            AddShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+        else
+        {
+            RemoveShadowPaintEvent(Parent, DrawShadowOnParent);
+        }
+    }
 
     private void AddShadowPaintEvent(Control control, PaintEventHandler shadowPaintEvent)
     {
@@ -141,13 +141,13 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     private void SetSize(bool mini)
     {
         _mini = mini;
-        Size = _mini ? new Size(FAB_MINI_SIZE, FAB_MINI_SIZE) : new Size(FAB_SIZE, FAB_SIZE);
-        fabBounds = _mini ? new Rectangle(0, 0, FAB_MINI_SIZE, FAB_MINI_SIZE) : new Rectangle(0, 0, FAB_SIZE, FAB_SIZE);
-        fabBounds.Width -= 1;
-        fabBounds.Height -= 1;
+        Size = _mini ? new Size(_fabMiniSize, _fabMiniSize) : new Size(_fabSize, _fabSize);
+        _fabBounds = _mini ? new Rectangle(0, 0, _fabMiniSize, _fabMiniSize) : new Rectangle(0, 0, _fabSize, _fabSize);
+        _fabBounds.Width -= 1;
+        _fabBounds.Height -= 1;
     }
 
-    private void ShowAnimationManager_OnAnimationFinished(object sender, EventArgs e)
+    private void ShowAnimationManager_OnAnimationFinished(object? sender, EventArgs e)
     {
         if (_isHiding)
         {
@@ -156,47 +156,49 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         }
     }
 
-    private void DrawShadowOnParent(object sender, PaintEventArgs e)
+    private void DrawShadowOnParent(object? sender, PaintEventArgs e)
     {
         if (Parent == null)
         {
-            RemoveShadowPaintEvent((Control)sender, DrawShadowOnParent);
+            RemoveShadowPaintEvent((Control)sender!, DrawShadowOnParent);
             return;
         }
 
         // paint shadow on parent
-        Graphics gp = e.Graphics;
-        Rectangle rect = new(Location, fabBounds.Size);
+        var gp = e.Graphics;
+        var rect = new Rectangle(Location, _fabBounds.Size);
         gp.SmoothingMode = SmoothingMode.AntiAlias;
         DrawHelper.DrawRoundShadow(gp, rect);
     }
-
-    private Rectangle fabBounds;
 
     protected override void OnPaint(PaintEventArgs pevent)
     {
         var g = pevent.Graphics;
 
-        g.Clear(Parent.BackColor);
+        if (Parent != null)
+        {
+            g.Clear(Parent.BackColor);
+        }
+
         g.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Paint shadow on element to blend with the parent shadow
-        DrawHelper.DrawRoundShadow(g, fabBounds);
+        DrawHelper.DrawRoundShadow(g, _fabBounds);
 
         // draw fab
         g.FillEllipse(Enabled ? _mouseHover ?
             new SolidBrush(SkinManager.ColorScheme.AccentColor.Lighten(0.25f)) :
             SkinManager.ColorScheme.AccentBrush :
             new SolidBrush(DrawHelper.BlendColor(SkinManager.ColorScheme.AccentColor, SkinManager.SwitchOffDisabledThumbColor, 197)),
-            fabBounds);
+            _fabBounds);
 
         if (_animationManager.IsAnimating())
         {
-            GraphicsPath regionPath = new();
-            regionPath.AddEllipse(new Rectangle(fabBounds.X - 1, fabBounds.Y - 1, fabBounds.Width + 3, fabBounds.Height + 2));
-            Region fabRegion = new(regionPath);
+            var regionPath = new GraphicsPath();
+            regionPath.AddEllipse(new Rectangle(_fabBounds.X - 1, _fabBounds.Y - 1, _fabBounds.Width + 3, _fabBounds.Height + 2));
+            var fabRegion = new Region(regionPath);
 
-            GraphicsContainer gcont = g.BeginContainer();
+            var gcont = g.BeginContainer();
             g.SetClip(fabRegion, CombineMode.Replace);
 
             for (int i = 0; i < _animationManager.GetAnimationCount(); i++)
@@ -213,21 +215,21 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
         if (Icon != null)
         {
-            g.DrawImage(Icon, new Rectangle(fabBounds.Width / 2 - 11, fabBounds.Height / 2 - 11, 24, 24));
+            g.DrawImage(Icon, new Rectangle(_fabBounds.Width / 2 - 11, _fabBounds.Height / 2 - 11, 24, 24));
         }
 
         if (_showAnimationManager.IsAnimating())
         {
-            int target = Convert.ToInt32((_mini ? FAB_MINI_SIZE : FAB_SIZE) * _showAnimationManager.GetProgress());
-            fabBounds.Width = target == 0 ? 1 : target;
-            fabBounds.Height = target == 0 ? 1 : target;
-            fabBounds.X = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - ((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2 * _showAnimationManager.GetProgress()));
-            fabBounds.Y = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - ((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2 * _showAnimationManager.GetProgress()));
+            var target = (int)((_mini ? _fabMiniSize : _fabSize) * _showAnimationManager.GetProgress());
+            _fabBounds.Width = target == 0 ? 1 : target;
+            _fabBounds.Height = target == 0 ? 1 : target;
+            _fabBounds.X = (int)(((_mini ? _fabMiniSize : _fabSize) / 2) - ((_mini ? _fabMiniSize : _fabSize) / 2 * _showAnimationManager.GetProgress()));
+            _fabBounds.Y = (int)(((_mini ? _fabMiniSize : _fabSize) / 2) - ((_mini ? _fabMiniSize : _fabSize) / 2 * _showAnimationManager.GetProgress()));
         }
 
         // Clip to a round shape with a 1px padding
-        GraphicsPath clipPath = new();
-        clipPath.AddEllipse(new Rectangle(fabBounds.X - 1, fabBounds.Y - 1, fabBounds.Width + 3, fabBounds.Height + 3));
+        var clipPath = new GraphicsPath();
+        clipPath.AddEllipse(new Rectangle(_fabBounds.X - 1, _fabBounds.Y - 1, _fabBounds.Width + 3, _fabBounds.Height + 3));
         Region = new Region(clipPath);
     }
 
@@ -269,9 +271,6 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         }
     }
 
-
-    private Point origin;
-
     public new void Hide()
     {
         if (Visible)
@@ -285,7 +284,6 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     {
         if (!Visible)
         {
-            origin = Location;
             _showAnimationManager.StartNewAnimation(AnimationDirection.In);
             Visible = true;
         }

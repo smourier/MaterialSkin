@@ -245,8 +245,7 @@ public class MaterialDialog : MaterialForm
         _formOverlay.Visible = false;
         _formOverlay.Close();
         _formOverlay.Dispose();
-
-        DialogResult res = DialogResult;
+        _ = DialogResult;
 
         base.OnClosing(e);
     }
