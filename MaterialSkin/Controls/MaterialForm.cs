@@ -988,22 +988,34 @@ public partial class MaterialForm : Form, IMaterialControl
 
             // When MaximizeButton == false, the minimize button will be painted in its place
             if (_buttonState == ButtonState.MinOver && showMin)
+            {
                 g.FillRectangle(hoverBrush, showMax ? MinButtonBounds : MaxButtonBounds);
+            }
 
             if (_buttonState == ButtonState.MinDown && showMin)
+            {
                 g.FillRectangle(downBrush, showMax ? MinButtonBounds : MaxButtonBounds);
+            }
 
             if (_buttonState == ButtonState.MaxOver && showMax)
+            {
                 g.FillRectangle(hoverBrush, MaxButtonBounds);
+            }
 
             if (_buttonState == ButtonState.MaxDown && showMax)
+            {
                 g.FillRectangle(downBrush, MaxButtonBounds);
+            }
 
             if (_buttonState == ButtonState.XOver && ControlBox)
+            {
                 g.FillRectangle(SkinManager.BackgroundHoverRedBrush, XButtonBounds);
+            }
 
             if (_buttonState == ButtonState.XDown && ControlBox)
+            {
                 g.FillRectangle(SkinManager.BackgroundDownRedBrush, XButtonBounds);
+            }
 
             using var formButtonsPen = new Pen(SkinManager.ColorScheme.TextColor, 2);
             // Minimize button.
@@ -1044,6 +1056,7 @@ public partial class MaterialForm : Form, IMaterialControl
                         (int)(MaxButtonBounds.Width * 0.40),
                         (int)(MaxButtonBounds.Height * 0.32)
                     );
+
                     // Draw lines for background square
                     g.DrawLine(formButtonsPen,
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.42),
@@ -1051,18 +1064,21 @@ public partial class MaterialForm : Form, IMaterialControl
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.42),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Height * 0.38)
                     );
+
                     g.DrawLine(formButtonsPen,
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.40),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Height * 0.30),
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.86),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Width * 0.30)
                     );
+
                     g.DrawLine(formButtonsPen,
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.82),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Height * 0.28),
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.82),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Width * 0.64)
                     );
+
                     g.DrawLine(formButtonsPen,
                         MaxButtonBounds.X + (int)(MaxButtonBounds.Width * 0.70),
                         MaxButtonBounds.Y + (int)(MaxButtonBounds.Height * 0.62),

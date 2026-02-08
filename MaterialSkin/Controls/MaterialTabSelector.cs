@@ -2,6 +2,38 @@
 
 public partial class MaterialTabSelector : Control, IMaterialControl
 {
+    private const int ICON_SIZE = 24;
+    private const int FIRST_TAB_PADDING = 50;
+    private const int TAB_HEADER_PADDING = 24;
+    private const int TAB_WIDTH_MIN = 160;
+    private const int TAB_WIDTH_MAX = 264;
+
+    private readonly TextInfo _textInfo = new CultureInfo("en-US", false).TextInfo;
+    private readonly AnimationManager _animationManager;
+    private MaterialTabControl? _baseTabControl;
+    private int _previousSelectedTabIndex;
+    private Point _animationSource;
+    private List<Rectangle>? _tabRects;
+    private int _tab_over_index = -1;
+    private CustomCharacterCasing _characterCasing;
+    private TabLabelStyle _tabLabel;
+
+    public MaterialTabSelector()
+    {
+        SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
+        TabIndicatorHeight = 2;
+        TabLabel = TabLabelStyle.Text;
+
+        Size = new Size(480, 48);
+
+        _animationManager = new AnimationManager
+        {
+            AnimationType = AnimationType.EaseOut,
+            Increment = 0.04
+        };
+        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
+    }
+
     [Browsable(false)]
     public int Depth { get; set; }
 
@@ -11,18 +43,15 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    readonly TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-
-    private MaterialTabControl _baseTabControl;
-
     [Category("Material Skin"), Browsable(true)]
-    public MaterialTabControl BaseTabControl
+    public MaterialTabControl? BaseTabControl
     {
         get => _baseTabControl;
         set
         {
             _baseTabControl = value;
-            if (_baseTabControl == null) return;
+            if (_baseTabControl == null)
+                return;
 
             UpdateTabRects();
 
@@ -31,39 +60,24 @@ public partial class MaterialTabSelector : Control, IMaterialControl
             {
                 _previousSelectedTabIndex = _baseTabControl.SelectedIndex;
             };
+
             _baseTabControl.SelectedIndexChanged += (sender, args) =>
             {
                 _animationManager.SetProgress(0);
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             };
+
             _baseTabControl.ControlAdded += delegate
             {
                 Invalidate();
             };
+
             _baseTabControl.ControlRemoved += delegate
             {
                 Invalidate();
             };
         }
     }
-
-    private int _previousSelectedTabIndex;
-
-    private Point _animationSource;
-
-    private readonly AnimationManager _animationManager;
-
-    private List<Rectangle> _tabRects;
-
-    private const int ICON_SIZE = 24;
-    private const int FIRST_TAB_PADDING = 50;
-    private const int TAB_HEADER_PADDING = 24;
-    private const int TAB_WIDTH_MIN = 160;
-    private const int TAB_WIDTH_MAX = 264;
-
-    private int _tab_over_index = -1;
-
-    private CustomCharacterCasing _characterCasing;
 
     [Category("Appearance")]
     public CustomCharacterCasing CharacterCasing
@@ -72,7 +86,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         set
         {
             _characterCasing = value;
-            _baseTabControl.Invalidate();
+            _baseTabControl?.Invalidate();
             Invalidate();
         }
     }
@@ -94,14 +108,6 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         }
     }
 
-    public enum TabLabelStyle
-    {
-        Text,
-        Icon,
-        IconAndText,
-    }
-
-    private TabLabelStyle _tabLabel;
     [Category("Material Skin"), Browsable(true), DisplayName("Tab Label"), DefaultValue(TabLabelStyle.Text)]
     public TabLabelStyle TabLabel
     {
@@ -110,29 +116,17 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         {
             _tabLabel = value;
             if (_tabLabel == TabLabelStyle.IconAndText)
+            {
                 Height = 72;
+            }
             else
+            {
                 Height = 48;
+            }
+
             UpdateTabRects();
             Invalidate();
         }
-    }
-
-
-    public MaterialTabSelector()
-    {
-        SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
-        TabIndicatorHeight = 2;
-        TabLabel = TabLabelStyle.Text;
-
-        Size = new Size(480, 48);
-
-        _animationManager = new AnimationManager
-        {
-            AnimationType = AnimationType.EaseOut,
-            Increment = 0.04
-        };
-        _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
     }
 
     protected override void OnCreateControl()
@@ -148,10 +142,13 @@ public partial class MaterialTabSelector : Control, IMaterialControl
 
         g.Clear(SkinManager.ColorScheme.PrimaryColor);
 
-        if (_baseTabControl == null) return;
+        if (_baseTabControl == null)
+            return;
 
         if (!_animationManager.IsAnimating() || _tabRects == null || _tabRects.Count != _baseTabControl.TabCount)
+        {
             UpdateTabRects();
+        }
 
         var animationProgress = _animationManager.GetProgress();
 
@@ -196,7 +193,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                     NativeText.DrawTransparentText(
                     CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
                     CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                    CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                    CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
                     Font,
                     Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
                     textLocation.Location,
@@ -213,7 +210,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                     NativeText.DrawMultilineTransparentText(
                     CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
                     CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                    CharacterCasing == CustomCharacterCasing.Proper ? textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                    CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
                     SkinManager.GetFontByType(FontType.Body2),
                     Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
                     textLocation.Location,

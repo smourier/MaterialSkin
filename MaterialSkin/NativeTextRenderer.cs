@@ -5,21 +5,18 @@ public sealed partial class NativeTextRenderer : IDisposable
 {
     private static readonly int[] _charFit = new int[1];
     private static readonly int[] _charFitWidth = new int[1000];
-    private static readonly Dictionary<string, Dictionary<float, Dictionary<FontStyle, IntPtr>>> _fontsCache = new(StringComparer.InvariantCultureIgnoreCase);
+    private static readonly Dictionary<string, Dictionary<float, Dictionary<FontStyle, nint>>> _fontsCache = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly Graphics _g;
-    private IntPtr _hdc;
+    private nint _hdc;
 
     public NativeTextRenderer(Graphics g)
     {
         _g = g;
-
         var clip = _g.Clip.GetHrgn(_g);
 
         _hdc = _g.GetHdc();
         SetBkMode(_hdc, 1);
-
         SelectClipRgn(_hdc, clip);
-
         DeleteObject(clip);
     }
 
@@ -33,7 +30,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         return size;
     }
 
-    public Size MeasureLogString(string str, IntPtr LogFont)
+    public Size MeasureLogString(string str, nint LogFont)
     {
         SelectObject(_hdc, LogFont);
 
@@ -72,10 +69,10 @@ public sealed partial class NativeTextRenderer : IDisposable
     }
 
     public void DrawTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, false);
-    public void DrawTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
+    public void DrawTransparentText(string str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, false);
     public void DrawMultilineTransparentText(string str, Font font, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(GetCachedHFont(font), str, color, point, size, flags, true);
-    public void DrawMultilineTransparentText(string str, IntPtr LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
-    private void DrawTransparentText(IntPtr fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
+    public void DrawMultilineTransparentText(string str, nint LogFont, Color color, Point point, Size size, TextAlignFlags flags) => DrawTransparentText(LogFont, str, color, point, size, flags, true);
+    private void DrawTransparentText(nint fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
     {
         // Create a memory DC so we can work off-screen
         var memoryHdc = CreateCompatibleDC(_hdc);
@@ -89,8 +86,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         info.biPlanes = 1;
         info.biBitCount = 32;
         info.biCompression = 0; // BI_RGB
-        nint ppvBits;
-        var dib = CreateDIBSection(_hdc, ref info, 0, out ppvBits, 0, 0);
+        var dib = CreateDIBSection(_hdc, ref info, 0, out nint ppvBits, 0, 0);
         SelectObject(memoryHdc, dib);
 
         try
@@ -114,6 +110,7 @@ public sealed partial class NativeTextRenderer : IDisposable
                 {
                     fmtFlags |= TextFormatFlags.Center;
                 }
+
                 if (flags.HasFlag(TextAlignFlags.Right))
                 {
                     fmtFlags |= TextFormatFlags.Right;
@@ -127,6 +124,7 @@ public sealed partial class NativeTextRenderer : IDisposable
                 {
                     pos.Y = ((size.Height) >> 1) - (strRect.Height >> 1);
                 }
+
                 if (flags.HasFlag(TextAlignFlags.Bottom))
                 {
                     pos.Y = size.Height - strRect.Height;
@@ -187,14 +185,12 @@ public sealed partial class NativeTextRenderer : IDisposable
 
     private void SetFont(Font font) => SelectObject(_hdc, GetCachedHFont(font));
 
-    private static IntPtr GetCachedHFont(Font font)
+    private static nint GetCachedHFont(Font font)
     {
-        IntPtr hfont = 0;
-        Dictionary<float, Dictionary<FontStyle, IntPtr>> dic1;
-        if (_fontsCache.TryGetValue(font.Name, out dic1))
+        nint hfont = 0;
+        if (_fontsCache.TryGetValue(font.Name, out var dic1))
         {
-            Dictionary<FontStyle, IntPtr> dic2;
-            if (dic1.TryGetValue(font.Size, out dic2))
+            if (dic1.TryGetValue(font.Size, out var dic2))
             {
                 dic2.TryGetValue(font.Style, out hfont);
             }
@@ -205,7 +201,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         }
         else
         {
-            _fontsCache[font.Name] = new Dictionary<float, Dictionary<FontStyle, IntPtr>>
+            _fontsCache[font.Name] = new Dictionary<float, Dictionary<FontStyle, nint>>
             {
                 [font.Size] = []
             };
@@ -226,59 +222,59 @@ public sealed partial class NativeTextRenderer : IDisposable
     }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    private static extern int DrawText(IntPtr hdc, string lpchText, int cchText, ref Rect lprc, TextFormatFlags dwDTFormat);
+    private static extern int DrawText(nint hdc, string lpchText, int cchText, ref Rect lprc, TextFormatFlags dwDTFormat);
 
     [DllImport("gdi32.dll")]
-    private static extern int SetBkMode(IntPtr hdc, int mode);
+    private static extern int SetBkMode(nint hdc, int mode);
 
     [DllImport("gdi32.dll")]
-    private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiObj);
+    private static extern nint SelectObject(nint hdc, nint hgdiObj);
 
     [DllImport("gdi32.dll")]
-    private static extern int SetTextColor(IntPtr hdc, int color);
+    private static extern int SetTextColor(nint hdc, int color);
 
     [DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
-    private static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
+    private static extern int GetTextExtentPoint32(nint hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
 
     [DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW")]
-    private static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)] string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
+    private static extern bool GetTextExtentExPoint(nint hDc, [MarshalAs(UnmanagedType.LPWStr)] string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
 
     [DllImport("gdi32.dll", EntryPoint = "TextOutW")]
-    private static extern bool TextOut(IntPtr hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
+    private static extern bool TextOut(nint hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
 
     [DllImport("gdi32.dll")]
-    public static extern int SetTextAlign(IntPtr hdc, uint fMode);
+    public static extern int SetTextAlign(nint hdc, uint fMode);
 
     [DllImport("user32.dll", EntryPoint = "DrawTextW")]
-    private static extern int DrawText(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Rect rect, uint uFormat);
+    private static extern int DrawText(nint hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Rect rect, uint uFormat);
 
     [DllImport("gdi32.dll")]
-    private static extern int SelectClipRgn(IntPtr hdc, IntPtr hrgn);
+    private static extern int SelectClipRgn(nint hdc, nint hrgn);
 
     [DllImport("gdi32.dll")]
-    public static extern bool DeleteObject(IntPtr hObject);
+    public static extern bool DeleteObject(nint hObject);
 
     [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-    public static extern bool DeleteDC(IntPtr hdc);
+    public static extern bool DeleteDC(nint hdc);
 
     [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-    internal static extern IntPtr CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LogFont lplf);
+    internal static extern nint CreateFontIndirect([In, MarshalAs(UnmanagedType.LPStruct)] LogFont lplf);
 
     [DllImport("gdi32.dll", ExactSpelling = true)]
-    public static extern IntPtr AddFontMemResourceEx(byte[] pbFont, int cbFont, IntPtr pdv, out uint pcFonts);
+    public static extern nint AddFontMemResourceEx(byte[] pbFont, int cbFont, nint pdv, out uint pcFonts);
 
     [DllImport("gdi32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
+    private static extern bool BitBlt(nint hdc, int nXDest, int nYDest, int nWidth, int nHeight, nint hdcSrc, int nXSrc, int nYSrc, uint dwRop);
 
     [DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
-    private static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BlendFunction blendFunction);
+    private static extern bool AlphaBlend(nint hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, nint hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BlendFunction blendFunction);
 
     [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-    private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+    private static extern nint CreateCompatibleDC(nint hdc);
 
     [DllImport("gdi32.dll")]
-    private static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BitMapInfo pbmi, uint iUsage, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
+    private static extern nint CreateDIBSection(nint hdc, [In] ref BitMapInfo pbmi, uint iUsage, out nint ppvBits, nint hSection, uint dwOffset);
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     internal class LogFont
@@ -301,7 +297,7 @@ public sealed partial class NativeTextRenderer : IDisposable
         public string lfFaceName = string.Empty;
     }
 
-    private struct Rect(Rectangle r)
+    private readonly struct Rect(Rectangle r)
     {
         private readonly int _left = r.Left;
         private readonly int _top = r.Top;

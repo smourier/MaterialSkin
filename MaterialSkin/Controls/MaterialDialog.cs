@@ -12,7 +12,6 @@ public class MaterialDialog : MaterialForm
     private readonly MaterialButton _validationButton = new();
     private readonly MaterialButton _cancelButton = new();
     private readonly AnimationManager _animationManager;
-    private readonly bool _closeAnimation;
     private readonly Form _formOverlay;
     private readonly string _text;
     private readonly string _title;
@@ -28,6 +27,41 @@ public class MaterialDialog : MaterialForm
         int nHeightEllipse // height of ellipse
     );
 
+    public MaterialDialog(Form ParentForm)
+    : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Text)
+        : this(ParentForm, "Title", Text, "OK", false, "Cancel", false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Title, string Text)
+        : this(ParentForm, Title, Text, "OK", false, "Cancel", false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText)
+        : this(ParentForm, Title, Text, ValidationButtonText, false, "Cancel", false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton)
+        : this(ParentForm, Title, Text, "OK", ShowCancelButton, "Cancel", false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton, string CancelButtonText)
+        : this(ParentForm, Title, Text, "OK", ShowCancelButton, CancelButtonText, false)
+    {
+    }
+
+    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText)
+        : this(ParentForm, Title, Text, ValidationButtonText, ShowCancelButton, CancelButtonText, false)
+    {
+    }
+
     public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText, bool UseAccentColor)
     {
         _formOverlay = new Form
@@ -36,7 +70,7 @@ public class MaterialDialog : MaterialForm
             Opacity = 0.5,
             MinimizeBox = false,
             MaximizeBox = false,
-            Text = "",
+            Text = string.Empty,
             ShowIcon = false,
             ControlBox = false,
             FormBorderStyle = FormBorderStyle.None,
@@ -71,8 +105,6 @@ public class MaterialDialog : MaterialForm
             Increment = 0.03
         };
 
-        _animationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
-
         _validationButton = new MaterialButton
         {
             AutoSize = false,
@@ -97,9 +129,14 @@ public class MaterialDialog : MaterialForm
         CancelButton = _cancelButton;
 
         if (!Controls.Contains(_validationButton))
+        {
             Controls.Add(_validationButton);
+        }
+
         if (!Controls.Contains(_cancelButton))
+        {
             Controls.Add(_cancelButton);
+        }
 
         Width = 560;
         var TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
@@ -128,46 +165,6 @@ public class MaterialDialog : MaterialForm
         _cancelButton.Height = _cancelbuttonBounds.Height;
         _cancelButton.Top = _cancelbuttonBounds.Top;
         _cancelButton.Left = _cancelbuttonBounds.Left;  //Button minimum width management
-
-
-        //this.ShowDialog();
-        //this Dispose();
-        //return materialDialogResult;
-    }
-
-    public MaterialDialog(Form ParentForm)
-        : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Text)
-        : this(ParentForm, "Title", Text, "OK", false, "Cancel", false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Title, string Text)
-        : this(ParentForm, Title, Text, "OK", false, "Cancel", false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText)
-        : this(ParentForm, Title, Text, ValidationButtonText, false, "Cancel", false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton)
-        : this(ParentForm, Title, Text, "OK", ShowCancelButton, "Cancel", false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton, string CancelButtonText)
-        : this(ParentForm, Title, Text, "OK", ShowCancelButton, CancelButtonText, false)
-    {
-    }
-
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText)
-        : this(ParentForm, Title, Text, ValidationButtonText, ShowCancelButton, CancelButtonText, false)
-    {
     }
 
     /// <summary>
@@ -177,19 +174,12 @@ public class MaterialDialog : MaterialForm
     {
         base.OnLoad(e);
 
-        Location = new Point(Convert.ToInt32(Owner.Location.X + (Owner.Width / 2) - (Width / 2)), Convert.ToInt32(Owner.Location.Y + (Owner.Height / 2) - (Height / 2)));
-        _animationManager.StartNewAnimation(AnimationDirection.In);
-    }
-
-    /// <summary>
-    /// Animates the Form slides
-    /// </summary>
-    private void AnimationManager_OnAnimationProgress(object? sender, EventArgs e)
-    {
-        if (_closeAnimation)
+        if (Owner != null)
         {
-            Opacity = _animationManager.GetProgress();
+            Location = new Point(Convert.ToInt32(Owner.Location.X + (Owner.Width / 2) - (Width / 2)), Convert.ToInt32(Owner.Location.Y + (Owner.Height / 2) - (Height / 2)));
         }
+
+        _animationManager.StartNewAnimation(AnimationDirection.In);
     }
 
     /// <summary>
