@@ -16,22 +16,12 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     private readonly MaterialButton _validationButton;
     private readonly MaterialButton _cancelButton;
     private int _headerHeight;
-    private bool _collapse;
-    private bool _useAccentColor;
     private int _expandHeight;
-    private string? _titleHeader;
-    private string? _descriptionHeader;
-    private string? _validationButtonText;
-    private string? _cancelButtonText;
-    private bool _showValidationButtons;
-    private bool _showCollapseExpand;
-    private bool _drawShadows;
     private bool _shadowDrawEventSubscribed = false;
     private Rectangle _headerBounds;
     private Rectangle _expandcollapseBounds;
     private Rectangle _savebuttonBounds;
     private Rectangle _cancelbuttonBounds;
-    private bool _savebuttonEnable;
     private ButtonState _buttonState = ButtonState.None;
     private Control? _oldParent;
 
@@ -76,9 +66,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         {
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = _useAccentColor,
+            UseAccentColor = UseAccentColor,
             Enabled = ValidationButtonEnable,
-            Visible = _showValidationButtons,
+            Visible = ShowValidationButtons,
             Text = "SAVE"
         };
 
@@ -86,8 +76,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         {
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = _useAccentColor,
-            Visible = _showValidationButtons,
+            UseAccentColor = UseAccentColor,
+            Visible = ShowValidationButtons,
             Text = "CANCEL"
         };
 
@@ -119,8 +109,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get => _useAccentColor;
-        set { _useAccentColor = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
     [DefaultValue(false)]
@@ -128,10 +118,10 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Category("Material Skin")]
     public bool Collapse
     {
-        get => _collapse;
+        get;
         set
         {
-            _collapse = value;
+            field = value;
             CollapseOrExpand();
             Invalidate();
         }
@@ -142,10 +132,10 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Title to show in expansion panel's header")]
     public string? Title
     {
-        get => _titleHeader;
+        get;
         set
         {
-            _titleHeader = value;
+            field = value;
             Invalidate();
         }
     }
@@ -155,10 +145,10 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Description to show in expansion panel's header")]
     public string? Description
     {
-        get => _descriptionHeader;
+        get;
         set
         {
-            _descriptionHeader = value;
+            field = value;
             Invalidate();
         }
     }
@@ -168,8 +158,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Draw Shadows around control")]
     public bool DrawShadows
     {
-        get => _drawShadows;
-        set { _drawShadows = value; Invalidate(); }
+        get;
+        set { field = value; Invalidate(); }
     }
 
     [DefaultValue(240)]
@@ -186,8 +176,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Show collapse/expand indicator")]
     public bool ShowCollapseExpand
     {
-        get => _showCollapseExpand;
-        set { _showCollapseExpand = value; Invalidate(); }
+        get;
+        set { field = value; Invalidate(); }
     }
 
     [DefaultValue(true)]
@@ -195,8 +185,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Show save/cancel button")]
     public bool ShowValidationButtons
     {
-        get => _showValidationButtons;
-        set { _showValidationButtons = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
     [DefaultValue("SAVE")]
@@ -204,8 +194,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Set Validation button text")]
     public string? ValidationButtonText
     {
-        get => _validationButtonText;
-        set { _validationButtonText = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
     [DefaultValue("CANCEL")]
@@ -213,8 +203,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Set Cancel button text")]
     public string? CancelButtonText
     {
-        get => _cancelButtonText;
-        set { _cancelButtonText = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
     [DefaultValue(false)]
@@ -222,8 +212,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     [Description("Enable validation button")]
     public bool ValidationButtonEnable
     {
-        get => _savebuttonEnable;
-        set { _savebuttonEnable = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
     [Category("Action")]
@@ -293,7 +283,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             return;
         }
 
-        if (!_drawShadows || Parent == null)
+        if (!DrawShadows || Parent == null)
             return;
 
         // paint shadow on parent
@@ -332,7 +322,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     protected override void OnResize(EventArgs e)
     {
-        if (!_collapse)
+        if (!Collapse)
         {
             if (DesignMode)
             {
@@ -456,7 +446,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         // Mormal
         else
         {
-            if ((_buttonState == ButtonState.HeaderOver | _buttonState == ButtonState.ColapseExpandOver) && _collapse)
+            if ((_buttonState == ButtonState.HeaderOver | _buttonState == ButtonState.ColapseExpandOver) && Collapse)
             {
                 var expansionPanelBorderRectF = new RectangleF(ClientRectangle.X + 1, ClientRectangle.Y + 1, ClientRectangle.Width - 2, ClientRectangle.Height - 2);
                 expansionPanelBorderRectF.X -= 0.5f;
@@ -476,7 +466,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         var headerRect = new Rectangle(
             _leftrightPadding,
             (_headerHeight - _textHeaderHeight) / 2,
-            TextRenderer.MeasureText(_titleHeader, Font).Width + _expansionPanelDefaultPadding,
+            TextRenderer.MeasureText(Title, Font).Width + _expansionPanelDefaultPadding,
             _textHeaderHeight);
 
         //Draw  headers
@@ -484,7 +474,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         {
             // Draw header text
             NativeText.DrawTransparentText(
-                _titleHeader,
+                Title,
                 SkinManager.GetLogFontByType(FontType.Body1),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 headerRect.Location,
@@ -492,7 +482,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
-        if (!string.IsNullOrEmpty(_descriptionHeader))
+        if (!string.IsNullOrEmpty(Description))
         {
             //Draw description header text 
             var headerDescriptionRect = new Rectangle(
@@ -503,7 +493,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
-                _descriptionHeader,
+                Description,
                 SkinManager.GetLogFontByType(FontType.Body1),
                  SkinManager.TextDisabledOrHintColor,
                 headerDescriptionRect.Location,
@@ -511,10 +501,10 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
 
-        if (_showCollapseExpand)
+        if (ShowCollapseExpand)
         {
-            using var formButtonsPen = new Pen(_useAccentColor && Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.TextDisabledOrHintColor, 2);
-            if (_collapse)
+            using var formButtonsPen = new Pen(UseAccentColor && Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.TextDisabledOrHintColor, 2);
+            if (Collapse)
             {
                 //Draw Expand button
                 var pth = new GraphicsPath();
@@ -538,7 +528,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             }
         }
 
-        if (!_collapse && _showValidationButtons)
+        if (!Collapse && ShowValidationButtons)
         {
             //Draw divider
             g.DrawLine(new Pen(SkinManager.DividersColor, 1), new Point(0, Height - _footerHeight), new Point(Width, Height - _footerHeight));
@@ -547,7 +537,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     private void CollapseOrExpand()
     {
-        if (_collapse)
+        if (Collapse)
         {
             _headerHeight = _headerHeightCollapse;
             Height = _headerHeightCollapse;
@@ -569,7 +559,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
     private void UpdateRects()
     {
-        if (!_collapse && _showValidationButtons)
+        if (!Collapse && ShowValidationButtons)
         {
             var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
             _savebuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
@@ -582,9 +572,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
                 _validationButton.Left = Width - _buttonPadding - _validationButton.Width;  //Button minimum width management
                 _validationButton.Top = _savebuttonBounds.Top;
                 _validationButton.Height = _savebuttonBounds.Height;
-                _validationButton.Text = _validationButtonText;
-                _validationButton.Enabled = _savebuttonEnable;
-                _validationButton.UseAccentColor = _useAccentColor;
+                _validationButton.Text = ValidationButtonText;
+                _validationButton.Enabled = ValidationButtonEnable;
+                _validationButton.UseAccentColor = UseAccentColor;
             }
             if (_cancelButton != null)
             {
@@ -592,14 +582,14 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
                 _cancelButton.Left = _validationButton?.Left ?? 0 - _buttonPadding - _cancelbuttonBounds.Width;  //Button minimum width management
                 _cancelButton.Top = _cancelbuttonBounds.Top;
                 _cancelButton.Height = _cancelbuttonBounds.Height;
-                _cancelButton.Text = _cancelButtonText;
-                _cancelButton.UseAccentColor = _useAccentColor;
+                _cancelButton.Text = CancelButtonText;
+                _cancelButton.UseAccentColor = UseAccentColor;
             }
         }
 
-        _validationButton?.Visible = _showValidationButtons;
+        _validationButton?.Visible = ShowValidationButtons;
 
-        _cancelButton?.Visible = _showValidationButtons;
+        _cancelButton?.Visible = ShowValidationButtons;
     }
 
     private enum ButtonState

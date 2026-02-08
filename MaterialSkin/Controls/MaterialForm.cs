@@ -19,19 +19,11 @@ public partial class MaterialForm : Form, IMaterialControl
 
     private ResizeDirection _resizeDir;
     private ButtonState _buttonState = ButtonState.None;
-    private FormStyles _formStyle;
     private Rectangle _drawerIconRect;
     private Point _animationSource;
     private Padding _originalPadding;
 
     // Drawer overlay and speed improvements
-    private bool _drawerShowIconsWhenHidden;
-    private bool _drawerAutoHide;
-    private bool _drawerAutoShow;
-    private bool _drawerIsOpen;
-    private bool _drawerUseColors;
-    private bool _drawerHighlightWithAccent;
-    private bool _backgroundWithAccent;
     private AnimationManager? _drawerShowHideAnimManager;
     private int _statusBarHeight = 24;
     private int _actionBarHeight = 40;
@@ -114,13 +106,13 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Material Skin"), Browsable(true), DisplayName("Form Style"), DefaultValue(FormStyles.ActionBar_40)]
     public FormStyles FormStyle
     {
-        get => _formStyle;
+        get;
         set
         {
-            if (_formStyle == value)
+            if (field == value)
                 return;
 
-            _formStyle = value;
+            field = value;
             RecalculateFormBoundaries();
         }
     }
@@ -128,16 +120,16 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerShowIconsWhenHidden
     {
-        get => _drawerShowIconsWhenHidden;
+        get;
         set
         {
-            if (_drawerShowIconsWhenHidden == value) return;
+            if (field == value) return;
 
-            _drawerShowIconsWhenHidden = value;
+            field = value;
 
             if (_drawerControl == null) return;
 
-            _drawerControl.ShowIconsWhenHidden = _drawerShowIconsWhenHidden;
+            _drawerControl.ShowIconsWhenHidden = field;
             _drawerControl.Refresh();
         }
     }
@@ -148,15 +140,15 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerAutoHide
     {
-        get => _drawerAutoHide;
-        set => _drawerControl.AutoHide = _drawerAutoHide = value;
+        get;
+        set => _drawerControl.AutoHide = field = value;
     }
 
     [Category("Drawer")]
     public bool DrawerAutoShow
     {
-        get => _drawerAutoShow;
-        set => _drawerControl.AutoShow = _drawerAutoShow = value;
+        get;
+        set => _drawerControl.AutoShow = field = value;
     }
 
     [Category("Drawer")]
@@ -165,12 +157,12 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerIsOpen
     {
-        get => _drawerIsOpen;
+        get;
         set
         {
-            if (_drawerIsOpen == value) return;
+            if (field == value) return;
 
-            _drawerIsOpen = value;
+            field = value;
 
             if (value)
                 _drawerControl?.Show();
@@ -182,12 +174,12 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerUseColors
     {
-        get => _drawerUseColors;
+        get;
         set
         {
-            if (_drawerUseColors == value) return;
+            if (field == value) return;
 
-            _drawerUseColors = value;
+            field = value;
 
             if (_drawerControl == null) return;
 
@@ -199,12 +191,12 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerHighlightWithAccent
     {
-        get => _drawerHighlightWithAccent;
+        get;
         set
         {
-            if (_drawerHighlightWithAccent == value) return;
+            if (field == value) return;
 
-            _drawerHighlightWithAccent = value;
+            field = value;
 
             if (_drawerControl == null) return;
 
@@ -216,12 +208,12 @@ public partial class MaterialForm : Form, IMaterialControl
     [Category("Drawer")]
     public bool DrawerBackgroundWithAccent
     {
-        get => _backgroundWithAccent;
+        get;
         set
         {
-            if (_backgroundWithAccent == value) return;
+            if (field == value) return;
 
-            _backgroundWithAccent = value;
+            field = value;
 
             if (_drawerControl == null) return;
 
@@ -569,10 +561,7 @@ public partial class MaterialForm : Form, IMaterialControl
         MaterialDrawerForm.Attach(_drawerControl);
     }
 
-    private void TerminateOnClose(object? sender, FormClosedEventArgs e)
-    {
-        Application.Exit();
-    }
+    private void TerminateOnClose(object? sender, FormClosedEventArgs e) => Application.Exit();
 
     private void FixFormPadding(object? sender, EventArgs e)
     {
@@ -704,7 +693,7 @@ public partial class MaterialForm : Form, IMaterialControl
 
     private void RecalculateFormBoundaries()
     {
-        switch (_formStyle)
+        switch (FormStyle)
         {
             case FormStyles.StatusAndActionBar_None:
                 _actionBarHeight = 0;
@@ -736,7 +725,7 @@ public partial class MaterialForm : Form, IMaterialControl
                 break;
         }
 
-        Padding = new Padding(_drawerShowIconsWhenHidden ? _drawerControl.MinWidth : _paddingMinimum, _statusBarHeight + _actionBarHeight, Padding.Right, Padding.Bottom);
+        Padding = new Padding(DrawerShowIconsWhenHidden ? _drawerControl.MinWidth : _paddingMinimum, _statusBarHeight + _actionBarHeight, Padding.Right, Padding.Bottom);
         _originalPadding = Padding;
 
         if (DrawerTabControl != null)
@@ -974,7 +963,7 @@ public partial class MaterialForm : Form, IMaterialControl
             g.DrawLine(borderPen, new Point(0, ClientSize.Height - 1), new Point(ClientSize.Width - 1, ClientSize.Height - 1));
         }
 
-        if (_formStyle != FormStyles.StatusAndActionBar_None)
+        if (FormStyle != FormStyles.StatusAndActionBar_None)
         {
             if (ControlBox)
             {
@@ -1109,7 +1098,7 @@ public partial class MaterialForm : Form, IMaterialControl
         }
 
         // Drawer Icon
-        if (DrawerTabControl != null && _formStyle != FormStyles.ActionBar_None && _formStyle != FormStyles.StatusAndActionBar_None)
+        if (DrawerTabControl != null && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
         {
             if (_buttonState == ButtonState.DrawerOver)
                 g.FillRectangle(hoverBrush, DrawerButtonBounds);
@@ -1158,7 +1147,7 @@ public partial class MaterialForm : Form, IMaterialControl
                _drawerIconRect.Y + _actionBarHeight / 2 + 6);
         }
 
-        if (ControlBox == true && _formStyle != FormStyles.ActionBar_None && _formStyle != FormStyles.StatusAndActionBar_None)
+        if (ControlBox == true && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
         {
             //Form title
             using var NativeText = new NativeTextRenderer(g);

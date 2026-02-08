@@ -2,8 +2,98 @@
 
 public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 {
+    private const int _lineBottomPadding = 3;
+    private const int _topPadding = 10;
+    private const int _bottomPadding = 10;
+    private const int _leftPadding = 16;
+    private const int _rightPadding = 12;
+
+    private const int SB_LINEUP = 0;
+    private const int SB_LINEDOWN = 1;
+    private const uint WM_VSCROLL = 277;
+
     private readonly MaterialContextMenuStrip _cms = new BaseTextBoxContextMenuStrip();
+    private readonly nint ptrLparam;
+    private readonly AnimationManager _animationManager;
+    private readonly BaseTextBox _baseTextBox;
     private ContextMenuStrip _lastContextMenuStrip = new();
+    public bool _isFocused;
+    private int _lineY;
+
+    public event EventHandler AcceptsTabChanged { add => _baseTextBox.AcceptsTabChanged += value; remove => _baseTextBox.AcceptsTabChanged -= value; }
+    public new event EventHandler AutoSizeChanged { add => _baseTextBox.AutoSizeChanged += value; remove => _baseTextBox.AutoSizeChanged -= value; }
+    public new event EventHandler BackgroundImageChanged { add => _baseTextBox.BackgroundImageChanged += value; remove => _baseTextBox.BackgroundImageChanged -= value; }
+    public new event EventHandler BackgroundImageLayoutChanged { add => _baseTextBox.BackgroundImageLayoutChanged += value; remove => _baseTextBox.BackgroundImageLayoutChanged -= value; }
+    public new event EventHandler BindingContextChanged { add => _baseTextBox.BindingContextChanged += value; remove => _baseTextBox.BindingContextChanged -= value; }
+    public event EventHandler BorderStyleChanged { add => _baseTextBox.BorderStyleChanged += value; remove => _baseTextBox.BorderStyleChanged -= value; }
+    public new event EventHandler CausesValidationChanged { add => _baseTextBox.CausesValidationChanged += value; remove => _baseTextBox.CausesValidationChanged -= value; }
+    public new event UICuesEventHandler ChangeUICues { add => _baseTextBox.ChangeUICues += value; remove => _baseTextBox.ChangeUICues -= value; }
+    public new event EventHandler Click { add => _baseTextBox.Click += value; remove => _baseTextBox.Click -= value; }
+    public new event EventHandler ClientSizeChanged { add => _baseTextBox.ClientSizeChanged += value; remove => _baseTextBox.ClientSizeChanged -= value; }
+    public new event EventHandler ContextMenuStripChanged { add => _baseTextBox.ContextMenuStripChanged += value; remove => _baseTextBox.ContextMenuStripChanged -= value; }
+    public new event ControlEventHandler ControlAdded { add => _baseTextBox.ControlAdded += value; remove => _baseTextBox.ControlAdded -= value; }
+    public new event ControlEventHandler ControlRemoved { add => _baseTextBox.ControlRemoved += value; remove => _baseTextBox.ControlRemoved -= value; }
+    public new event EventHandler CursorChanged { add => _baseTextBox.CursorChanged += value; remove => _baseTextBox.CursorChanged -= value; }
+    public new event EventHandler Disposed { add => _baseTextBox.Disposed += value; remove => _baseTextBox.Disposed -= value; }
+    public new event EventHandler DockChanged { add => _baseTextBox.DockChanged += value; remove => _baseTextBox.DockChanged -= value; }
+    public new event EventHandler DoubleClick { add => _baseTextBox.DoubleClick += value; remove => _baseTextBox.DoubleClick -= value; }
+    public new event DragEventHandler DragDrop { add => _baseTextBox.DragDrop += value; remove => _baseTextBox.DragDrop -= value; }
+    public new event DragEventHandler DragEnter { add => _baseTextBox.DragEnter += value; remove => _baseTextBox.DragEnter -= value; }
+    public new event EventHandler DragLeave { add => _baseTextBox.DragLeave += value; remove => _baseTextBox.DragLeave -= value; }
+    public new event DragEventHandler DragOver { add => _baseTextBox.DragOver += value; remove => _baseTextBox.DragOver -= value; }
+    public new event EventHandler EnabledChanged { add => _baseTextBox.EnabledChanged += value; remove => _baseTextBox.EnabledChanged -= value; }
+    public new event EventHandler Enter { add => _baseTextBox.Enter += value; remove => _baseTextBox.Enter -= value; }
+    public new event EventHandler FontChanged { add => _baseTextBox.FontChanged += value; remove => _baseTextBox.FontChanged -= value; }
+    public new event EventHandler ForeColorChanged { add => _baseTextBox.ForeColorChanged += value; remove => _baseTextBox.ForeColorChanged -= value; }
+    public new event GiveFeedbackEventHandler GiveFeedback { add => _baseTextBox.GiveFeedback += value; remove => _baseTextBox.GiveFeedback -= value; }
+    public new event EventHandler GotFocus { add => _baseTextBox.GotFocus += value; remove => _baseTextBox.GotFocus -= value; }
+    public new event EventHandler HandleCreated { add => _baseTextBox.HandleCreated += value; remove => _baseTextBox.HandleCreated -= value; }
+    public new event EventHandler HandleDestroyed { add => _baseTextBox.HandleDestroyed += value; remove => _baseTextBox.HandleDestroyed -= value; }
+    public new event HelpEventHandler HelpRequested { add => _baseTextBox.HelpRequested += value; remove => _baseTextBox.HelpRequested -= value; }
+    public event EventHandler HideSelectionChanged { add => _baseTextBox.HideSelectionChanged += value; remove => _baseTextBox.HideSelectionChanged -= value; }
+    public new event EventHandler ImeModeChanged { add => _baseTextBox.ImeModeChanged += value; remove => _baseTextBox.ImeModeChanged -= value; }
+    public new event InvalidateEventHandler Invalidated { add => _baseTextBox.Invalidated += value; remove => _baseTextBox.Invalidated -= value; }
+    public new event KeyEventHandler KeyDown { add => _baseTextBox.KeyDown += value; remove => _baseTextBox.KeyDown -= value; }
+    public new event KeyPressEventHandler KeyPress { add => _baseTextBox.KeyPress += value; remove => _baseTextBox.KeyPress -= value; }
+    public new event KeyEventHandler KeyUp { add => _baseTextBox.KeyUp += value; remove => _baseTextBox.KeyUp -= value; }
+    public new event LayoutEventHandler Layout { add => _baseTextBox.Layout += value; remove => _baseTextBox.Layout -= value; }
+    public new event EventHandler Leave { add => _baseTextBox.Leave += value; remove => _baseTextBox.Leave -= value; }
+    public new event EventHandler LocationChanged { add => _baseTextBox.LocationChanged += value; remove => _baseTextBox.LocationChanged -= value; }
+    public new event EventHandler LostFocus { add => _baseTextBox.LostFocus += value; remove => _baseTextBox.LostFocus -= value; }
+    public new event EventHandler MarginChanged { add => _baseTextBox.MarginChanged += value; remove => _baseTextBox.MarginChanged -= value; }
+    public event EventHandler ModifiedChanged { add => _baseTextBox.ModifiedChanged += value; remove => _baseTextBox.ModifiedChanged -= value; }
+    public new event EventHandler MouseCaptureChanged { add => _baseTextBox.MouseCaptureChanged += value; remove => _baseTextBox.MouseCaptureChanged -= value; }
+    public new event MouseEventHandler MouseClick { add => _baseTextBox.MouseClick += value; remove => _baseTextBox.MouseClick -= value; }
+    public new event MouseEventHandler MouseDoubleClick { add => _baseTextBox.MouseDoubleClick += value; remove => _baseTextBox.MouseDoubleClick -= value; }
+    public new event MouseEventHandler MouseDown { add => _baseTextBox.MouseDown += value; remove => _baseTextBox.MouseDown -= value; }
+    public new event EventHandler MouseEnter { add => _baseTextBox.MouseEnter += value; remove => _baseTextBox.MouseEnter -= value; }
+    public new event EventHandler MouseHover { add => _baseTextBox.MouseHover += value; remove => _baseTextBox.MouseHover -= value; }
+    public new event EventHandler MouseLeave { add => _baseTextBox.MouseLeave += value; remove => _baseTextBox.MouseLeave -= value; }
+    public new event MouseEventHandler MouseMove { add => _baseTextBox.MouseMove += value; remove => _baseTextBox.MouseMove -= value; }
+    public new event MouseEventHandler MouseUp { add => _baseTextBox.MouseUp += value; remove => _baseTextBox.MouseUp -= value; }
+    public new event MouseEventHandler MouseWheel { add => _baseTextBox.MouseWheel += value; remove => _baseTextBox.MouseWheel -= value; }
+    public new event EventHandler Move { add => _baseTextBox.Move += value; remove => _baseTextBox.Move -= value; }
+    public event EventHandler MultilineChanged { add => _baseTextBox.MultilineChanged += value; remove => _baseTextBox.MultilineChanged -= value; }
+    public new event EventHandler PaddingChanged { add => _baseTextBox.PaddingChanged += value; remove => _baseTextBox.PaddingChanged -= value; }
+    public new event PaintEventHandler Paint { add => _baseTextBox.Paint += value; remove => _baseTextBox.Paint -= value; }
+    public new event EventHandler ParentChanged { add => _baseTextBox.ParentChanged += value; remove => _baseTextBox.ParentChanged -= value; }
+    public new event PreviewKeyDownEventHandler PreviewKeyDown { add => _baseTextBox.PreviewKeyDown += value; remove => _baseTextBox.PreviewKeyDown -= value; }
+    public new event QueryAccessibilityHelpEventHandler QueryAccessibilityHelp { add => _baseTextBox.QueryAccessibilityHelp += value; remove => _baseTextBox.QueryAccessibilityHelp -= value; }
+    public new event QueryContinueDragEventHandler QueryContinueDrag { add => _baseTextBox.QueryContinueDrag += value; remove => _baseTextBox.QueryContinueDrag -= value; }
+    public event EventHandler ReadOnlyChanged { add => _baseTextBox.ReadOnlyChanged += value; remove => _baseTextBox.ReadOnlyChanged -= value; }
+    public new event EventHandler RegionChanged { add => _baseTextBox.RegionChanged += value; remove => _baseTextBox.RegionChanged -= value; }
+    public new event EventHandler Resize { add => _baseTextBox.Resize += value; remove => _baseTextBox.Resize -= value; }
+    public new event EventHandler RightToLeftChanged { add => _baseTextBox.RightToLeftChanged += value; remove => _baseTextBox.RightToLeftChanged -= value; }
+    public new event EventHandler SizeChanged { add => _baseTextBox.SizeChanged += value; remove => _baseTextBox.SizeChanged -= value; }
+    public new event EventHandler StyleChanged { add => _baseTextBox.StyleChanged += value; remove => _baseTextBox.StyleChanged -= value; }
+    public new event EventHandler SystemColorsChanged { add => _baseTextBox.SystemColorsChanged += value; remove => _baseTextBox.SystemColorsChanged -= value; }
+    public new event EventHandler TabIndexChanged { add => _baseTextBox.TabIndexChanged += value; remove => _baseTextBox.TabIndexChanged -= value; }
+    public new event EventHandler TabStopChanged { add => _baseTextBox.TabStopChanged += value; remove => _baseTextBox.TabStopChanged -= value; }
+    public event EventHandler TextAlignChanged { add => _baseTextBox.TextAlignChanged += value; remove => _baseTextBox.TextAlignChanged -= value; }
+    public new event EventHandler TextChanged { add => _baseTextBox.TextChanged += value; remove => _baseTextBox.TextChanged -= value; }
+    public new event EventHandler Validated { add => _baseTextBox.Validated += value; remove => _baseTextBox.Validated -= value; }
+    public new event CancelEventHandler Validating { add => _baseTextBox.Validating += value; remove => _baseTextBox.Validating -= value; }
+    public new event EventHandler VisibleChanged { add => _baseTextBox.VisibleChanged += value; remove => _baseTextBox.VisibleChanged -= value; }
 
     public MaterialMultiLineTextBox2()
     {
@@ -24,7 +114,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
         _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
 
-        baseTextBox = new BaseTextBox
+        _baseTextBox = new BaseTextBox
         {
             BorderStyle = BorderStyle.None,
             Font = SkinManager.GetFontByType(FontType.Subtitle1),
@@ -38,31 +128,31 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         ScrollBars = ScrollBars.None;
         Size = new Size(250, 100);
 
-        if (!Controls.Contains(baseTextBox) && !DesignMode)
+        if (!Controls.Contains(_baseTextBox) && !DesignMode)
         {
-            Controls.Add(baseTextBox);
+            Controls.Add(_baseTextBox);
         }
 
-        baseTextBox.GotFocus += (sender, args) =>
+        _baseTextBox.GotFocus += (sender, args) =>
         {
             if (Enabled)
             {
-                isFocused = true;
+                _isFocused = true;
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             }
             else
                 Focus();
         };
-        baseTextBox.LostFocus += (sender, args) =>
+        _baseTextBox.LostFocus += (sender, args) =>
         {
-            isFocused = false;
+            _isFocused = false;
             _animationManager.StartNewAnimation(AnimationDirection.Out);
         };
 
-        baseTextBox.TextChanged += Redraw;
-        baseTextBox.BackColorChanged += Redraw;
+        _baseTextBox.TextChanged += Redraw;
+        _baseTextBox.BackColorChanged += Redraw;
 
-        baseTextBox.TabStop = true;
+        _baseTextBox.TabStop = true;
         TabStop = false;
 
         _cms.Opening += ContextMenuStripOnOpening;
@@ -92,16 +182,16 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     public override ImageLayout BackgroundImageLayout { get; set; }
 
     [Browsable(false)]
-    public string SelectedText { get => baseTextBox.SelectedText; set => baseTextBox.SelectedText = value; }
+    public string SelectedText { get => _baseTextBox.SelectedText; set => _baseTextBox.SelectedText = value; }
 
     [Browsable(false)]
-    public int SelectionStart { get => baseTextBox.SelectionStart; set => baseTextBox.SelectionStart = value; }
+    public int SelectionStart { get => _baseTextBox.SelectionStart; set => _baseTextBox.SelectionStart = value; }
 
     [Browsable(false)]
-    public int SelectionLength { get => baseTextBox.SelectionLength; set => baseTextBox.SelectionLength = value; }
+    public int SelectionLength { get => _baseTextBox.SelectionLength; set => _baseTextBox.SelectionLength = value; }
 
     [Browsable(false)]
-    public int TextLength => baseTextBox.TextLength;
+    public int TextLength => _baseTextBox.TextLength;
 
     [Browsable(false)]
     public override Color ForeColor { get; set; }
@@ -109,10 +199,10 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
-        get => baseTextBox.Hint;
+        get => _baseTextBox.Hint;
         set
         {
-            baseTextBox.Hint = value;
+            _baseTextBox.Hint = value;
             Invalidate();
         }
     }
@@ -126,17 +216,17 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     public override ContextMenuStrip? ContextMenuStrip
     {
-        get => baseTextBox.ContextMenuStrip;
+        get => _baseTextBox.ContextMenuStrip;
         set
         {
             if (value != null)
             {
-                baseTextBox.ContextMenuStrip = value;
+                _baseTextBox.ContextMenuStrip = value;
                 base.ContextMenuStrip = value;
             }
             else
             {
-                baseTextBox.ContextMenuStrip = _cms;
+                _baseTextBox.ContextMenuStrip = _cms;
                 base.ContextMenuStrip = _cms;
             }
             _lastContextMenuStrip = base.ContextMenuStrip;
@@ -147,497 +237,105 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
 
     [AllowNull]
-    public override string Text { get => baseTextBox.Text; set => baseTextBox.Text = value; }
+    public override string Text { get => _baseTextBox.Text; set => _baseTextBox.Text = value; }
 
     [Category("Appearance")]
-    public HorizontalAlignment TextAlign { get => baseTextBox.TextAlign; set => baseTextBox.TextAlign = value; }
+    public HorizontalAlignment TextAlign { get => _baseTextBox.TextAlign; set => _baseTextBox.TextAlign = value; }
 
     [Category("Appearance")]
-    public ScrollBars ScrollBars { get => baseTextBox.ScrollBars; set => baseTextBox.ScrollBars = value; }
+    public ScrollBars ScrollBars { get => _baseTextBox.ScrollBars; set => _baseTextBox.ScrollBars = value; }
 
     [Category("Behavior")]
-    public CharacterCasing CharacterCasing { get => baseTextBox.CharacterCasing; set => baseTextBox.CharacterCasing = value; }
+    public CharacterCasing CharacterCasing { get => _baseTextBox.CharacterCasing; set => _baseTextBox.CharacterCasing = value; }
 
     [Category("Behavior")]
-    public bool HideSelection { get => baseTextBox.HideSelection; set => baseTextBox.HideSelection = value; }
+    public bool HideSelection { get => _baseTextBox.HideSelection; set => _baseTextBox.HideSelection = value; }
 
     [Category("Behavior")]
-    public int MaxLength { get => baseTextBox.MaxLength; set => baseTextBox.MaxLength = value; }
+    public int MaxLength { get => _baseTextBox.MaxLength; set => _baseTextBox.MaxLength = value; }
 
     [Category("Behavior")]
-    public char PasswordChar { get => baseTextBox.PasswordChar; set => baseTextBox.PasswordChar = value; }
+    public char PasswordChar { get => _baseTextBox.PasswordChar; set => _baseTextBox.PasswordChar = value; }
 
     [Category("Behavior")]
     public bool ShortcutsEnabled
     {
-        get => baseTextBox.ShortcutsEnabled;
+        get => _baseTextBox.ShortcutsEnabled;
         set
         {
-            baseTextBox.ShortcutsEnabled = value;
+            _baseTextBox.ShortcutsEnabled = value;
             if (value == false)
             {
-                baseTextBox.ContextMenuStrip = null;
+                _baseTextBox.ContextMenuStrip = null;
                 base.ContextMenuStrip = null;
             }
             else
             {
-                baseTextBox.ContextMenuStrip = _lastContextMenuStrip;
+                _baseTextBox.ContextMenuStrip = _lastContextMenuStrip;
                 base.ContextMenuStrip = _lastContextMenuStrip;
             }
         }
     }
 
     [Category("Behavior")]
-    public bool UseSystemPasswordChar { get => baseTextBox.UseSystemPasswordChar; set => baseTextBox.UseSystemPasswordChar = value; }
+    public bool UseSystemPasswordChar { get => _baseTextBox.UseSystemPasswordChar; set => _baseTextBox.UseSystemPasswordChar = value; }
 
-    public new object? Tag { get => baseTextBox.Tag; set => baseTextBox.Tag = value; }
+    public new object? Tag { get => _baseTextBox.Tag; set => _baseTextBox.Tag = value; }
 
-    private bool _readonly;
     [Category("Behavior")]
     public bool ReadOnly
     {
-        get => _readonly;
+        get;
         set
         {
-            _readonly = value;
+            field = value;
             if (Enabled == true)
             {
-                baseTextBox.ReadOnly = _readonly;
+                _baseTextBox.ReadOnly = field;
             }
             Invalidate();
         }
     }
-
-    private bool _animateReadOnly;
 
     [Category("Material Skin")]
     [Browsable(true)]
     public bool AnimateReadOnly
     {
-        get => _animateReadOnly;
+        get;
         set
         {
-            _animateReadOnly = value;
+            field = value;
             Invalidate();
         }
     }
-
-    private bool _leaveOnEnterKey;
 
     [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed. To add enter in text, the user must press CTRL+Enter")]
     public bool LeaveOnEnterKey
     {
-        get => _leaveOnEnterKey;
+        get;
         set
         {
-            _leaveOnEnterKey = value;
+            field = value;
             if (value)
             {
-                baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
+                _baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
             }
             else
             {
-                baseTextBox.KeyDown -= LeaveOnEnterKey_KeyDown;
+                _baseTextBox.KeyDown -= LeaveOnEnterKey_KeyDown;
             }
             Invalidate();
         }
     }
 
-    public void SelectAll() { baseTextBox.SelectAll(); }
-    public void Clear() { baseTextBox.Clear(); }
-    public void Copy() { baseTextBox.Copy(); }
-    public void Cut() { baseTextBox.Cut(); }
-    public void Undo() { baseTextBox.Undo(); }
-    public void Paste() { baseTextBox.Paste(); }
-
-    public event EventHandler AcceptsTabChanged
-    {
-        add => baseTextBox.AcceptsTabChanged += value; remove => baseTextBox.AcceptsTabChanged -= value;
-    }
-
-    public new event EventHandler AutoSizeChanged
-    {
-        add => baseTextBox.AutoSizeChanged += value; remove => baseTextBox.AutoSizeChanged -= value;
-    }
-
-    public new event EventHandler BackgroundImageChanged
-    {
-        add => baseTextBox.BackgroundImageChanged += value; remove => baseTextBox.BackgroundImageChanged -= value;
-    }
-
-    public new event EventHandler BackgroundImageLayoutChanged
-    {
-        add => baseTextBox.BackgroundImageLayoutChanged += value; remove => baseTextBox.BackgroundImageLayoutChanged -= value;
-    }
-
-    public new event EventHandler BindingContextChanged
-    {
-        add => baseTextBox.BindingContextChanged += value; remove => baseTextBox.BindingContextChanged -= value;
-    }
-
-    public event EventHandler BorderStyleChanged
-    {
-        add => baseTextBox.BorderStyleChanged += value; remove => baseTextBox.BorderStyleChanged -= value;
-    }
-
-    public new event EventHandler CausesValidationChanged
-    {
-        add => baseTextBox.CausesValidationChanged += value; remove => baseTextBox.CausesValidationChanged -= value;
-    }
-
-    public new event UICuesEventHandler ChangeUICues
-    {
-        add => baseTextBox.ChangeUICues += value; remove => baseTextBox.ChangeUICues -= value;
-    }
-
-    public new event EventHandler Click
-    {
-        add => baseTextBox.Click += value; remove => baseTextBox.Click -= value;
-    }
-
-    public new event EventHandler ClientSizeChanged
-    {
-        add => baseTextBox.ClientSizeChanged += value; remove => baseTextBox.ClientSizeChanged -= value;
-    }
-
-    public new event EventHandler ContextMenuStripChanged
-    {
-        add => baseTextBox.ContextMenuStripChanged += value; remove => baseTextBox.ContextMenuStripChanged -= value;
-    }
-
-    public new event ControlEventHandler ControlAdded
-    {
-        add => baseTextBox.ControlAdded += value; remove => baseTextBox.ControlAdded -= value;
-    }
-
-    public new event ControlEventHandler ControlRemoved
-    {
-        add => baseTextBox.ControlRemoved += value; remove => baseTextBox.ControlRemoved -= value;
-    }
-
-    public new event EventHandler CursorChanged
-    {
-        add => baseTextBox.CursorChanged += value; remove => baseTextBox.CursorChanged -= value;
-    }
-
-    public new event EventHandler Disposed
-    {
-        add => baseTextBox.Disposed += value; remove => baseTextBox.Disposed -= value;
-    }
-
-    public new event EventHandler DockChanged
-    {
-        add => baseTextBox.DockChanged += value; remove => baseTextBox.DockChanged -= value;
-    }
-
-    public new event EventHandler DoubleClick
-    {
-        add => baseTextBox.DoubleClick += value; remove => baseTextBox.DoubleClick -= value;
-    }
-
-    public new event DragEventHandler DragDrop
-    {
-        add => baseTextBox.DragDrop += value; remove => baseTextBox.DragDrop -= value;
-    }
-
-    public new event DragEventHandler DragEnter
-    {
-        add => baseTextBox.DragEnter += value; remove => baseTextBox.DragEnter -= value;
-    }
-
-    public new event EventHandler DragLeave
-    {
-        add => baseTextBox.DragLeave += value; remove => baseTextBox.DragLeave -= value;
-    }
-
-    public new event DragEventHandler DragOver
-    {
-        add => baseTextBox.DragOver += value; remove => baseTextBox.DragOver -= value;
-    }
-
-    public new event EventHandler EnabledChanged
-    {
-        add => baseTextBox.EnabledChanged += value; remove => baseTextBox.EnabledChanged -= value;
-    }
-
-    public new event EventHandler Enter
-    {
-        add => baseTextBox.Enter += value; remove => baseTextBox.Enter -= value;
-    }
-
-    public new event EventHandler FontChanged
-    {
-        add => baseTextBox.FontChanged += value; remove => baseTextBox.FontChanged -= value;
-    }
-
-    public new event EventHandler ForeColorChanged
-    {
-        add => baseTextBox.ForeColorChanged += value; remove => baseTextBox.ForeColorChanged -= value;
-    }
-
-    public new event GiveFeedbackEventHandler GiveFeedback
-    {
-        add => baseTextBox.GiveFeedback += value; remove => baseTextBox.GiveFeedback -= value;
-    }
-
-    public new event EventHandler GotFocus
-    {
-        add => baseTextBox.GotFocus += value; remove => baseTextBox.GotFocus -= value;
-    }
-
-    public new event EventHandler HandleCreated
-    {
-        add => baseTextBox.HandleCreated += value; remove => baseTextBox.HandleCreated -= value;
-    }
-
-    public new event EventHandler HandleDestroyed
-    {
-        add => baseTextBox.HandleDestroyed += value; remove => baseTextBox.HandleDestroyed -= value;
-    }
-
-    public new event HelpEventHandler HelpRequested
-    {
-        add => baseTextBox.HelpRequested += value; remove => baseTextBox.HelpRequested -= value;
-    }
-
-    public event EventHandler HideSelectionChanged
-    {
-        add => baseTextBox.HideSelectionChanged += value; remove => baseTextBox.HideSelectionChanged -= value;
-    }
-
-    public new event EventHandler ImeModeChanged
-    {
-        add => baseTextBox.ImeModeChanged += value; remove => baseTextBox.ImeModeChanged -= value;
-    }
-
-    public new event InvalidateEventHandler Invalidated
-    {
-        add => baseTextBox.Invalidated += value; remove => baseTextBox.Invalidated -= value;
-    }
-
-    public new event KeyEventHandler KeyDown
-    {
-        add => baseTextBox.KeyDown += value; remove => baseTextBox.KeyDown -= value;
-    }
-
-    public new event KeyPressEventHandler KeyPress
-    {
-        add => baseTextBox.KeyPress += value; remove => baseTextBox.KeyPress -= value;
-    }
-
-    public new event KeyEventHandler KeyUp
-    {
-        add => baseTextBox.KeyUp += value; remove => baseTextBox.KeyUp -= value;
-    }
-
-    public new event LayoutEventHandler Layout
-    {
-        add => baseTextBox.Layout += value; remove => baseTextBox.Layout -= value;
-    }
-
-    public new event EventHandler Leave
-    {
-        add => baseTextBox.Leave += value; remove => baseTextBox.Leave -= value;
-    }
-
-    public new event EventHandler LocationChanged
-    {
-        add => baseTextBox.LocationChanged += value; remove => baseTextBox.LocationChanged -= value;
-    }
-
-    public new event EventHandler LostFocus
-    {
-        add => baseTextBox.LostFocus += value; remove => baseTextBox.LostFocus -= value;
-    }
-
-    public new event EventHandler MarginChanged
-    {
-        add => baseTextBox.MarginChanged += value; remove => baseTextBox.MarginChanged -= value;
-    }
-
-    public event EventHandler ModifiedChanged
-    {
-        add => baseTextBox.ModifiedChanged += value; remove => baseTextBox.ModifiedChanged -= value;
-    }
-
-    public new event EventHandler MouseCaptureChanged
-    {
-        add => baseTextBox.MouseCaptureChanged += value; remove => baseTextBox.MouseCaptureChanged -= value;
-    }
-
-    public new event MouseEventHandler MouseClick
-    {
-        add => baseTextBox.MouseClick += value; remove => baseTextBox.MouseClick -= value;
-    }
-
-    public new event MouseEventHandler MouseDoubleClick
-    {
-        add => baseTextBox.MouseDoubleClick += value; remove => baseTextBox.MouseDoubleClick -= value;
-    }
-
-    public new event MouseEventHandler MouseDown
-    {
-        add => baseTextBox.MouseDown += value; remove => baseTextBox.MouseDown -= value;
-    }
-
-    public new event EventHandler MouseEnter
-    {
-        add => baseTextBox.MouseEnter += value; remove => baseTextBox.MouseEnter -= value;
-    }
-
-    public new event EventHandler MouseHover
-    {
-        add => baseTextBox.MouseHover += value; remove => baseTextBox.MouseHover -= value;
-    }
-
-    public new event EventHandler MouseLeave
-    {
-        add => baseTextBox.MouseLeave += value; remove => baseTextBox.MouseLeave -= value;
-    }
-
-    public new event MouseEventHandler MouseMove
-    {
-        add => baseTextBox.MouseMove += value; remove => baseTextBox.MouseMove -= value;
-    }
-
-    public new event MouseEventHandler MouseUp
-    {
-        add => baseTextBox.MouseUp += value; remove => baseTextBox.MouseUp -= value;
-    }
-
-    public new event MouseEventHandler MouseWheel
-    {
-        add => baseTextBox.MouseWheel += value; remove => baseTextBox.MouseWheel -= value;
-    }
-
-    public new event EventHandler Move
-    {
-        add => baseTextBox.Move += value; remove => baseTextBox.Move -= value;
-    }
-
-    public event EventHandler MultilineChanged
-    {
-        add => baseTextBox.MultilineChanged += value; remove => baseTextBox.MultilineChanged -= value;
-    }
-
-    public new event EventHandler PaddingChanged
-    {
-        add => baseTextBox.PaddingChanged += value; remove => baseTextBox.PaddingChanged -= value;
-    }
-
-    public new event PaintEventHandler Paint
-    {
-        add => baseTextBox.Paint += value; remove => baseTextBox.Paint -= value;
-    }
-
-    public new event EventHandler ParentChanged
-    {
-        add => baseTextBox.ParentChanged += value; remove => baseTextBox.ParentChanged -= value;
-    }
-
-    public new event PreviewKeyDownEventHandler PreviewKeyDown
-    {
-        add => baseTextBox.PreviewKeyDown += value; remove => baseTextBox.PreviewKeyDown -= value;
-    }
-
-    public new event QueryAccessibilityHelpEventHandler QueryAccessibilityHelp
-    {
-        add => baseTextBox.QueryAccessibilityHelp += value; remove => baseTextBox.QueryAccessibilityHelp -= value;
-    }
-
-    public new event QueryContinueDragEventHandler QueryContinueDrag
-    {
-        add => baseTextBox.QueryContinueDrag += value; remove => baseTextBox.QueryContinueDrag -= value;
-    }
-
-    public event EventHandler ReadOnlyChanged
-    {
-        add => baseTextBox.ReadOnlyChanged += value; remove => baseTextBox.ReadOnlyChanged -= value;
-    }
-
-    public new event EventHandler RegionChanged
-    {
-        add => baseTextBox.RegionChanged += value; remove => baseTextBox.RegionChanged -= value;
-    }
-
-    public new event EventHandler Resize
-    {
-        add => baseTextBox.Resize += value; remove => baseTextBox.Resize -= value;
-    }
-
-    public new event EventHandler RightToLeftChanged
-    {
-        add => baseTextBox.RightToLeftChanged += value; remove => baseTextBox.RightToLeftChanged -= value;
-    }
-
-    public new event EventHandler SizeChanged
-    {
-        add => baseTextBox.SizeChanged += value; remove => baseTextBox.SizeChanged -= value;
-    }
-
-    public new event EventHandler StyleChanged
-    {
-        add => baseTextBox.StyleChanged += value; remove => baseTextBox.StyleChanged -= value;
-    }
-
-    public new event EventHandler SystemColorsChanged
-    {
-        add => baseTextBox.SystemColorsChanged += value; remove => baseTextBox.SystemColorsChanged -= value;
-    }
-
-    public new event EventHandler TabIndexChanged
-    {
-        add => baseTextBox.TabIndexChanged += value; remove => baseTextBox.TabIndexChanged -= value;
-    }
-
-    public new event EventHandler TabStopChanged
-    {
-        add => baseTextBox.TabStopChanged += value; remove => baseTextBox.TabStopChanged -= value;
-    }
-
-    public event EventHandler TextAlignChanged
-    {
-        add => baseTextBox.TextAlignChanged += value; remove => baseTextBox.TextAlignChanged -= value;
-    }
-
-    public new event EventHandler TextChanged
-    {
-        add => baseTextBox.TextChanged += value; remove => baseTextBox.TextChanged -= value;
-    }
-
-    public new event EventHandler Validated
-    {
-        add => baseTextBox.Validated += value; remove => baseTextBox.Validated -= value;
-    }
-
-    public new event CancelEventHandler Validating
-    {
-        add => baseTextBox.Validating += value; remove => baseTextBox.Validating -= value;
-    }
-
-    public new event EventHandler VisibleChanged
-    {
-        add => baseTextBox.VisibleChanged += value; remove => baseTextBox.VisibleChanged -= value;
-    }
-
-    //private readonly AnimationManager animationManager;
-    private readonly AnimationManager _animationManager;
-
-    public bool isFocused = false;
-    private const int LINE_BOTTOM_PADDING = 3;
-    private const int TOP_PADDING = 10;
-    private const int BOTTOM_PADDING = 10;
-    private const int LEFT_PADDING = 16;
-    private const int RIGHT_PADDING = 12;
-    private int LINE_Y;
-    private readonly int SB_LINEUP = 0;
-    private readonly int SB_LINEDOWN = 1;
-    private readonly uint WM_VSCROLL = 277;
-    private readonly IntPtr ptrLparam = new(0);
-
-    protected readonly BaseTextBox baseTextBox;
-
-    private void Redraw(object sender, EventArgs e)
+    public void SelectAll() => _baseTextBox.SelectAll();
+    public void Clear() => _baseTextBox.Clear();
+    public void Copy() => _baseTextBox.Copy();
+    public void Cut() => _baseTextBox.Cut();
+    public void Undo() => _baseTextBox.Undo();
+    public void Paste() => _baseTextBox.Paste();
+
+    private void Redraw(object? sender, EventArgs e)
     {
         SuspendLayout();
         Invalidate();
@@ -648,45 +346,52 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     {
         var g = pevent.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
-        g.Clear(Parent.BackColor);
-        SolidBrush backBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
+
+        var parentBackColor = Color.White;
+        if (Parent != null)
+        {
+            parentBackColor = Parent.BackColor;
+        }
+
+        g.Clear(parentBackColor);
+        var backBrush = new SolidBrush(DrawHelper.BlendColor(parentBackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(
             !Enabled ? SkinManager.BackgroundDisabledBrush : // Disabled
-            isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
+            _isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
             MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? SkinManager.BackgroundHoverBrush : // Hover
             backBrush, // Normal
-            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, LINE_Y);
+            ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
-            isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
+        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
+            _isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
             MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundHoverColor, SkinManager.BackgroundHoverColor.A) : // Hover
             DrawHelper.BlendColor(BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A); // Normal
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, LINE_Y, Width, 1);
+        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
-        if (ReadOnly == false || (ReadOnly && AnimateReadOnly))
+        if (!ReadOnly || (ReadOnly && AnimateReadOnly))
         {
             if (!_animationManager.IsAnimating())
             {
                 // bottom line
-                if (isFocused)
+                if (_isFocused)
                 {
                     //No animation
-                    g.FillRectangle(isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, LINE_Y, Width, isFocused ? 2 : 1);
+                    g.FillRectangle(_isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
                 }
             }
             else
             {
                 // Animate - Focus got/lost
-                double animationProgress = _animationManager.GetProgress();
+                var animationProgress = _animationManager.GetProgress();
 
                 // Line Animation
-                int LineAnimationWidth = (int)(Width * animationProgress);
-                int LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, LINE_Y, LineAnimationWidth, 2);
+                var LineAnimationWidth = (int)(Width * animationProgress);
+                var LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
+                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
             }
         }
     }
@@ -695,28 +400,29 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     [DllImport("User32.dll", CharSet = CharSet.Auto, EntryPoint = "SendMessage")]
     protected static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-    protected void OnMouseWheel(object sender, MouseEventArgs e)
+    protected void OnMouseWheel(object? sender, MouseEventArgs e)
     {
         if (AllowScroll)
         {
             if (DesignMode)
                 return;
+
             //Calculate number of notches mouse wheel moved
-            int v = e.Delta / 120;
+            var v = e.Delta / 120;
             //Down Movement
             if (v < 0)
             {
                 var ptrWparam = new IntPtr(SB_LINEDOWN);
-                SendMessage(baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
+                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
             }
             //Up Movement
             else if (v > 0)
             {
                 var ptrWparam = new IntPtr(SB_LINEUP);
-                SendMessage(baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
+                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
             }
 
-            baseTextBox?.Focus();
+            _baseTextBox?.Focus();
             base.OnMouseDown(e);
         }
     }
@@ -734,7 +440,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         if (DesignMode)
             return;
 
-        baseTextBox?.Focus();
+        _baseTextBox?.Focus();
         base.OnMouseDown(e);
     }
 
@@ -755,24 +461,20 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
         if (ClientRectangle.Contains(PointToClient(MousePosition)))
             return;
-        else
-        {
-            base.OnMouseLeave(e);
-            MouseState = MouseState.OUT;
-            Invalidate();
-        }
+
+        base.OnMouseLeave(e);
+        MouseState = MouseState.OUT;
+        Invalidate();
     }
 
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
 
-        baseTextBox.Location = new Point(LEFT_PADDING, TOP_PADDING);
-        baseTextBox.Width = Width - (LEFT_PADDING + RIGHT_PADDING);
-        baseTextBox.Height = Height - (TOP_PADDING + BOTTOM_PADDING);
-
-        LINE_Y = Height - LINE_BOTTOM_PADDING;
-
+        _baseTextBox.Location = new Point(_leftPadding, _topPadding);
+        _baseTextBox.Width = Width - (_leftPadding + _rightPadding);
+        _baseTextBox.Height = Height - (_topPadding + _bottomPadding);
+        _lineY = Height - _lineBottomPadding;
     }
 
     protected override void OnCreateControl()
@@ -783,9 +485,9 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         MouseState = MouseState.OUT;
     }
 
-    private void ContextMenuStripOnItemClickStart(object sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
+    private void ContextMenuStripOnItemClickStart(object? sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
-        switch (toolStripItemClickedEventArgs.ClickedItem.Text)
+        switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
         {
             case "Undo":
                 Undo();
@@ -813,11 +515,11 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         }
     }
 
-    private void ContextMenuStripOnOpening(object sender, CancelEventArgs cancelEventArgs)
+    private void ContextMenuStripOnOpening(object? sender, CancelEventArgs cancelEventArgs)
     {
         if (sender is BaseTextBoxContextMenuStrip strip)
         {
-            strip.undo.Enabled = baseTextBox.CanUndo && !ReadOnly;
+            strip.undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
             strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
             strip.copy.Enabled = !string.IsNullOrEmpty(SelectedText);
             strip.paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
@@ -826,7 +528,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         }
     }
 
-    private void LeaveOnEnterKey_KeyDown(object sender, KeyEventArgs e)
+    private void LeaveOnEnterKey_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.KeyData == Keys.Enter && e.Control == false)
         {

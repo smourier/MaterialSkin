@@ -4,358 +4,37 @@ namespace MaterialSkin.Controls;
 [DefaultProperty("Value")]
 public class MaterialScrollBar : Control, IMaterialControl
 {
-
-    [Browsable(false)]
-    public int Depth { get; set; }
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    private bool useAccentColor;
-
-    [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
-    public bool UseAccentColor
-    {
-        get => useAccentColor;
-        set { useAccentColor = value; Invalidate(); }
-    }
-
-    [DllImport("user32.dll")]
-    public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-    internal const int SCROLLBAR_DEFAULT_SIZE = 10;
-
-    public event ScrollEventHandler Scroll;
-
-    private void OnScroll(ScrollEventType type, int oldValue, int newValue, ScrollOrientation orientation)
-    {
-        if (oldValue != newValue)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, curValue);
-            }
-        }
-
-        if (Scroll == null)
-        {
-            return;
-        }
-
-        if (orientation == ScrollOrientation.HorizontalScroll)
-        {
-            if (type != ScrollEventType.EndScroll && isFirstScrollEventHorizontal)
-            {
-                type = ScrollEventType.First;
-            }
-            else if (!isFirstScrollEventHorizontal && type == ScrollEventType.EndScroll)
-            {
-                isFirstScrollEventHorizontal = true;
-            }
-        }
-        else
-        {
-            if (type != ScrollEventType.EndScroll && isFirstScrollEventVertical)
-            {
-                type = ScrollEventType.First;
-            }
-            else if (!isFirstScrollEventHorizontal && type == ScrollEventType.EndScroll)
-            {
-                isFirstScrollEventVertical = true;
-            }
-        }
-
-        Scroll(this, new ScrollEventArgs(type, oldValue, newValue, orientation));
-    }
-
-    private bool isFirstScrollEventVertical = true;
-    private bool isFirstScrollEventHorizontal = true;
-
-    private bool inUpdate;
-
-    private Rectangle clickedBarRectangle;
-    private Rectangle thumbRectangle;
-
-    private bool topBarClicked;
-    private bool bottomBarClicked;
-    private bool thumbClicked;
-
-    private int thumbWidth = 6;
-    private int thumbHeight;
-
-    private int thumbBottomLimitBottom;
-    private int thumbBottomLimitTop;
-    private int thumbTopLimit;
-    private int thumbPosition;
+    internal const int _scrollBarDefaultSize = 10;
 
     public const int WM_SETREDRAW = 0xb;
 
-    private int trackPosition;
+    private readonly Timer _progressTimer = new();
+    private Timer? _autoHoverTimer;
+    private bool _isHovered;
+    private bool _isFirstScrollEventVertical = true;
+    private bool _isFirstScrollEventHorizontal = true;
+    private bool _inUpdate;
+    private Rectangle _clickedBarRectangle;
+    private Rectangle _thumbRectangle;
+    private bool _topBarClicked;
+    private bool _bottomBarClicked;
+    private bool _thumbClicked;
+    private int _thumbWidth = 6;
+    private int _thumbHeight;
+    private int _thumbBottomLimitBottom;
+    private int _thumbBottomLimitTop;
+    private int _thumbTopLimit;
+    private int _thumbPosition;
+    private int _trackPosition;
+    private bool _dontUpdateColor;
+    private ScrollOrientation _scrollOrientation = ScrollOrientation.VerticalScroll;
+    private int _largeChange = 10;
+    private int _curValue = 0;
 
-    private readonly Timer progressTimer = new();
-
-    private int mouseWheelBarPartitions = 10;
-    [DefaultValue(10)]
-    public int MouseWheelBarPartitions
-    {
-        get => mouseWheelBarPartitions;
-        set
-        {
-            if (value > 0)
-            {
-                mouseWheelBarPartitions = value;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), "MouseWheelBarPartitions has to be greather than zero");
-            }
-        }
-    }
-
-    private bool isHovered;
-    //private bool isPressed;
-
-    private bool useBarColor = false;
-    [DefaultValue(false)]
-    public bool UseBarColor
-    {
-        get => useBarColor; set => useBarColor = value;
-    }
-
-    [DefaultValue(SCROLLBAR_DEFAULT_SIZE)]
-    public int ScrollbarSize
-    {
-        get => Orientation == MaterialScrollOrientation.Vertical ? Width : Height;
-        set
-        {
-            if (Orientation == MaterialScrollOrientation.Vertical)
-                Width = value;
-            else
-                Height = value;
-        }
-    }
-
-    private bool highlightOnWheel = false;
-    [DefaultValue(false)]
-    public bool HighlightOnWheel
-    {
-        get => highlightOnWheel; set => highlightOnWheel = value;
-    }
-
-    private MaterialScrollOrientation MaterialOrientation = MaterialScrollOrientation.Vertical;
-    private ScrollOrientation scrollOrientation = ScrollOrientation.VerticalScroll;
-
-    public MaterialScrollOrientation Orientation
-    {
-        get => MaterialOrientation;
-        set
-        {
-            if (value == MaterialOrientation) return;
-            MaterialOrientation = value;
-            scrollOrientation = value == MaterialScrollOrientation.Vertical ? ScrollOrientation.VerticalScroll : ScrollOrientation.HorizontalScroll;
-            Size = new Size(Height, Width);
-            SetupScrollBar();
-        }
-    }
-
-    private int minimum = 0;
-    [DefaultValue(0)]
-    public int Minimum
-    {
-        get => minimum;
-        set
-        {
-            if (minimum == value || value < 0 || value >= maximum)
-            {
-                return;
-            }
-
-            minimum = value;
-            if (curValue < value)
-            {
-                curValue = value;
-            }
-
-            if (largeChange > (maximum - minimum))
-            {
-                largeChange = maximum - minimum;
-            }
-
-            SetupScrollBar();
-
-            if (curValue < value)
-            {
-                dontUpdateColor = true;
-                Value = value;
-            }
-            else
-            {
-                ChangeThumbPosition(GetThumbPosition());
-                Refresh();
-            }
-        }
-    }
-
-    private int maximum = 100;
-    [DefaultValue(100)]
-    public int Maximum
-    {
-        get => maximum;
-        set
-        {
-            if (value == maximum || value < 1 || value <= minimum)
-            {
-                return;
-            }
-
-            maximum = value;
-            if (largeChange > (maximum - minimum))
-            {
-                largeChange = maximum - minimum;
-            }
-
-            SetupScrollBar();
-
-            if (curValue > value)
-            {
-                dontUpdateColor = true;
-                Value = maximum;
-            }
-            else
-            {
-                ChangeThumbPosition(GetThumbPosition());
-                Refresh();
-            }
-        }
-    }
-
-    private int smallChange = 1;
-    [DefaultValue(1)]
-    public int SmallChange
-    {
-        get => smallChange;
-        set
-        {
-            if (value == smallChange || value < 1 || value >= largeChange)
-            {
-                return;
-            }
-
-            smallChange = value;
-            SetupScrollBar();
-        }
-    }
-
-    private int largeChange = 10;
-    [DefaultValue(10)]
-    public int LargeChange
-    {
-        get => largeChange;
-        set
-        {
-            if (value == largeChange || value < smallChange || value < 2)
-            {
-                return;
-            }
-
-            if (value > (maximum - minimum))
-            {
-                largeChange = maximum - minimum;
-            }
-            else
-            {
-                largeChange = value;
-            }
-
-            SetupScrollBar();
-        }
-    }
+    public event ScrollEventHandler? Scroll;
 
     public delegate void ScrollValueChangedDelegate(object sender, int newValue);
-
-    public event ScrollValueChangedDelegate ValueChanged;
-
-    private bool dontUpdateColor = false;
-
-    private int curValue = 0;
-    [DefaultValue(0)]
-    [Browsable(false)]
-    public int Value
-    {
-        get => curValue;
-
-        set
-        {
-            if (curValue == value || value < minimum || value > maximum)
-            {
-                return;
-            }
-
-            curValue = value;
-
-            ChangeThumbPosition(GetThumbPosition());
-
-            OnScroll(ScrollEventType.ThumbPosition, -1, value, scrollOrientation);
-
-            if (!dontUpdateColor && highlightOnWheel)
-            {
-                if (!isHovered)
-                    isHovered = true;
-
-                if (autoHoverTimer == null)
-                {
-                    autoHoverTimer = new Timer
-                    {
-                        Interval = 1000
-                    };
-                    autoHoverTimer.Tick += AutoHoverTimer_Tick;
-                    autoHoverTimer.Start();
-                }
-                else
-                {
-                    autoHoverTimer.Stop();
-                    autoHoverTimer.Start();
-                }
-            }
-            else
-            {
-                dontUpdateColor = false;
-            }
-
-            Refresh();
-        }
-    }
-
-    private void AutoHoverTimer_Tick(object sender, EventArgs e)
-    {
-        isHovered = false;
-        Invalidate();
-        autoHoverTimer.Stop();
-    }
-
-    private Timer autoHoverTimer = null;
-
-    public MaterialScrollBar()
-    {
-        SetStyle(ControlStyles.OptimizedDoubleBuffer |
-            ControlStyles.OptimizedDoubleBuffer |
-                 ControlStyles.ResizeRedraw |
-                 ControlStyles.Selectable |
-                 //                     ControlStyles.AllPaintingInWmPaint |
-                 ControlStyles.SupportsTransparentBackColor |
-                 ControlStyles.UserPaint, true);
-
-        Width = SCROLLBAR_DEFAULT_SIZE;
-        Height = 200;
-
-        UseAccentColor = false;
-
-        SetupScrollBar();
-
-        progressTimer.Interval = 20;
-        progressTimer.Tick += ProgressTimerTick;
-    }
+    public event ScrollValueChangedDelegate? ValueChanged;
 
     public MaterialScrollBar(MaterialScrollOrientation orientation)
         : this()
@@ -369,92 +48,355 @@ public class MaterialScrollBar : Control, IMaterialControl
         Width = width;
     }
 
-    public bool HitTest(Point point)
+    public MaterialScrollBar()
     {
-        return thumbRectangle.Contains(point);
+        SetStyle(ControlStyles.OptimizedDoubleBuffer |
+            ControlStyles.OptimizedDoubleBuffer |
+                 ControlStyles.ResizeRedraw |
+                 ControlStyles.Selectable |
+                 ControlStyles.SupportsTransparentBackColor |
+                 ControlStyles.UserPaint, true);
+
+        Width = _scrollBarDefaultSize;
+        Height = 200;
+
+        SetupScrollBar();
+
+        _progressTimer.Interval = 20;
+        _progressTimer.Tick += ProgressTimerTick;
     }
 
+    [Browsable(false)]
+    public int Depth { get; set; }
+
+    [Browsable(false)]
+    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
+    [Browsable(false)]
+    public MouseState MouseState { get; set; }
+
+    [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
+    public bool UseAccentColor { get; set { field = value; Invalidate(); } }
+
+    [DllImport("user32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+    private void OnScroll(ScrollEventType type, int oldValue, int newValue, ScrollOrientation orientation)
+    {
+        if (oldValue != newValue)
+        {
+            ValueChanged?.Invoke(this, _curValue);
+        }
+
+        if (Scroll == null)
+        {
+            return;
+        }
+
+        if (orientation == ScrollOrientation.HorizontalScroll)
+        {
+            if (type != ScrollEventType.EndScroll && _isFirstScrollEventHorizontal)
+            {
+                type = ScrollEventType.First;
+            }
+            else if (!_isFirstScrollEventHorizontal && type == ScrollEventType.EndScroll)
+            {
+                _isFirstScrollEventHorizontal = true;
+            }
+        }
+        else
+        {
+            if (type != ScrollEventType.EndScroll && _isFirstScrollEventVertical)
+            {
+                type = ScrollEventType.First;
+            }
+            else if (!_isFirstScrollEventHorizontal && type == ScrollEventType.EndScroll)
+            {
+                _isFirstScrollEventVertical = true;
+            }
+        }
+
+        Scroll(this, new ScrollEventArgs(type, oldValue, newValue, orientation));
+    }
+
+    [DefaultValue(10)]
+    public int MouseWheelBarPartitions
+    {
+        get;
+        set
+        {
+            if (value > 0)
+            {
+                field = value;
+            }
+            else
+                throw new ArgumentOutOfRangeException(nameof(value), "MouseWheelBarPartitions has to be greather than zero");
+        }
+    } = 10;
+
+    [DefaultValue(false)]
+    public bool UseBarColor { get; set; }
+
+    [DefaultValue(_scrollBarDefaultSize)]
+    public int ScrollbarSize
+    {
+        get => Orientation == MaterialScrollOrientation.Vertical ? Width : Height;
+        set
+        {
+            if (Orientation == MaterialScrollOrientation.Vertical)
+            {
+                Width = value;
+            }
+            else
+            {
+                Height = value;
+            }
+        }
+    }
+
+    [DefaultValue(false)]
+    public bool HighlightOnWheel { get; set; } = false;
+
+    public MaterialScrollOrientation Orientation
+    {
+        get; set
+        {
+            if (value == field) return;
+            field = value;
+            _scrollOrientation = value == MaterialScrollOrientation.Vertical ? ScrollOrientation.VerticalScroll : ScrollOrientation.HorizontalScroll;
+            Size = new Size(Height, Width);
+            SetupScrollBar();
+        }
+    } = MaterialScrollOrientation.Vertical;
+
+    [DefaultValue(0)]
+    public int Minimum
+    {
+        get; set
+        {
+            if (field == value || value < 0 || value >= Maximum)
+            {
+                return;
+            }
+
+            field = value;
+            if (_curValue < value)
+            {
+                _curValue = value;
+            }
+
+            if (_largeChange > (Maximum - field))
+            {
+                _largeChange = Maximum - field;
+            }
+
+            SetupScrollBar();
+
+            if (_curValue < value)
+            {
+                _dontUpdateColor = true;
+                Value = value;
+            }
+            else
+            {
+                ChangeThumbPosition(GetThumbPosition());
+                Refresh();
+            }
+        }
+    } = 0;
+
+    [DefaultValue(100)]
+    public int Maximum
+    {
+        get; set
+        {
+            if (value == field || value < 1 || value <= Minimum)
+            {
+                return;
+            }
+
+            field = value;
+            if (_largeChange > (field - Minimum))
+            {
+                _largeChange = field - Minimum;
+            }
+
+            SetupScrollBar();
+
+            if (_curValue > value)
+            {
+                _dontUpdateColor = true;
+                Value = field;
+            }
+            else
+            {
+                ChangeThumbPosition(GetThumbPosition());
+                Refresh();
+            }
+        }
+    } = 100;
+
+    [DefaultValue(1)]
+    public int SmallChange
+    {
+        get; set
+        {
+            if (value == field || value < 1 || value >= _largeChange)
+            {
+                return;
+            }
+
+            field = value;
+            SetupScrollBar();
+        }
+    } = 1;
+
+    [DefaultValue(10)]
+    public int LargeChange
+    {
+        get => _largeChange;
+        set
+        {
+            if (value == _largeChange || value < SmallChange || value < 2)
+            {
+                return;
+            }
+
+            if (value > (Maximum - Minimum))
+            {
+                _largeChange = Maximum - Minimum;
+            }
+            else
+            {
+                _largeChange = value;
+            }
+
+            SetupScrollBar();
+        }
+    }
+
+    [DefaultValue(0)]
+    [Browsable(false)]
+    public int Value
+    {
+        get => _curValue;
+
+        set
+        {
+            if (_curValue == value || value < Minimum || value > Maximum)
+            {
+                return;
+            }
+
+            _curValue = value;
+
+            ChangeThumbPosition(GetThumbPosition());
+
+            OnScroll(ScrollEventType.ThumbPosition, -1, value, _scrollOrientation);
+
+            if (!_dontUpdateColor && HighlightOnWheel)
+            {
+                if (!_isHovered)
+                    _isHovered = true;
+
+                if (_autoHoverTimer == null)
+                {
+                    _autoHoverTimer = new Timer
+                    {
+                        Interval = 1000
+                    };
+
+                    _autoHoverTimer.Tick += AutoHoverTimer_Tick;
+                    _autoHoverTimer.Start();
+                }
+                else
+                {
+                    _autoHoverTimer.Stop();
+                    _autoHoverTimer.Start();
+                }
+            }
+            else
+            {
+                _dontUpdateColor = false;
+            }
+
+            Refresh();
+        }
+    }
+
+    private void AutoHoverTimer_Tick(object? sender, EventArgs e)
+    {
+        _isHovered = false;
+        Invalidate();
+        _autoHoverTimer?.Stop();
+    }
+
+    public bool HitTest(Point point) => _thumbRectangle.Contains(point);
     public void BeginUpdate()
     {
         SendMessage(Handle, WM_SETREDRAW, 0, 0);
-        inUpdate = true;
+        _inUpdate = true;
     }
 
     public void EndUpdate()
     {
         SendMessage(Handle, WM_SETREDRAW, 1, 0);
-        inUpdate = false;
+        _inUpdate = false;
         SetupScrollBar();
         Refresh();
     }
 
     protected override void OnPaintBackground(PaintEventArgs e)
     {
-        try
+        if (Parent == null)
         {
-            e.Graphics.Clear(Parent.BackColor);
+            base.OnPaintBackground(e);
+            return;
         }
-        catch (Exception ex)
-        {
-            Trace.WriteLine(ex);
-            Invalidate();
-        }
+
+        e.Graphics.Clear(Parent.BackColor);
     }
 
-    protected override void OnPaint(PaintEventArgs e)
-    {
-        DrawScrollBar(e.Graphics, MaterialSkinManager.Instance.CardsColor, SkinManager.SwitchOffTrackColor, useAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.ColorScheme.PrimaryColor);
-    }
-
+    protected override void OnPaint(PaintEventArgs e) => DrawScrollBar(e.Graphics, MaterialSkinManager.Instance.CardsColor, SkinManager.SwitchOffTrackColor, UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.ColorScheme.PrimaryColor);
     private void DrawScrollBar(Graphics g, Color backColor, Color thumbColor, Color barColor)
     {
-        if (useBarColor)
+        if (UseBarColor)
         {
-            using SolidBrush b = new(barColor);
-            g.FillRectangle(b, ClientRectangle);
+            using var b0 = new SolidBrush(barColor);
+            g.FillRectangle(b0, ClientRectangle);
         }
 
-        using (SolidBrush b = new(backColor))
-        {
-            Rectangle thumbRect = new(thumbRectangle.X - 1, thumbRectangle.Y - 1, thumbRectangle.Width + 2, thumbRectangle.Height + 2);
-            g.FillRectangle(b, thumbRect);
-        }
+        using var b1 = new SolidBrush(backColor);
+        var thumbRect = new Rectangle(_thumbRectangle.X - 1, _thumbRectangle.Y - 1, _thumbRectangle.Width + 2, _thumbRectangle.Height + 2);
+        g.FillRectangle(b1, thumbRect);
 
-        using (SolidBrush b = new(isHovered ? barColor : thumbColor))
-        {
-            g.FillRectangle(b, thumbRectangle);
-        }
+        using var b2 = new SolidBrush(_isHovered ? barColor : thumbColor);
+        g.FillRectangle(b2, _thumbRectangle);
     }
 
     protected override void OnGotFocus(EventArgs e)
     {
         Invalidate();
-
         base.OnGotFocus(e);
     }
 
     protected override void OnLostFocus(EventArgs e)
     {
-        isHovered = false;
-        //isPressed = false;
+        _isHovered = false;
         Invalidate();
-
         base.OnLostFocus(e);
     }
 
     protected override void OnEnter(EventArgs e)
     {
         Invalidate();
-
         base.OnEnter(e);
     }
 
     protected override void OnLeave(EventArgs e)
     {
-        isHovered = false;
-        //isPressed = false;
+        _isHovered = false;
         Invalidate();
-
         base.OnLeave(e);
     }
 
@@ -462,8 +404,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     {
         base.OnMouseWheel(e);
 
-        int v = e.Delta / 120 * (maximum - minimum) / mouseWheelBarPartitions;
-
+        var v = e.Delta / 120 * (Maximum - Minimum) / MouseWheelBarPartitions;
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
             Value -= v;
@@ -488,27 +429,23 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         if (e.Button == MouseButtons.Left)
         {
-
-            Point mouseLocation = e.Location;
-
-            if (thumbRectangle.Contains(mouseLocation))
+            var mouseLocation = e.Location;
+            if (_thumbRectangle.Contains(mouseLocation))
             {
-                thumbClicked = true;
-                thumbPosition = MaterialOrientation == MaterialScrollOrientation.Vertical ? mouseLocation.Y - thumbRectangle.Y : mouseLocation.X - thumbRectangle.X;
-
-                Invalidate(thumbRectangle);
+                _thumbClicked = true;
+                _thumbPosition = Orientation == MaterialScrollOrientation.Vertical ? mouseLocation.Y - _thumbRectangle.Y : mouseLocation.X - _thumbRectangle.X;
+                Invalidate(_thumbRectangle);
             }
             else
             {
-                trackPosition = MaterialOrientation == MaterialScrollOrientation.Vertical ? mouseLocation.Y : mouseLocation.X;
-
-                if (trackPosition < (MaterialOrientation == MaterialScrollOrientation.Vertical ? thumbRectangle.Y : thumbRectangle.X))
+                _trackPosition = Orientation == MaterialScrollOrientation.Vertical ? mouseLocation.Y : mouseLocation.X;
+                if (_trackPosition < (Orientation == MaterialScrollOrientation.Vertical ? _thumbRectangle.Y : _thumbRectangle.X))
                 {
-                    topBarClicked = true;
+                    _topBarClicked = true;
                 }
                 else
                 {
-                    bottomBarClicked = true;
+                    _bottomBarClicked = true;
                 }
 
                 ProgressThumb(true);
@@ -516,31 +453,29 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
         else if (e.Button == MouseButtons.Right)
         {
-            trackPosition = MaterialOrientation == MaterialScrollOrientation.Vertical ? e.Y : e.X;
+            _trackPosition = Orientation == MaterialScrollOrientation.Vertical ? e.Y : e.X;
         }
     }
 
     protected override void OnMouseUp(MouseEventArgs e)
     {
-        //isPressed = false;
-
         base.OnMouseUp(e);
 
         if (e.Button == MouseButtons.Left)
         {
-            if (thumbClicked)
+            if (_thumbClicked)
             {
-                thumbClicked = false;
-                OnScroll(ScrollEventType.EndScroll, -1, curValue, scrollOrientation);
+                _thumbClicked = false;
+                OnScroll(ScrollEventType.EndScroll, -1, _curValue, _scrollOrientation);
             }
-            else if (topBarClicked)
+            else if (_topBarClicked)
             {
-                topBarClicked = false;
+                _topBarClicked = false;
                 StopTimer();
             }
-            else if (bottomBarClicked)
+            else if (_bottomBarClicked)
             {
-                bottomBarClicked = false;
+                _bottomBarClicked = false;
                 StopTimer();
             }
 
@@ -550,19 +485,16 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     protected override void OnMouseEnter(EventArgs e)
     {
-        isHovered = true;
+        _isHovered = true;
         Invalidate();
-
         base.OnMouseEnter(e);
     }
 
     protected override void OnMouseLeave(EventArgs e)
     {
-        isHovered = false;
+        _isHovered = false;
         Invalidate();
-
         base.OnMouseLeave(e);
-
         ResetScrollStatus();
     }
 
@@ -572,55 +504,55 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         if (e.Button == MouseButtons.Left)
         {
-            if (thumbClicked)
+            if (_thumbClicked)
             {
-                int oldScrollValue = curValue;
+                var oldScrollValue = _curValue;
 
-                int pos = MaterialOrientation == MaterialScrollOrientation.Vertical ? e.Location.Y : e.Location.X;
-                int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? pos / Height / thumbHeight : pos / Width / thumbWidth;
+                var pos = Orientation == MaterialScrollOrientation.Vertical ? e.Location.Y : e.Location.X;
+                var thumbSize = Orientation == MaterialScrollOrientation.Vertical ? pos / Height / _thumbHeight : pos / Width / _thumbWidth;
 
-                if (pos <= (thumbTopLimit + thumbPosition))
+                if (pos <= (_thumbTopLimit + _thumbPosition))
                 {
-                    ChangeThumbPosition(thumbTopLimit);
-                    curValue = minimum;
+                    ChangeThumbPosition(_thumbTopLimit);
+                    _curValue = Minimum;
                     Invalidate();
                 }
-                else if (pos >= (thumbBottomLimitTop + thumbPosition))
+                else if (pos >= (_thumbBottomLimitTop + _thumbPosition))
                 {
-                    ChangeThumbPosition(thumbBottomLimitTop);
-                    curValue = maximum;
+                    ChangeThumbPosition(_thumbBottomLimitTop);
+                    _curValue = Maximum;
                     Invalidate();
                 }
                 else
                 {
-                    ChangeThumbPosition(pos - thumbPosition);
+                    ChangeThumbPosition(pos - _thumbPosition);
 
                     int pixelRange, thumbPos;
 
                     if (Orientation == MaterialScrollOrientation.Vertical)
                     {
                         pixelRange = Height - thumbSize;
-                        thumbPos = thumbRectangle.Y;
+                        thumbPos = _thumbRectangle.Y;
                     }
                     else
                     {
                         pixelRange = Width - thumbSize;
-                        thumbPos = thumbRectangle.X;
+                        thumbPos = _thumbRectangle.X;
                     }
 
-                    float perc = 0f;
+                    var perc = 0f;
 
                     if (pixelRange != 0)
                     {
                         perc = thumbPos / (float)pixelRange;
                     }
 
-                    curValue = Convert.ToInt32((perc * (maximum - minimum)) + minimum);
+                    _curValue = Convert.ToInt32((perc * (Maximum - Minimum)) + Minimum);
                 }
 
-                if (oldScrollValue != curValue)
+                if (oldScrollValue != _curValue)
                 {
-                    OnScroll(ScrollEventType.ThumbTrack, oldScrollValue, curValue, scrollOrientation);
+                    OnScroll(ScrollEventType.ThumbTrack, oldScrollValue, _curValue, _scrollOrientation);
                     Refresh();
                 }
             }
@@ -631,9 +563,9 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
         else if (e.Button == MouseButtons.None)
         {
-            if (thumbRectangle.Contains(e.Location))
+            if (_thumbRectangle.Contains(e.Location))
             {
-                Invalidate(thumbRectangle);
+                Invalidate(_thumbRectangle);
             }
             else if (ClientRectangle.Contains(e.Location))
             {
@@ -644,19 +576,15 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        isHovered = true;
-        //isPressed = true;
+        _isHovered = true;
         Invalidate();
-
         base.OnKeyDown(e);
     }
 
     protected override void OnKeyUp(KeyEventArgs e)
     {
-        isHovered = false;
-        //isPressed = false;
+        _isHovered = false;
         Invalidate();
-
         base.OnKeyUp(e);
     }
 
@@ -678,8 +606,8 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     protected override bool ProcessDialogKey(Keys keyData)
     {
-        Keys keyUp = Keys.Up;
-        Keys keyDown = Keys.Down;
+        var keyUp = Keys.Up;
+        var keyDown = Keys.Down;
 
         if (Orientation == MaterialScrollOrientation.Horizontal)
         {
@@ -689,50 +617,44 @@ public class MaterialScrollBar : Control, IMaterialControl
 
         if (keyData == keyUp)
         {
-            Value -= smallChange;
-
+            Value -= SmallChange;
             return true;
         }
 
         if (keyData == keyDown)
         {
-            Value += smallChange;
-
+            Value += SmallChange;
             return true;
         }
 
         if (keyData == Keys.PageUp)
         {
             Value = GetValue(false, true);
-
             return true;
         }
 
         if (keyData == Keys.PageDown)
         {
-            if (curValue + largeChange > maximum)
+            if (_curValue + _largeChange > Maximum)
             {
-                Value = maximum;
+                Value = Maximum;
             }
             else
             {
-                Value += largeChange;
+                Value += _largeChange;
             }
-
             return true;
         }
 
         if (keyData == Keys.Home)
         {
-            Value = minimum;
-
+            Value = Minimum;
             return true;
         }
 
         if (keyData == Keys.End)
         {
-            Value = maximum;
-
+            Value = Maximum;
             return true;
         }
 
@@ -747,77 +669,70 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     private void SetupScrollBar()
     {
-        if (inUpdate) return;
+        if (_inUpdate) return;
 
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
-            thumbWidth = Width > 0 ? Width : 10;
-            thumbHeight = GetThumbSize();
+            _thumbWidth = Width > 0 ? Width : 10;
+            _thumbHeight = GetThumbSize();
 
-            clickedBarRectangle = ClientRectangle;
-            clickedBarRectangle.Inflate(-1, -1);
+            _clickedBarRectangle = ClientRectangle;
+            _clickedBarRectangle.Inflate(-1, -1);
 
-            thumbRectangle = new Rectangle(ClientRectangle.X, ClientRectangle.Y, thumbWidth, thumbHeight);
+            _thumbRectangle = new Rectangle(ClientRectangle.X, ClientRectangle.Y, _thumbWidth, _thumbHeight);
 
-            thumbPosition = thumbRectangle.Height / 2;
-            thumbBottomLimitBottom = ClientRectangle.Bottom;
-            thumbBottomLimitTop = thumbBottomLimitBottom - thumbRectangle.Height;
-            thumbTopLimit = ClientRectangle.Y;
+            _thumbPosition = _thumbRectangle.Height / 2;
+            _thumbBottomLimitBottom = ClientRectangle.Bottom;
+            _thumbBottomLimitTop = _thumbBottomLimitBottom - _thumbRectangle.Height;
+            _thumbTopLimit = ClientRectangle.Y;
         }
         else
         {
-            thumbHeight = Height > 0 ? Height : 10;
-            thumbWidth = GetThumbSize();
+            _thumbHeight = Height > 0 ? Height : 10;
+            _thumbWidth = GetThumbSize();
 
-            clickedBarRectangle = ClientRectangle;
-            clickedBarRectangle.Inflate(-1, -1);
+            _clickedBarRectangle = ClientRectangle;
+            _clickedBarRectangle.Inflate(-1, -1);
 
-            thumbRectangle = new Rectangle(ClientRectangle.X, ClientRectangle.Y, thumbWidth, thumbHeight);
+            _thumbRectangle = new Rectangle(ClientRectangle.X, ClientRectangle.Y, _thumbWidth, _thumbHeight);
 
-            thumbPosition = thumbRectangle.Width / 2;
-            thumbBottomLimitBottom = ClientRectangle.Right;
-            thumbBottomLimitTop = thumbBottomLimitBottom - thumbRectangle.Width;
-            thumbTopLimit = ClientRectangle.X;
+            _thumbPosition = _thumbRectangle.Width / 2;
+            _thumbBottomLimitBottom = ClientRectangle.Right;
+            _thumbBottomLimitTop = _thumbBottomLimitBottom - _thumbRectangle.Width;
+            _thumbTopLimit = ClientRectangle.X;
         }
 
         ChangeThumbPosition(GetThumbPosition());
-
         Refresh();
     }
 
     private void ResetScrollStatus()
     {
-        bottomBarClicked = topBarClicked = false;
-
+        _bottomBarClicked = _topBarClicked = false;
         StopTimer();
         Refresh();
     }
 
-    private void ProgressTimerTick(object sender, EventArgs e)
-    {
-        ProgressThumb(true);
-    }
-
+    private void ProgressTimerTick(object? sender, EventArgs e) => ProgressThumb(true);
     private int GetValue(bool smallIncrement, bool up)
     {
         int newValue;
-
         if (up)
         {
-            newValue = curValue - (smallIncrement ? smallChange : largeChange);
+            newValue = _curValue - (smallIncrement ? SmallChange : _largeChange);
 
-            if (newValue < minimum)
+            if (newValue < Minimum)
             {
-                newValue = minimum;
+                newValue = Minimum;
             }
         }
         else
         {
-            newValue = curValue + (smallIncrement ? smallChange : largeChange);
+            newValue = _curValue + (smallIncrement ? SmallChange : _largeChange);
 
-            if (newValue > maximum)
+            if (newValue > Maximum)
             {
-                newValue = maximum;
+                newValue = Maximum;
             }
         }
 
@@ -826,15 +741,11 @@ public class MaterialScrollBar : Control, IMaterialControl
 
     private int GetThumbPosition()
     {
-        int pixelRange;
-
-        if (thumbHeight == 0 || thumbWidth == 0)
-        {
+        if (_thumbHeight == 0 || _thumbWidth == 0)
             return 0;
-        }
 
-        int thumbSize = MaterialOrientation == MaterialScrollOrientation.Vertical ? thumbPosition / Height / thumbHeight : thumbPosition / Width / thumbWidth;
-
+        var thumbSize = Orientation == MaterialScrollOrientation.Vertical ? _thumbPosition / Height / _thumbHeight : _thumbPosition / Width / _thumbWidth;
+        int pixelRange;
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
             pixelRange = Height - thumbSize;
@@ -844,119 +755,101 @@ public class MaterialScrollBar : Control, IMaterialControl
             pixelRange = Width - thumbSize;
         }
 
-        int realRange = maximum - minimum;
-        float perc = 0f;
-
+        var realRange = Maximum - Minimum;
+        var perc = 0f;
         if (realRange != 0)
         {
-            perc = (curValue - (float)minimum) / realRange;
+            perc = (_curValue - (float)Minimum) / realRange;
         }
 
-        return Math.Max(thumbTopLimit, Math.Min(thumbBottomLimitTop, Convert.ToInt32(perc * pixelRange)));
+        return Math.Max(_thumbTopLimit, Math.Min(_thumbBottomLimitTop, Convert.ToInt32(perc * pixelRange)));
     }
 
     private int GetThumbSize()
     {
-        int trackSize =
-            MaterialOrientation == MaterialScrollOrientation.Vertical ?
-                Height : Width;
-
-        if (maximum == 0 || largeChange == 0)
-        {
+        var trackSize = Orientation == MaterialScrollOrientation.Vertical ? Height : Width;
+        if (Maximum == 0 || _largeChange == 0)
             return trackSize;
-        }
 
-        float newThumbSize = largeChange * (float)trackSize / maximum;
-
-        return Convert.ToInt32(Math.Min(trackSize, Math.Max(newThumbSize, 10f)));
+        var newThumbSize = _largeChange * (float)trackSize / Maximum;
+        return (int)Math.Min(trackSize, Math.Max(newThumbSize, 10f));
     }
 
     private void EnableTimer()
     {
-        if (!progressTimer.Enabled)
+        if (!_progressTimer.Enabled)
         {
-            progressTimer.Interval = 600;
-            progressTimer.Start();
+            _progressTimer.Interval = 600;
+            _progressTimer.Start();
         }
         else
         {
-            progressTimer.Interval = 10;
+            _progressTimer.Interval = 10;
         }
     }
 
-    private void StopTimer()
-    {
-        progressTimer.Stop();
-    }
-
+    private void StopTimer() => _progressTimer.Stop();
     private void ChangeThumbPosition(int position)
     {
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
-            thumbRectangle.Y = position;
+            _thumbRectangle.Y = position;
         }
         else
         {
-            thumbRectangle.X = position;
+            _thumbRectangle.X = position;
         }
     }
 
     private void ProgressThumb(bool enableTimer)
     {
-        int scrollOldValue = curValue;
-        ScrollEventType type = ScrollEventType.First;
+        var scrollOldValue = _curValue;
+        var type = ScrollEventType.First;
         int thumbSize, thumbPos;
 
         if (Orientation == MaterialScrollOrientation.Vertical)
         {
-            thumbPos = thumbRectangle.Y;
-            thumbSize = thumbRectangle.Height;
+            thumbPos = _thumbRectangle.Y;
+            thumbSize = _thumbRectangle.Height;
         }
         else
         {
-            thumbPos = thumbRectangle.X;
-            thumbSize = thumbRectangle.Width;
+            thumbPos = _thumbRectangle.X;
+            thumbSize = _thumbRectangle.Width;
         }
 
-        if (bottomBarClicked && (thumbPos + thumbSize) < trackPosition)
+        if (_bottomBarClicked && (thumbPos + thumbSize) < _trackPosition)
         {
             type = ScrollEventType.LargeIncrement;
-
-            curValue = GetValue(false, false);
-
-            if (curValue == maximum)
+            _curValue = GetValue(false, false);
+            if (_curValue == Maximum)
             {
-                ChangeThumbPosition(thumbBottomLimitTop);
-
+                ChangeThumbPosition(_thumbBottomLimitTop);
                 type = ScrollEventType.Last;
             }
             else
             {
-                ChangeThumbPosition(Math.Min(thumbBottomLimitTop, GetThumbPosition()));
+                ChangeThumbPosition(Math.Min(_thumbBottomLimitTop, GetThumbPosition()));
             }
         }
-        else if (topBarClicked && thumbPos > trackPosition)
+        else if (_topBarClicked && thumbPos > _trackPosition)
         {
             type = ScrollEventType.LargeDecrement;
-
-            curValue = GetValue(false, true);
-
-            if (curValue == minimum)
+            _curValue = GetValue(false, true);
+            if (_curValue == Minimum)
             {
-                ChangeThumbPosition(thumbTopLimit);
-
+                ChangeThumbPosition(_thumbTopLimit);
                 type = ScrollEventType.First;
             }
             else
             {
-                ChangeThumbPosition(Math.Max(thumbTopLimit, GetThumbPosition()));
+                ChangeThumbPosition(Math.Max(_thumbTopLimit, GetThumbPosition()));
             }
         }
 
-        if (scrollOldValue != curValue)
+        if (scrollOldValue != _curValue)
         {
-            OnScroll(type, scrollOldValue, curValue, scrollOrientation);
-
+            OnScroll(type, scrollOldValue, _curValue, _scrollOrientation);
             Invalidate();
 
             if (enableTimer)

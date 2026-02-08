@@ -8,10 +8,6 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
     // For some reason, even when overriding the AutoSize property, it doesn't appear on the properties panel, so we have to create a new one.
     private readonly AnimationManager _animationManager;
-    private bool _autoResize;
-    private bool _useTallSize;
-    private int _startIndex;
-    private string _hint = string.Empty;
     private int _height = 50;
     private int _lineY;
     private bool _hasHint;
@@ -96,21 +92,21 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
-        get => _hint;
+        get;
         set
         {
-            _hint = value;
+            field = value;
             _hasHint = !string.IsNullOrEmpty(Hint);
             Invalidate();
         }
-    }
+    } = string.Empty;
 
     public int StartIndex
     {
-        get => _startIndex;
+        get;
         set
         {
-            _startIndex = value;
+            field = value;
             try
             {
                 if (Items.Count > 0)
@@ -127,10 +123,10 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
     public bool UseTallSize
     {
-        get => _useTallSize;
+        get;
         set
         {
-            _useTallSize = value;
+            field = value;
             SetHeightVars();
             Invalidate();
         }
@@ -142,10 +138,10 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     [Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Category("Layout")]
     public bool AutoResize
     {
-        get => _autoResize;
+        get;
         set
         {
-            _autoResize = value;
+            field = value;
             RecalculateAutoSize();
         }
     }
@@ -291,10 +287,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         }
     }
 
-    private void CustomMeasureItem(object? sender, MeasureItemEventArgs e)
-    {
-        e.ItemHeight = _height - 7;
-    }
+    private void CustomMeasureItem(object? sender, MeasureItemEventArgs e) => e.ItemHeight = _height - 7;
 
     private void CustomDrawItem(object? sender, DrawItemEventArgs e)
     {

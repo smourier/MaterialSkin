@@ -46,10 +46,7 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
     {
         private readonly Panel _parent = parent;
 
-        public void Add(string text)
-        {
-            Add(text, false);
-        }
+        public void Add(string text) => Add(text, false);
 
         public void Add(string text, bool defaultValue)
         {

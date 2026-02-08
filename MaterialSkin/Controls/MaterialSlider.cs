@@ -16,7 +16,6 @@ public class MaterialSlider : Control, IMaterialControl
     private const int _inactiveTrack = 4;
     private const int _thumbRadius = 20;
     private const int _thumbRadiusHoverPressed = 40;
-    private FontType _fontType = FontType.Body1;
 
     [Browsable(false)]
     public int Depth { get; set; }
@@ -34,10 +33,10 @@ public class MaterialSlider : Control, IMaterialControl
         get => _value;
         set
         {
-            if (value < _rangeMin)
-                _value = _rangeMin;
-            else if (value > _rangeMax)
-                _value = _rangeMax;
+            if (value < RangeMin)
+                _value = RangeMin;
+            else if (value > RangeMax)
+                _value = RangeMax;
             else
                 _value = value;
             _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
@@ -45,50 +44,47 @@ public class MaterialSlider : Control, IMaterialControl
         }
     }
 
-    private int _valueMax;
     [DefaultValue(0)]
     [Category("Material Skin")]
     [Description("Define position indicator maximum value. Ignored when set to 0.")]
     public int ValueMax
     {
-        get => _valueMax;
+        get;
         set
         {
-            if (value > _rangeMax)
-                _valueMax = _rangeMax;
-            else if (value < _rangeMin)
-                _valueMax = _rangeMin;
+            if (value > RangeMax)
+                field = RangeMax;
+            else if (value < RangeMin)
+                field = RangeMin;
             else
-                _valueMax = value;
+                field = value;
         }
     }
 
-    private int _rangeMax;
     [DefaultValue(100)]
     [Category("Material Skin")]
     [Description("Define control range maximum value")]
     public int RangeMax
     {
-        get => _rangeMax;
+        get;
         set
         {
-            _rangeMax = value;
+            field = value;
             //_mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
             _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
             RecalcutlateIndicator();
         }
     }
 
-    private int _rangeMin;
     [DefaultValue(0)]
     [Category("Material Skin")]
     [Description("Define control range minimum value")]
     public int RangeMin
     {
-        get => _rangeMin;
+        get;
         set
         {
-            _rangeMin = value;
+            field = value;
             //_mouseX = _sliderRectangle.X + ((int)((double)_value / (double)(RangeMax - RangeMin) * (double)(_sliderRectangle.Width) - _thumbRadius / 2));
             _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
             RecalcutlateIndicator();
@@ -111,60 +107,56 @@ public class MaterialSlider : Control, IMaterialControl
         }
     }
 
-    private string _valueSuffix;
     [DefaultValue("")]
     [Category("Material Skin")]
     [Description("Set control value suffix text")]
     public string ValueSuffix
     {
-        get => _valueSuffix;
+        get;
         set
         {
-            _valueSuffix = value;
+            field = value;
             UpdateRects();
         }
     }
 
-    private bool _showText;
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show text")]
     [Description("Show text")]
     public bool ShowText
     {
-        get => _showText;
-        set { _showText = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
-    private bool _showValue;
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show value")]
     [Description("Show value")]
     public bool ShowValue
     {
-        get => _showValue;
-        set { _showValue = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
-    private bool _useAccentColor;
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get => _useAccentColor;
-        set { _useAccentColor = value; Invalidate(); }
+        get;
+        set { field = value; Invalidate(); }
     }
 
     [Category("Material Skin"),
     DefaultValue(typeof(FontType), "Body1")]
     public FontType FontType
     {
-        get => _fontType;
+        get;
         set
         {
-            _fontType = value;
-            Font = SkinManager.GetFontByType(_fontType);
+            field = value;
+            Font = SkinManager.GetFontByType(field);
             Refresh();
         }
-    }
+    } = FontType.Body1;
 
     [Category("Behavior")]
     [Description("Occurs when value change.")]
@@ -232,8 +224,8 @@ public class MaterialSlider : Control, IMaterialControl
     protected override void OnMouseWheel(MouseEventArgs e)
     {
         base.OnMouseWheel(e);
-        if (_valueMax != 0 && (Value + e.Delta / -40) > _valueMax)
-            Value = _valueMax;
+        if (ValueMax != 0 && (Value + e.Delta / -40) > ValueMax)
+            Value = ValueMax;
         else
             Value += e.Delta / -40;
         onValueChanged?.Invoke(this, _value);
@@ -283,17 +275,17 @@ public class MaterialSlider : Control, IMaterialControl
         else if (e.X < _sliderRectangle.X)// + (_thumbRadius / 2))
         {
             _mouseX = _sliderRectangle.X;
-            v = _rangeMin;
+            v = RangeMin;
         }
         else if (e.X > _sliderRectangle.Right - _thumbRadius)// / 2)
         {
             _mouseX = _sliderRectangle.Right - _thumbRadius;
-            v = _rangeMax;
+            v = RangeMax;
         }
 
-        if (_valueMax != 0 && v > _valueMax)
+        if (ValueMax != 0 && v > ValueMax)
         {
-            Value = _valueMax;
+            Value = ValueMax;
         }
         else
         {
@@ -312,13 +304,13 @@ public class MaterialSlider : Control, IMaterialControl
         Size valueSize;
         using (NativeTextRenderer NativeText = new(CreateGraphics()))
         {
-            textSize = NativeText.MeasureLogString(_showText ? Text : "", SkinManager.GetLogFontByType(_fontType));
-            valueSize = NativeText.MeasureLogString(_showValue ? RangeMax.ToString() + _valueSuffix : "", SkinManager.GetLogFontByType(_fontType));
+            textSize = NativeText.MeasureLogString(ShowText ? Text : "", SkinManager.GetLogFontByType(FontType));
+            valueSize = NativeText.MeasureLogString(ShowValue ? RangeMax.ToString() + ValueSuffix : "", SkinManager.GetLogFontByType(FontType));
         }
         _valueRectangle = new Rectangle(Width - valueSize.Width - _thumbRadiusHoverPressed / 4, 0, valueSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _textRectangle = new Rectangle(0, 0, textSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _sliderRectangle = new Rectangle(_textRectangle.Right, 0, _valueRectangle.Left - _textRectangle.Right, _thumbRadius);
-        _mouseX = _sliderRectangle.X + ((int)(_value / (double)(_rangeMax - _rangeMin) * _sliderRectangle.Width - _thumbRadius / 2));
+        _mouseX = _sliderRectangle.X + ((int)(_value / (double)(RangeMax - RangeMin) * _sliderRectangle.Width - _thumbRadius / 2));
         RecalcutlateIndicator();
     }
 
@@ -345,7 +337,7 @@ public class MaterialSlider : Control, IMaterialControl
         Color _thumbHoverColor;
         Color _thumbPressedColor;
 
-        if (_useAccentColor)
+        if (UseAccentColor)
             _accentColor = SkinManager.ColorScheme.AccentColor;
         else
             _accentColor = SkinManager.ColorScheme.PrimaryColor;
@@ -418,21 +410,21 @@ public class MaterialSlider : Control, IMaterialControl
         }
 
         using NativeTextRenderer NativeText = new(g);
-        if (_showText == true)
+        if (ShowText == true)
             // Draw text
             NativeText.DrawTransparentText(
             Text,
-            SkinManager.GetLogFontByType(_fontType),
+            SkinManager.GetLogFontByType(FontType),
             Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
             _textRectangle.Location,
             _textRectangle.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);
 
-        if (_showValue == true)
+        if (ShowValue == true)
             // Draw value
             NativeText.DrawTransparentText(
                 Value.ToString() + ValueSuffix,
-                SkinManager.GetLogFontByType(_fontType),
+                SkinManager.GetLogFontByType(FontType),
                 Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 _valueRectangle.Location,
                 _valueRectangle.Size,

@@ -14,15 +14,13 @@ public class MaterialSwitch : CheckBox, IMaterialControl
     [Browsable(false)]
     public Point MouseLocation { get; set; }
 
-    private bool _ripple;
-
     [Category("Appearance")]
     public bool Ripple
     {
-        get => _ripple;
+        get;
         set
         {
-            _ripple = value;
+            field = value;
             AutoSize = AutoSize; //Make AutoSize directly set the bounds.
 
             if (value)
@@ -246,10 +244,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         }
     }
 
-    private bool IsMouseInCheckArea()
-    {
-        return ClientRectangle.Contains(MouseLocation);
-    }
+    private bool IsMouseInCheckArea() => ClientRectangle.Contains(MouseLocation);
 
     private bool hovered = false;
 

@@ -13,25 +13,21 @@ public class BaseMaskedTextBox : MaskedTextBox, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    private string hint = string.Empty;
     public string Hint
     {
-        get => hint;
+        get;
         set
         {
-            hint = value;
+            field = value;
             Invalidate();
         }
-    }
+    } = string.Empty;
 
-    public new void SelectAll()
-    {
-        BeginInvoke((MethodInvoker)delegate ()
-        {
-            Focus();
-            base.SelectAll();
-        });
-    }
+    public new void SelectAll() => BeginInvoke((MethodInvoker)delegate ()
+                                        {
+                                            Focus();
+                                            base.SelectAll();
+                                        });
 
 
     public BaseMaskedTextBox()

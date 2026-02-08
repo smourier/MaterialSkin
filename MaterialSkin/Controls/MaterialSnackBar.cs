@@ -12,7 +12,6 @@ public class MaterialSnackBar : MaterialForm
 
     private readonly AnimationManager _AnimationManager;
     private bool _closingAnimationDone = false;
-    private bool _useAccentColor;
     private bool CloseAnimation = false;
 
     [Category("Action")]
@@ -22,8 +21,8 @@ public class MaterialSnackBar : MaterialForm
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor
     {
-        get => _useAccentColor;
-        set { _useAccentColor = value; Invalidate(); }
+        get;
+        set { field = value; Invalidate(); }
     }
 
 
@@ -36,41 +35,38 @@ public class MaterialSnackBar : MaterialForm
         get => _duration.Interval; set => _duration.Interval = value;
     }
 
-    private string _text;
     /// <summary>
     /// The Text which gets displayed as the Content
     /// </summary>
     [Category("Material Skin"), DefaultValue("SnackBar text")]
     public new string Text
     {
-        get => _text;
+        get;
         set
         {
-            _text = value;
+            field = value;
             UpdateRects();
             Invalidate();
         }
     }
 
-    private bool _showActionButton;
     [Category("Material Skin"), DefaultValue(false), DisplayName("Show Action Button")]
     public bool ShowActionButton
     {
-        get => _showActionButton;
-        set { _showActionButton = value; UpdateRects(); Invalidate(); }
+        get;
+        set { field = value; UpdateRects(); Invalidate(); }
     }
 
-    private string _actionButtonText;
     /// <summary>
     /// The Text which gets displayed as the Content
     /// </summary>
     [Category("Material Skin"), DefaultValue("OK")]
     public string ActionButtonText
     {
-        get => _actionButtonText;
+        get;
         set
         {
-            _actionButtonText = value;
+            field = value;
             Invalidate();
         }
     }
@@ -130,9 +126,9 @@ public class MaterialSnackBar : MaterialForm
             NoAccentTextColor = SkinManager.SnackBarTextButtonNoAccentTextColor,
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = _useAccentColor,
-            Visible = _showActionButton,
-            Text = _actionButtonText
+            UseAccentColor = this.UseAccentColor,
+            Visible = this.ShowActionButton,
+            Text = this.ActionButtonText
         };
         _actionButton.Click += (sender, e) =>
         {
@@ -180,24 +176,24 @@ public class MaterialSnackBar : MaterialForm
 
     private void UpdateRects()
     {
-        if (_showActionButton == true)
+        if (ShowActionButton == true)
         {
             int _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
             Rectangle _actionbuttonBounds = new(Width - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
-            _actionButton.Text = _actionButtonText;
+            _actionButton.Text = ActionButtonText;
             _actionButton.Top = _actionbuttonBounds.Top;
-            _actionButton.UseAccentColor = _useAccentColor;
+            _actionButton.UseAccentColor = UseAccentColor;
         }
         else
         {
             _actionButton.Width = 0;
         }
         _actionButton.Left = Width - BUTTON_PADDING - _actionButton.Width;  //Button minimum width management
-        _actionButton.Visible = _showActionButton;
+        _actionButton.Visible = ShowActionButton;
 
-        Width = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
+        Width = TextRenderer.MeasureText(Text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
     }
@@ -258,7 +254,7 @@ public class MaterialSnackBar : MaterialForm
         using NativeTextRenderer NativeText = new(g);
         // Draw header text
         NativeText.DrawTransparentText(
-            _text,
+            Text,
             SkinManager.GetLogFontByType(FontType.Body2),
             SkinManager.SnackBarTextHighEmphasisColor,
             textRect.Location,

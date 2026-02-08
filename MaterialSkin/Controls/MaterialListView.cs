@@ -68,15 +68,13 @@ public class MaterialListView : ListView, IMaterialControl
     [Browsable(false)]
     public Point MouseLocation { get; set; }
 
-    private bool _autoSizeTable;
-
     [Category("Appearance"), Browsable(true)]
     public bool AutoSizeTable
     {
-        get => _autoSizeTable;
+        get;
         set
         {
-            _autoSizeTable = value;
+            field = value;
             Scrollable = !value;
         }
     }

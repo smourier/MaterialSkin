@@ -13,25 +13,21 @@ public class BaseTextBox : TextBox, IMaterialControl
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
-    private string _hint = string.Empty;
     public string Hint
     {
-        get => _hint;
+        get;
         set
         {
-            _hint = value;
+            field = value;
             Invalidate();
         }
-    }
+    } = string.Empty;
 
-    public new void SelectAll()
-    {
-        BeginInvoke((MethodInvoker)delegate ()
-        {
-            Focus();
-            base.SelectAll();
-        });
-    }
+    public new void SelectAll() => BeginInvoke((MethodInvoker)delegate ()
+                                        {
+                                            Focus();
+                                            base.SelectAll();
+                                        });
 
     public BaseTextBox()
     {

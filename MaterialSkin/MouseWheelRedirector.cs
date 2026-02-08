@@ -3,8 +3,6 @@
 public class MouseWheelRedirector : IMessageFilter
 {
     private static MouseWheelRedirector? _instance = null;
-
-    private static bool _active = false;
 #pragma warning disable IDE1006 // Naming Styles
     private const int WM_MOUSEWHEEL = 0x20A;
 #pragma warning restore IDE1006 // Naming Styles
@@ -13,10 +11,10 @@ public class MouseWheelRedirector : IMessageFilter
     {
         set
         {
-            if (_active != value)
+            if (field != value)
             {
-                _active = value;
-                if (_active)
+                field = value;
+                if (field)
                 {
                     _instance ??= new MouseWheelRedirector();
                     Application.AddMessageFilter(_instance);
@@ -28,12 +26,12 @@ public class MouseWheelRedirector : IMessageFilter
             }
         }
 
-        get => _active;
-    }
+        get;
+    } = false;
 
     public static void Attach(Control control)
     {
-        if (!_active)
+        if (!Active)
         {
             Active = true;
         }

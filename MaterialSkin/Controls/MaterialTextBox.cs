@@ -15,17 +15,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
     private readonly MaterialContextMenuStrip _cms = new();
     private readonly AnimationManager _animationManager;
     private ContextMenuStrip _lastContextMenuStrip = new();
-    private bool _useTallSize;
-    private bool _readonly;
-    private bool _showAssistiveText;
-    private string? _helperText;
-    private string? _errorMessage;
-    private Image? _leadingIcon;
-    private Image? _trailingIcon;
-    private PrefixSuffixTypes _prefixsuffix;
-    private string? _prefixsuffixText;
-    private bool _animateReadOnly;
-    private bool _leaveOnEnterKey;
     public bool _isFocused;
     private int _height = 48;
     private int _lineY;
@@ -245,10 +234,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
     public bool UseTallSize
     {
-        get => _useTallSize;
+        get;
         set
         {
-            _useTallSize = value;
+            field = value;
             UpdateHeight();
             UpdateRects();
             Invalidate();
@@ -258,11 +247,11 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), Description("Assistive elements provide additional detail about text entered into text fields. Could be Helper text or Error message.")]
     public bool ShowAssistiveText
     {
-        get => _showAssistiveText;
+        get;
         set
         {
-            _showAssistiveText = value;
-            if (_showAssistiveText)
+            field = value;
+            if (field)
                 _helperTextHeight = _helperTextHeightDefault;
             else
                 _helperTextHeight = 0;
@@ -275,10 +264,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Helper text conveys additional guidance about the input field, such as how it will be used.")]
     public string? HelperText
     {
-        get => _helperText;
+        get;
         set
         {
-            _helperText = value;
+            field = value;
             Invalidate();
         }
     }
@@ -286,10 +275,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("When text input isn't accepted, an error message can display instructions on how to fix it. Error messages are displayed below the input line, replacing helper text until fixed.")]
     public string? ErrorMessage
     {
-        get => _errorMessage;
+        get;
         set
         {
-            _errorMessage = value;
+            field = value;
             Invalidate();
         }
     }
@@ -316,10 +305,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     /// </summary>
     public Image? LeadingIcon
     {
-        get => _leadingIcon;
+        get;
         set
         {
-            _leadingIcon = value;
+            field = value;
             UpdateRects();
             PreProcessIcons();
             Invalidate();
@@ -332,10 +321,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     /// </summary>
     public Image? TrailingIcon
     {
-        get => _trailingIcon;
+        get;
         set
         {
-            _trailingIcon = value;
+            field = value;
             UpdateRects();
             PreProcessIcons();
             Invalidate();
@@ -345,12 +334,12 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(PrefixSuffixTypes.None), Description("Set Prefix/Suffix/None")]
     public PrefixSuffixTypes PrefixSuffix
     {
-        get => _prefixsuffix;
+        get;
         set
         {
-            _prefixsuffix = value;
+            field = value;
             UpdateRects();            //Génére une nullref exception
-            if (_prefixsuffix == PrefixSuffixTypes.Suffix)
+            if (field == PrefixSuffixTypes.Suffix)
             {
                 RightToLeft = RightToLeft.Yes;
             }
@@ -365,10 +354,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(""), Localizable(true), Description("Set Prefix or Suffix text")]
     public string? PrefixSuffixText
     {
-        get => _prefixsuffixText;
+        get;
         set
         {
-            _prefixsuffixText = value;
+            field = value;
             UpdateRects();
             Invalidate();
         }
@@ -443,13 +432,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Behavior")]
     public bool ReadOnly
     {
-        get => _readonly;
+        get;
         set
         {
-            _readonly = value;
+            field = value;
             if (Enabled == true)
             {
-                _baseTextBox.ReadOnly = _readonly;
+                _baseTextBox.ReadOnly = field;
             }
             Invalidate();
         }
@@ -459,10 +448,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Browsable(true)]
     public bool AnimateReadOnly
     {
-        get => _animateReadOnly;
+        get;
         set
         {
-            _animateReadOnly = value;
+            field = value;
             Invalidate();
         }
     }
@@ -470,10 +459,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed.")]
     public bool LeaveOnEnterKey
     {
-        get => _leaveOnEnterKey;
+        get;
         set
         {
-            _leaveOnEnterKey = value;
+            field = value;
             if (value)
             {
                 _baseTextBox.KeyDown += LeaveOnEnterKey_KeyDown;
@@ -490,12 +479,12 @@ public partial class MaterialTextBox : Control, IMaterialControl
     public AutoCompleteSource AutoCompleteSource { get => _baseTextBox.AutoCompleteSource; set => _baseTextBox.AutoCompleteSource = value; }
     public AutoCompleteMode AutoCompleteMode { get => _baseTextBox.AutoCompleteMode; set => _baseTextBox.AutoCompleteMode = value; }
 
-    public void SelectAll() { _baseTextBox.SelectAll(); }
-    public void Clear() { _baseTextBox.Clear(); }
-    public void Copy() { _baseTextBox.Copy(); }
-    public void Cut() { _baseTextBox.Cut(); }
-    public void Undo() { _baseTextBox.Undo(); }
-    public void Paste() { _baseTextBox.Paste(); }
+    public void SelectAll() => _baseTextBox.SelectAll();
+    public void Clear() => _baseTextBox.Clear();
+    public void Copy() => _baseTextBox.Copy();
+    public void Cut() => _baseTextBox.Cut();
+    public void Undo() => _baseTextBox.Undo();
+    public void Paste() => _baseTextBox.Paste();
 
     private void Redraw(object? sender, EventArgs e)
     {
@@ -601,7 +590,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
 
         // Prefix:
-        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
+        if (PrefixSuffix == PrefixSuffixTypes.Prefix && PrefixSuffixText != null && PrefixSuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
         {
             using NativeTextRenderer NativeText = new(g);
             Rectangle prefixRect = new(
@@ -613,7 +602,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
             // Draw Prefix text 
             NativeText.DrawTransparentText(
-            _prefixsuffixText,
+            PrefixSuffixText,
             SkinManager.GetLogFontByType(FontType.Subtitle1),
             Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
             prefixRect.Location,
@@ -622,7 +611,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
 
         // Suffix:
-        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
+        if (PrefixSuffix == PrefixSuffixTypes.Suffix && PrefixSuffixText != null && PrefixSuffixText.Length > 0 && (_isFocused || userTextPresent || !_hasHint))
         {
             using var NativeText = new NativeTextRenderer(g);
             var suffixRect = new Rectangle(
@@ -634,7 +623,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
             // Draw Suffix text 
             NativeText.DrawTransparentText(
-                _prefixsuffixText,
+                PrefixSuffixText,
                 SkinManager.GetLogFontByType(FontType.Subtitle1),
                 Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
                 suffixRect.Location,
@@ -661,7 +650,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
 
         // Draw helper text
-        if (_showAssistiveText && _isFocused && !_errorState)
+        if (ShowAssistiveText && _isFocused && !_errorState)
         {
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
@@ -679,7 +668,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         }
 
         // Draw error message
-        if (_showAssistiveText && _errorState && ErrorMessage != null)
+        if (ShowAssistiveText && _errorState && ErrorMessage != null)
         {
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
@@ -826,7 +815,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     private void PreProcessIcons()
     {
-        if (_trailingIcon == null && _leadingIcon == null)
+        if (TrailingIcon == null && LeadingIcon == null)
             return;
 
         // Calculate lightness and color
@@ -864,11 +853,11 @@ public partial class MaterialTextBox : Control, IMaterialControl
         // Image Rect
         var destRect = new Rectangle(0, 0, _iconSize, _iconSize);
 
-        if (_leadingIcon != null)
+        if (LeadingIcon != null)
         {
             //Resize icon if greater than ICON_SIZE
-            var newSize_leadingIcon = ResizeIcon(_leadingIcon);
-            var _leadingIconIconResized = new Bitmap(_leadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
+            var newSize_leadingIcon = ResizeIcon(LeadingIcon);
+            var _leadingIconIconResized = new Bitmap(LeadingIcon, newSize_leadingIcon.Width, newSize_leadingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
             var bgray = new Bitmap(destRect.Width, destRect.Height);
@@ -915,11 +904,11 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _iconsErrorBrushes.Add("_leadingIcon", textureBrushRed);
         }
 
-        if (_trailingIcon != null)
+        if (TrailingIcon != null)
         {
             //Resize icon if greater than ICON_SIZE
-            var newSize_trailingIcon = ResizeIcon(_trailingIcon);
-            var _trailingIconResized = new Bitmap(_trailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
+            var newSize_trailingIcon = ResizeIcon(TrailingIcon);
+            var _trailingIconResized = new Bitmap(TrailingIcon, newSize_trailingIcon.Width, newSize_trailingIcon.Height);
 
             // Create a pre-processed copy of the image (GRAY)
             var bgray = new Bitmap(destRect.Width, destRect.Height);
@@ -970,7 +959,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     private void UpdateHeight()
     {
-        _height = _useTallSize ? 48 : 36;
+        _height = UseTallSize ? 48 : 36;
         _height += _helperTextHeight;
         Size = new Size(Size.Width, _height);
     }
@@ -986,7 +975,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _left_padding = _leftPadding;
         }
 
-        if (_trailingIcon != null)
+        if (TrailingIcon != null)
         {
             _right_padding = _rightPadding + _iconSize;
         }
@@ -995,10 +984,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _right_padding = _rightPadding;
         }
 
-        if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
+        if (PrefixSuffix == PrefixSuffixTypes.Prefix && PrefixSuffixText != null && PrefixSuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
+            _prefix_padding = NativeText.MeasureLogString(PrefixSuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _left_padding += _prefix_padding;
         }
         else
@@ -1006,10 +995,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
             _prefix_padding = 0;
         }
 
-        if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
+        if (PrefixSuffix == PrefixSuffixTypes.Suffix && PrefixSuffixText != null && PrefixSuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
+            _suffix_padding = NativeText.MeasureLogString(PrefixSuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _right_padding += _suffix_padding;
         }
         else

@@ -11,7 +11,6 @@ public partial class MaterialSkinManager
     private readonly Dictionary<string, nint> _logicalFonts;
     private readonly Dictionary<string, FontFamily> _robotoFontFamilies;
     private readonly PrivateFontCollection _privateFontCollection = new();
-    private Themes _theme;
     private ColorScheme _colorScheme;
 
     // Constructor
@@ -83,10 +82,10 @@ public partial class MaterialSkinManager
 
     public Themes Theme
     {
-        get => _theme;
+        get;
         set
         {
-            _theme = value;
+            field = value;
             UpdateBackgrounds();
             ThemeChanged?.Invoke(this, EventArgs.Empty);
         }

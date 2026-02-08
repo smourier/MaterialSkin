@@ -6,31 +6,20 @@ namespace MaterialSkin.Controls;
 public partial class MaterialListBox : Control, IMaterialControl
 {
     private const int _leftrightPadding = 16;
-
-    private readonly ObservableCollection<MaterialListBoxItem> _items = [];
-    private List<object>? _selectedItems;
     private List<object>? _indicates;
-    private bool _multiSelect;
     private int _selectedIndex;
     private MaterialListBoxItem? _selectedItem;
-    private string? _selectedText;
     private bool _showScrollBar;
     private bool _multiKeyDown;
     private int _hoveredItem;
     private MaterialScrollBar? _scrollBar;
-    private object? _selectedValue;
     private bool _updating = false;
     private int _itemHeight;
-    private bool _showBorder;
-    private Color _borderColor;
     private Font? _primaryFont;
     private Font _secondaryFont;
-    private bool _useAccentColor;
     private int _primaryTextBottomPadding = 0;
     private int _secondaryTextTopPadding = 0;
     private int _secondaryTextBottomPadding = 0;
-    private ListBoxStyle _style = ListBoxStyle.SingleLine;
-    private MaterialItemDensity _density;
 
     [Category("Behavior")]
     [Description("Occurs when selected index change.")]
@@ -87,17 +76,17 @@ public partial class MaterialListBox : Control, IMaterialControl
     public MouseState MouseState { get; set; }
 
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
-    public bool UseAccentColor { get => _useAccentColor; set { _useAccentColor = value; _scrollBar?.UseAccentColor = value; Invalidate(); } }
+    public bool UseAccentColor { get; set { field = value; _scrollBar?.UseAccentColor = value; Invalidate(); } }
 
     [TypeConverter(typeof(CollectionConverter))]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     [Editor(typeof(MaterialItemCollectionEditor), typeof(UITypeEditor))]
     [Category("Material Skin"), Description("Gets the items of the ListBox.")]
-    public ObservableCollection<MaterialListBoxItem> Items => _items;
+    public ObservableCollection<MaterialListBoxItem> Items { get; } = [];
 
     [Browsable(false)]
     [Category("Material Skin"), Description("Gets a collection containing the currently selected items in the ListBox.")]
-    public List<object>? SelectedItems => _selectedItems;
+    public List<object>? SelectedItems { get; private set; }
 
     [Browsable(false), Category("Material Skin"), Description("Gets or sets the currently selected item in the ListBox.")]
     public MaterialListBoxItem? SelectedItem
@@ -106,14 +95,14 @@ public partial class MaterialListBox : Control, IMaterialControl
         set
         {
             _selectedItem = value;
-            _selectedIndex = _selectedItem != null ? _items.IndexOf(_selectedItem) : -1;
+            _selectedIndex = _selectedItem != null ? Items.IndexOf(_selectedItem) : -1;
             UpdateSelection();
             Invalidate();
         }
     }
 
     [Browsable(false), Category("Material Skin"), Description("Gets the currently selected Text in the ListBox.")]
-    public string? SelectedText => _selectedText;
+    public string? SelectedText { get; private set; }
 
     [Browsable(false), Category("Material Skin"), Description("Gets or sets the zero-based index of the currently selected item in a ListBox.")]
     public int SelectedIndex
@@ -128,19 +117,18 @@ public partial class MaterialListBox : Control, IMaterialControl
     }
 
     [Browsable(true), Category("Material Skin"), Description("Gets the value of the member property specified by the ValueMember property.")]
-    public object? SelectedValue => _selectedValue;
+    public object? SelectedValue { get; private set; }
 
     [Category("Material Skin"), DefaultValue(false), Description("Gets or sets a value indicating whether the ListBox supports multiple rows.")]
     public bool MultiSelect
     {
-        get => _multiSelect;
-        set
+        get; set
         {
-            _multiSelect = value;
+            field = value;
 
-            if (_selectedItems?.Count > 1)
+            if (SelectedItems?.Count > 1)
             {
-                _selectedItems.RemoveRange(1, _selectedItems.Count - 1);
+                SelectedItems.RemoveRange(1, SelectedItems.Count - 1);
             }
 
             Invalidate();
@@ -148,7 +136,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public int Count => _items.Count;
+    public int Count => Items.Count;
 
     [Category("Material Skin"), DefaultValue(false), Description("Gets or sets a value indicating whether the vertical scroll bar be shown or not.")]
     public bool ShowScrollBar
@@ -165,10 +153,9 @@ public partial class MaterialListBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true), Description("Gets or sets a value indicating whether the border shown or not.")]
     public bool ShowBorder
     {
-        get => _showBorder;
-        set
+        get; set
         {
-            _showBorder = value;
+            field = value;
             Refresh();
         }
     }
@@ -187,10 +174,9 @@ public partial class MaterialListBox : Control, IMaterialControl
     [Category("Material Skin"), Description("Gets or sets border color used by the control.")]
     public Color BorderColor
     {
-        get => _borderColor;
-        set
+        get; set
         {
-            _borderColor = value;
+            field = value;
             Refresh();
         }
     }
@@ -199,25 +185,23 @@ public partial class MaterialListBox : Control, IMaterialControl
     [Description("Gets or sets the control style.")]
     public ListBoxStyle Style
     {
-        get => _style;
-        set
+        get; set
         {
-            _style = value;
+            field = value;
             UpdateItemSpecs();
 
             InvalidateScroll(this, EventArgs.Empty);
             Refresh();
         }
-    }
+    } = ListBoxStyle.SingleLine;
 
     [Category("Material Skin"), DefaultValue(MaterialItemDensity.Dense)]
     [Description("Gets or sets list density")]
     public MaterialItemDensity Density
     {
-        get => _density;
-        set
+        get; set
         {
-            _density = value;
+            field = value;
             UpdateItemSpecs();
             Invalidate();
         }
@@ -228,15 +212,15 @@ public partial class MaterialListBox : Control, IMaterialControl
         SelectedIndex = -1;
         _hoveredItem = -1;
         _showScrollBar = false;
-        _items.CollectionChanged += InvalidateScroll;
-        _selectedItems = [];
+        Items.CollectionChanged += InvalidateScroll;
+        SelectedItems = [];
         _indicates = [];
         _multiKeyDown = false;
         _scrollBar = new MaterialScrollBar()
         {
             Orientation = MaterialScrollOrientation.Vertical,
             Size = new Size(12, Height),
-            Maximum = _items.Count * _itemHeight,
+            Maximum = Items.Count * _itemHeight,
             SmallChange = _itemHeight,
             LargeChange = _itemHeight
         };
@@ -255,10 +239,10 @@ public partial class MaterialListBox : Control, IMaterialControl
     private void UpdateProperties() => Invalidate();
     private void UpdateItemSpecs()
     {
-        if (_style == ListBoxStyle.TwoLine)
+        if (Style == ListBoxStyle.TwoLine)
         {
             _secondaryTextTopPadding = 4;
-            if (_density == MaterialItemDensity.Dense)
+            if (Density == MaterialItemDensity.Dense)
             {
                 _itemHeight = 60;
                 _secondaryTextBottomPadding = 10;
@@ -275,11 +259,11 @@ public partial class MaterialListBox : Control, IMaterialControl
                 _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
             }
         }
-        else if (_style == ListBoxStyle.ThreeLine)
+        else if (Style == ListBoxStyle.ThreeLine)
         {
             _primaryTextBottomPadding = 4;
             _secondaryTextTopPadding = 4;
-            if (_density == MaterialItemDensity.Dense)
+            if (Density == MaterialItemDensity.Dense)
             {
                 _itemHeight = 76;
                 _secondaryTextBottomPadding = 16;
@@ -297,7 +281,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         else
         {
             //SingleLine
-            if (_density == MaterialItemDensity.Dense)
+            if (Density == MaterialItemDensity.Dense)
             {
                 _itemHeight = 40;
             }
@@ -327,7 +311,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         //Set TextAlignFlags
         TextAlignFlags primaryTextAlignFlags;
         var secondaryTextAlignFlags = TextAlignFlags.Left | TextAlignFlags.Top;
-        if (_style == ListBoxStyle.TwoLine || _style == ListBoxStyle.ThreeLine)
+        if (Style == ListBoxStyle.TwoLine || Style == ListBoxStyle.ThreeLine)
         {
             primaryTextAlignFlags = TextAlignFlags.Left | TextAlignFlags.Bottom;
         }
@@ -389,13 +373,13 @@ public partial class MaterialListBox : Control, IMaterialControl
             //Define primary & secondary Text Rect
             var primaryTextRect = new Rectangle(itemRect.X + _leftrightPadding, itemRect.Y, itemRect.Width - (2 * _leftrightPadding), itemRect.Height);
 
-            if (_style == ListBoxStyle.TwoLine)
+            if (Style == ListBoxStyle.TwoLine)
             {
                 primaryTextRect.Height = (primaryTextRect.Height / 2) - _primaryTextBottomPadding;
             }
-            else if (_style == ListBoxStyle.ThreeLine)
+            else if (Style == ListBoxStyle.ThreeLine)
             {
-                if (_density == MaterialItemDensity.Default)
+                if (Density == MaterialItemDensity.Default)
                 {
                     primaryTextRect.Height = 36 - _primaryTextBottomPadding;
                 }
@@ -418,7 +402,7 @@ public partial class MaterialListBox : Control, IMaterialControl
                 primaryTextRect.Location,
                 primaryTextRect.Size,
                 primaryTextAlignFlags);
-            if (_style == ListBoxStyle.TwoLine)
+            if (Style == ListBoxStyle.TwoLine)
             {
                 NativeText.DrawTransparentText(
                     itemSecondaryText,
@@ -431,7 +415,7 @@ public partial class MaterialListBox : Control, IMaterialControl
                     secondaryTextRect.Size,
                     secondaryTextAlignFlags);
             }
-            else if (_style == ListBoxStyle.ThreeLine)
+            else if (Style == ListBoxStyle.ThreeLine)
             {
                 NativeText.DrawMultilineTransparentText(
                     itemSecondaryText,
@@ -454,7 +438,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     public void AddItem(MaterialListBoxItem newItem)
     {
-        _items.Add(newItem);
+        Items.Add(newItem);
         InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
@@ -462,7 +446,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     public void AddItem(string newItem)
     {
         var newitemMLBI = new MaterialListBoxItem(newItem);
-        _items.Add(newitemMLBI);
+        Items.Add(newitemMLBI);
         InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
@@ -501,36 +485,36 @@ public partial class MaterialListBox : Control, IMaterialControl
             UpdateSelection();
         }
 
-        _items.RemoveAt(index);
+        Items.RemoveAt(index);
         InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
 
     public void RemoveItem(MaterialListBoxItem item)
     {
-        if (_items.IndexOf(item) <= _selectedIndex)
+        if (Items.IndexOf(item) <= _selectedIndex)
         {
             _selectedIndex -= 1;
             UpdateSelection();
         }
 
-        _items.Remove(item);
+        Items.Remove(item);
         InvalidateScroll(this, EventArgs.Empty);
         ItemsCountChanged?.Invoke(this, new EventArgs());
     }
 
-    public int IndexOf(MaterialListBoxItem value) => _items.IndexOf(value);
+    public int IndexOf(MaterialListBoxItem value) => Items.IndexOf(value);
     public void RemoveItems(MaterialListBoxItem[] itemsToRemove)
     {
         _updating = true;
         foreach (var item in itemsToRemove)
         {
-            if (_items.IndexOf(item) <= _selectedIndex)
+            if (Items.IndexOf(item) <= _selectedIndex)
             {
                 _selectedIndex -= 1;
                 UpdateSelection();
             }
-            _items.Remove(item);
+            Items.Remove(item);
         }
         _updating = false;
 
@@ -542,24 +526,24 @@ public partial class MaterialListBox : Control, IMaterialControl
     {
         if (_selectedIndex >= 0)
         {
-            _selectedItem = _items[_selectedIndex];
-            _selectedValue = _items[_selectedIndex];
-            _selectedText = _items[_selectedIndex].ToString();
+            _selectedItem = Items[_selectedIndex];
+            SelectedValue = Items[_selectedIndex];
+            SelectedText = Items[_selectedIndex].ToString();
         }
         else
         {
             _selectedItem = null;
-            _selectedValue = null;
-            _selectedText = null;
+            SelectedValue = null;
+            SelectedText = null;
         }
     }
 
     public void Clear()
     {
         _updating = true;
-        for (var i = _items.Count - 1; i >= 0; i += -1)
+        for (var i = Items.Count - 1; i >= 0; i += -1)
         {
-            _items.RemoveAt(i);
+            Items.RemoveAt(i);
         }
         _updating = false;
 
@@ -585,21 +569,21 @@ public partial class MaterialListBox : Control, IMaterialControl
         if (e.Button == MouseButtons.Left && _scrollBar != null)
         {
             var index = _scrollBar.Value / _itemHeight + e.Location.Y / _itemHeight;
-            if (index >= 0 && index < _items.Count)
+            if (index >= 0 && index < Items.Count)
             {
                 if (MultiSelect && _multiKeyDown)
                 {
                     _indicates?.Add(index);
-                    _selectedItems?.Add(Items[index]);
+                    SelectedItems?.Add(Items[index]);
                 }
                 else
                 {
                     _indicates?.Clear();
-                    _selectedItems?.Clear();
+                    SelectedItems?.Clear();
                     _selectedItem = Items[index];
                     _selectedIndex = index;
-                    _selectedValue = Items[index];
-                    _selectedText = Items[index].ToString();
+                    SelectedValue = Items[index];
+                    SelectedText = Items[index].ToString();
                     SelectedIndexChanged?.Invoke(this, _selectedItem);
                     SelectedValueChanged?.Invoke(this, _selectedItem);
                 }
@@ -623,11 +607,11 @@ public partial class MaterialListBox : Control, IMaterialControl
     {
         if (_scrollBar != null)
         {
-            _scrollBar.Maximum = _items.Count * _itemHeight;
+            _scrollBar.Maximum = Items.Count * _itemHeight;
             _scrollBar.SmallChange = _itemHeight;
             _scrollBar.LargeChange = Height;
-            _scrollBar.Visible = (_items.Count * _itemHeight) > Height;
-            if (_items.Count == 0)
+            _scrollBar.Visible = (Items.Count * _itemHeight) > Height;
+            if (Items.Count == 0)
             {
                 _scrollBar.Value = 0;
             }
@@ -674,16 +658,16 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     protected override bool IsInputKey(Keys keyData)
     {
-        if (_selectedItems != null)
+        if (SelectedItems != null)
         {
             switch (keyData)
             {
                 case Keys.Down:
                     try
                     {
-                        _selectedItems.Remove(_items[SelectedIndex]);
+                        SelectedItems.Remove(Items[SelectedIndex]);
                         SelectedIndex += 1;
-                        _selectedItems.Add(_items[SelectedIndex]);
+                        SelectedItems.Add(Items[SelectedIndex]);
                     }
                     catch
                     {
@@ -694,9 +678,9 @@ public partial class MaterialListBox : Control, IMaterialControl
                 case Keys.Up:
                     try
                     {
-                        _selectedItems.Remove(_items[SelectedIndex]);
+                        SelectedItems.Remove(Items[SelectedIndex]);
                         SelectedIndex -= 1;
-                        _selectedItems.Add(_items[SelectedIndex]);
+                        SelectedItems.Add(Items[SelectedIndex]);
                     }
                     catch
                     {

@@ -10,13 +10,7 @@ public class MaterialDrawerForm : Form
         SetStyle(ControlStyles.Selectable | ControlStyles.OptimizedDoubleBuffer | ControlStyles.EnableNotifyMessage, true);
     }
 
-    public static void Attach(Control control)
-    {
-        MouseWheelRedirector.Attach(control);
-    }
+    public static void Attach(Control control) => MouseWheelRedirector.Attach(control);
 
-    public static void Detach(Control control)
-    {
-        MouseWheelRedirector.Detach(control);
-    }
+    public static void Detach(Control control) => MouseWheelRedirector.Detach(control);
 }

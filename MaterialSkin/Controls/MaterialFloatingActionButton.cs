@@ -7,11 +7,9 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
     private readonly AnimationManager _animationManager;
     private readonly AnimationManager _showAnimationManager;
-    private Image? _icon;
     private bool _isHiding;
     private bool _mouseHover;
     private bool _mini;
-    private bool _animateShowButton;
     private bool _shadowDrawEventSubscribed;
     private Rectangle _fabBounds;
 
@@ -70,8 +68,8 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     [Category("Material Skin"), DisplayName("Animate Show HideButton")]
     public bool AnimateShowHideButton
     {
-        get => _animateShowButton;
-        set { _animateShowButton = value; Refresh(); }
+        get;
+        set { field = value; Refresh(); }
     }
 
 
@@ -80,8 +78,8 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     [Description("Define icon to display")]
     public Image? Icon
     {
-        get => _icon;
-        set { _icon = value; Refresh(); }
+        get;
+        set { field = value; Refresh(); }
     }
 
     protected override void InitLayout() => LocationChanged += (sender, e) => { if (DrawShadows) Parent?.Invalidate(); };

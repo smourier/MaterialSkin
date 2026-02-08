@@ -18,7 +18,6 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
 
     // size related variables which should be recalculated onsizechanged
     private int _boxOffset;
-    private bool _ripple;
 
     [Browsable(false)]
     public int Depth { get; set; }
@@ -35,10 +34,10 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     [Category("Behavior")]
     public bool Ripple
     {
-        get => _ripple;
+        get;
         set
         {
-            _ripple = value;
+            field = value;
             AutoSize = AutoSize; //Make AutoSize directly set the bounds.
 
             if (value)
@@ -177,10 +176,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
-    private bool IsMouseInCheckArea()
-    {
-        return ClientRectangle.Contains(MouseLocation);
-    }
+    private bool IsMouseInCheckArea() => ClientRectangle.Contains(MouseLocation);
 
     private bool hovered = false;
 

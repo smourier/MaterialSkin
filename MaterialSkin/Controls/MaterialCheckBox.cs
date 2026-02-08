@@ -66,15 +66,13 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     [Browsable(false)]
     public Point MouseLocation { get; set; }
 
-    private bool _ripple;
-
     [Category("Appearance")]
     public bool Ripple
     {
-        get => _ripple;
+        get;
         set
         {
-            _ripple = value;
+            field = value;
 #pragma warning disable CA2245 // Do not assign a property to itself
             AutoSize = AutoSize; //Make AutoSize directly set the bounds.
 #pragma warning restore CA2245 // Do not assign a property to itself

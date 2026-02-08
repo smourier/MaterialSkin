@@ -20,12 +20,6 @@ public partial class MaterialButton : Button, IMaterialControl
     private Control? _oldParent;
     private bool _shadowDrawEventSubscribed = false;
     private SizeF _textSize;
-    private Image? _icon;
-    private bool _drawShadows;
-    private bool _highEmphasis;
-    private bool _useAccentColor;
-    private MaterialButtonType _type;
-    private MaterialButtonDensity _density;
     private TextureBrush? _iconsBrushes;
 
     protected override void InitLayout()
@@ -92,10 +86,10 @@ public partial class MaterialButton : Button, IMaterialControl
     [Category("Material Skin")]
     public Image? Icon
     {
-        get => _icon;
+        get;
         set
         {
-            _icon = value;
+            field = value;
             PreProcessIcons();
 
             if (AutoSize)
@@ -129,21 +123,21 @@ public partial class MaterialButton : Button, IMaterialControl
     public Color NoAccentTextColor { get; set; }
 
     [Category("Material Skin")]
-    public bool UseAccentColor { get => _useAccentColor; set { _useAccentColor = value; Invalidate(); } }
+    public bool UseAccentColor { get; set { field = value; Invalidate(); } }
 
     /// <summary>
     /// Gets or sets a value indicating whether HighEmphasis
     /// </summary>
     [Category("Material Skin")]
-    public bool HighEmphasis { get => _highEmphasis; set { _highEmphasis = value; Invalidate(); } }
+    public bool HighEmphasis { get; set { field = value; Invalidate(); } }
 
     [DefaultValue(true)]
     [Category("Material Skin")]
     [Description("Draw Shadows around control")]
-    public bool DrawShadows { get => _drawShadows; set { _drawShadows = value; Invalidate(); } }
+    public bool DrawShadows { get; set { field = value; Invalidate(); } }
 
     [Category("Material Skin")]
-    public MaterialButtonType Type { get => _type; set { _type = value; PreProcessIcons(); Invalidate(); } }
+    public MaterialButtonType Type { get; set { field = value; PreProcessIcons(); Invalidate(); } }
 
     /// <summary>
     /// Gets or sets a value indicating button density
@@ -151,11 +145,11 @@ public partial class MaterialButton : Button, IMaterialControl
     [Category("Material Skin")]
     public MaterialButtonDensity Density
     {
-        get => _density;
+        get;
         set
         {
-            _density = value;
-            if (_density == MaterialButtonDensity.Dense)
+            field = value;
+            if (field == MaterialButtonDensity.Dense)
             {
                 Size = new Size(Size.Width, _heightDense);
             }
@@ -211,7 +205,7 @@ public partial class MaterialButton : Button, IMaterialControl
     protected override void OnParentChanged(EventArgs e)
     {
         base.OnParentChanged(e);
-        if (_drawShadows && Parent != null)
+        if (DrawShadows && Parent != null)
         {
             AddShadowPaintEvent(Parent, DrawShadowOnParent);
         }
@@ -325,7 +319,7 @@ public partial class MaterialButton : Button, IMaterialControl
         var IconResized = new Bitmap(Icon, newWidth, newHeight);
 
         // Calculate lightness and color
-        var l = (SkinManager.Theme == Themes.LIGHT & (_highEmphasis == false | Enabled == false | Type != MaterialButtonType.Contained)) ? 0f : 1.5f;
+        var l = (SkinManager.Theme == Themes.LIGHT & (HighEmphasis == false | Enabled == false | Type != MaterialButtonType.Contained)) ? 0f : 1.5f;
 
         // Create matrices
         float[][] matrixGray = [
@@ -525,10 +519,7 @@ public partial class MaterialButton : Button, IMaterialControl
     /// The GetPreferredSize
     /// </summary>
     /// <returns>The <see cref="Size"/></returns>
-    private Size GetPreferredSize()
-    {
-        return GetPreferredSize(Size);
-    }
+    private Size GetPreferredSize() => GetPreferredSize(Size);
 
     /// <summary>
     /// The GetPreferredSize

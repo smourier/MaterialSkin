@@ -2,6 +2,21 @@
 
 public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
 {
+    private const int _emSetCueBanner = 0x1501;
+
+    public MaterialMultiLineTextBox()
+    {
+        base.OnCreateControl();
+        Multiline = true;
+
+        BorderStyle = BorderStyle.None;
+        Font = SkinManager.GetFontByType(FontType.Body1);
+        BackColor = SkinManager.BackgroundColor;
+        ForeColor = SkinManager.TextHighEmphasisColor;
+        BackColorChanged += (sender, args) => BackColor = SkinManager.BackgroundColor;
+        ForeColorChanged += (sender, args) => ForeColor = SkinManager.TextHighEmphasisColor;
+    }
+
     //Properties for managing the material design properties
     [Browsable(false)]
     public int Depth { get; set; }
@@ -15,36 +30,24 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, string lParam);
 
-    private const int EM_SETCUEBANNER = 0x1501;
-
-    private const char EmptyChar = (char)0;
-
-    private const char VisualStylePasswordChar = '\u25CF';
-
-    private const char NonVisualStylePasswordChar = '\u002A';
-
-    private string hint = string.Empty;
-
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {
-        get => hint;
+        get;
         set
         {
-            hint = value;
-            SendMessage(Handle, EM_SETCUEBANNER, (int)0, Hint);
+            field = value;
+            SendMessage(Handle, _emSetCueBanner, (int)0, Hint);
         }
-    }
-
-    private bool _leaveOnEnterKey;
+    } = string.Empty;
 
     [Category("Material Skin"), DefaultValue(false), Description("Select next control which have TabStop property set to True when enter key is pressed. To add enter in text, the user must press CTRL+Enter")]
     public bool LeaveOnEnterKey
     {
-        get => _leaveOnEnterKey;
+        get;
         set
         {
-            _leaveOnEnterKey = value;
+            field = value;
             if (value)
             {
                 KeyDown += LeaveOnEnterKey_KeyDown;
@@ -57,43 +60,20 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         }
     }
 
-    public new void SelectAll()
+    public new void Focus() => BeginInvoke(() => base.Focus());
+    public new void SelectAll() => BeginInvoke(() =>
     {
-        BeginInvoke((MethodInvoker)delegate ()
-        {
-            base.Focus();
-            base.SelectAll();
-        });
-    }
+        base.Focus();
+        base.SelectAll();
+    });
 
-    public new void Focus()
+    private void LeaveOnEnterKey_KeyDown(object? sender, KeyEventArgs e)
     {
-        BeginInvoke((MethodInvoker)delegate ()
-        {
-            base.Focus();
-        });
-    }
-
-    private void LeaveOnEnterKey_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.KeyData == Keys.Enter && e.Control == false)
+        if (e.KeyData == Keys.Enter && !e.Control)
         {
             e.Handled = true;
             e.SuppressKeyPress = true;
             SendKeys.Send("{TAB}");
         }
-    }
-
-    public MaterialMultiLineTextBox()
-    {
-        base.OnCreateControl();
-        Multiline = true;
-
-        BorderStyle = BorderStyle.None;
-        Font = SkinManager.GetFontByType(FontType.Body1);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
-        BackColorChanged += (sender, args) => BackColor = SkinManager.BackgroundColor;
-        ForeColorChanged += (sender, args) => ForeColor = SkinManager.TextHighEmphasisColor;
     }
 }
