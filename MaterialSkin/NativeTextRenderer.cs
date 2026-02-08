@@ -184,7 +184,6 @@ public sealed partial class NativeTextRenderer : IDisposable
     }
 
     private void SetFont(Font font) => SelectObject(_hdc, GetCachedHFont(font));
-
     private static nint GetCachedHFont(Font font)
     {
         nint hfont = 0;

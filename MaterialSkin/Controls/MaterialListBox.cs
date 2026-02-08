@@ -8,8 +8,8 @@ public partial class MaterialListBox : Control, IMaterialControl
     private const int _leftrightPadding = 16;
 
     private readonly ObservableCollection<MaterialListBoxItem> _items = [];
-    private List<object> _selectedItems;
-    private List<object> _indicates;
+    private List<object>? _selectedItems;
+    private List<object>? _indicates;
     private bool _multiSelect;
     private int _selectedIndex;
     private MaterialListBoxItem? _selectedItem;
@@ -17,13 +17,13 @@ public partial class MaterialListBox : Control, IMaterialControl
     private bool _showScrollBar;
     private bool _multiKeyDown;
     private int _hoveredItem;
-    private MaterialScrollBar _scrollBar;
+    private MaterialScrollBar? _scrollBar;
     private object? _selectedValue;
     private bool _updating = false;
     private int _itemHeight;
     private bool _showBorder;
     private Color _borderColor;
-    private Font _primaryFont;
+    private Font? _primaryFont;
     private Font _secondaryFont;
     private bool _useAccentColor;
     private int _primaryTextBottomPadding = 0;
@@ -31,6 +31,22 @@ public partial class MaterialListBox : Control, IMaterialControl
     private int _secondaryTextBottomPadding = 0;
     private ListBoxStyle _style = ListBoxStyle.SingleLine;
     private MaterialItemDensity _density;
+
+    [Category("Behavior")]
+    [Description("Occurs when selected index change.")]
+    public event SelectedIndexChangedEventHandler SelectedIndexChanged;
+
+    public delegate void SelectedIndexChangedEventHandler(object sender, MaterialListBoxItem selectedItem);
+
+    [Category("Behavior")]
+    [Description("Occurs when selected value change.")]
+    public event SelectedValueEventHandler SelectedValueChanged;
+
+    public delegate void SelectedValueEventHandler(object sender, MaterialListBoxItem selectedItem);
+
+    [Category("Behavior")]
+    [Description("Occurs when item is added or removed.")]
+    public event EventHandler ItemsCountChanged;
 
     public MaterialListBox()
     {
@@ -81,7 +97,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Browsable(false)]
     [Category("Material Skin"), Description("Gets a collection containing the currently selected items in the ListBox.")]
-    public List<object> SelectedItems => _selectedItems;
+    public List<object>? SelectedItems => _selectedItems;
 
     [Browsable(false), Category("Material Skin"), Description("Gets or sets the currently selected item in the ListBox.")]
     public MaterialListBoxItem? SelectedItem
@@ -96,9 +112,8 @@ public partial class MaterialListBox : Control, IMaterialControl
         }
     }
 
-    [Browsable(false), Category("Material Skin"),
-     Description("Gets the currently selected Text in the ListBox.")]
-    public string SelectedText => _selectedText;
+    [Browsable(false), Category("Material Skin"), Description("Gets the currently selected Text in the ListBox.")]
+    public string? SelectedText => _selectedText;
 
     [Browsable(false), Category("Material Skin"), Description("Gets or sets the zero-based index of the currently selected item in a ListBox.")]
     public int SelectedIndex
@@ -113,7 +128,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     }
 
     [Browsable(true), Category("Material Skin"), Description("Gets the value of the member property specified by the ValueMember property.")]
-    public object SelectedValue => _selectedValue;
+    public object? SelectedValue => _selectedValue;
 
     [Category("Material Skin"), DefaultValue(false), Description("Gets or sets a value indicating whether the ListBox supports multiple rows.")]
     public bool MultiSelect
@@ -123,7 +138,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             _multiSelect = value;
 
-            if (_selectedItems.Count > 1)
+            if (_selectedItems?.Count > 1)
             {
                 _selectedItems.RemoveRange(1, _selectedItems.Count - 1);
             }
@@ -142,7 +157,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         set
         {
             _showScrollBar = value;
-            _scrollBar.Visible = value;
+            _scrollBar?.Visible = value;
             Invalidate();
         }
     }
@@ -340,7 +355,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
             var itemRect = new Rectangle(0, (i - firstItem) * _itemHeight, Width - (_showScrollBar && _scrollBar.Visible ? _scrollBar.Width : 0), _itemHeight);
 
-            if (MultiSelect && _indicates.Count != 0)
+            if (_indicates != null && MultiSelect && _indicates.Count != 0)
             {
                 if (i == _hoveredItem && !_indicates.Contains(i))
                 {
@@ -562,22 +577,6 @@ public partial class MaterialListBox : Control, IMaterialControl
     {
         _updating = false;
     }
-
-    [Category("Behavior")]
-    [Description("Occurs when selected index change.")]
-    public event SelectedIndexChangedEventHandler SelectedIndexChanged;
-
-    public delegate void SelectedIndexChangedEventHandler(object sender, MaterialListBoxItem selectedItem);
-
-    [Category("Behavior")]
-    [Description("Occurs when selected value change.")]
-    public event SelectedValueEventHandler SelectedValueChanged;
-
-    public delegate void SelectedValueEventHandler(object sender, MaterialListBoxItem selectedItem);
-
-    [Category("Behavior")]
-    [Description("Occurs when item is added or removed.")]
-    public event EventHandler ItemsCountChanged;
 
     protected override void OnSizeChanged(EventArgs e)
     {
