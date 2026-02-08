@@ -24,30 +24,30 @@ public class MaterialItemCollection : Collection<object>
     protected new void Add(object item)
     {
         base.Add(item);
-        ItemUpdated?.Invoke(this, null);
+        ItemUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void InsertItem(int index, object item)
     {
         base.InsertItem(index, item);
-        ItemUpdated?.Invoke(this, null);
+        ItemUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void RemoveItem(int value)
     {
         base.RemoveItem(value);
-        ItemUpdated?.Invoke(this, null);
+        ItemUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     protected new void Clear()
     {
         base.Clear();
-        ItemUpdated?.Invoke(this, null);
+        ItemUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void ClearItems()
     {
         base.ClearItems();
-        ItemUpdated?.Invoke(this, null);
+        ItemUpdated?.Invoke(this, EventArgs.Empty);
     }
 }

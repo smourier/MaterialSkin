@@ -2,15 +2,15 @@ namespace MaterialSkin.Controls;
 
 public partial class MaterialTextBox : Control, IMaterialControl
 {
-    private const int PREFIX_SUFFIX_PADDING = 4;
-    private const int ICON_SIZE = 24;
-    private const int HINT_TEXT_SMALL_SIZE = 18;
-    private const int HINT_TEXT_SMALL_Y = 4;
-    private const int LEFT_PADDING = 16;
-    private const int RIGHT_PADDING = 12;
-    private const int ACTIVATION_INDICATOR_HEIGHT = 2;
-    private const int HELPER_TEXT_HEIGHT = 16;
-    private const int FONT_HEIGHT = 20;
+    private const int _prefixSuffixPadding = 4;
+    private const int _iconSize = 24;
+    private const int _hintTextSmallSize = 18;
+    private const int _hintTextSmallY = 4;
+    private const int _leftPadding = 16;
+    private const int _rightPadding = 12;
+    private const int _activationIndicatorHeight = 2;
+    private const int _helperTextHeightDefault = 16;
+    private const int _fontHeight = 20;
 
     private readonly MaterialContextMenuStrip _cms = new();
     private readonly AnimationManager _animationManager;
@@ -160,9 +160,9 @@ public partial class MaterialTextBox : Control, IMaterialControl
             Font = base.Font,
             ForeColor = SkinManager.TextHighEmphasisColor,
             Multiline = false,
-            Location = new Point(LEFT_PADDING, _height / 2 - FONT_HEIGHT / 2),
-            Width = Width - (LEFT_PADDING + RIGHT_PADDING),
-            Height = FONT_HEIGHT
+            Location = new Point(_leftPadding, _height / 2 - _fontHeight / 2),
+            Width = Width - (_leftPadding + _rightPadding),
+            Height = _fontHeight
         };
 
         Enabled = true;
@@ -263,7 +263,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         {
             _showAssistiveText = value;
             if (_showAssistiveText)
-                _helperTextHeight = HELPER_TEXT_HEIGHT;
+                _helperTextHeight = _helperTextHeightDefault;
             else
                 _helperTextHeight = 0;
             UpdateHeight();
@@ -534,25 +534,33 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (LeadingIcon != null)
         {
             if (_errorState)
+            {
                 g.FillRectangle(_iconsErrorBrushes["_leadingIcon"], _leadingIconBounds);
+            }
             else
+            {
                 g.FillRectangle(_iconsBrushes["_leadingIcon"], _leadingIconBounds);
+            }
         }
 
         //Trailing Icon
         if (TrailingIcon != null)
         {
             if (_errorState)
+            {
                 g.FillRectangle(_iconsErrorBrushes["_trailingIcon"], _trailingIconBounds);
+            }
             else
+            {
                 g.FillRectangle(_iconsBrushes["_trailingIcon"], _trailingIconBounds);
+            }
         }
 
         // HintText
-        bool userTextPresent = !string.IsNullOrEmpty(Text);
-        Rectangle helperTextRect = new(LEFT_PADDING - _prefix_padding, _lineY + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
-        Rectangle hintRect = new(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
-        int hintTextSize = 12;
+        var userTextPresent = !string.IsNullOrEmpty(Text);
+        var helperTextRect = new Rectangle(_leftPadding - _prefix_padding, _lineY + _activationIndicatorHeight, Width - (_leftPadding - _prefix_padding) - _right_padding, _helperTextHeightDefault);
+        var hintRect = new Rectangle(_left_padding - _prefix_padding, _hintTextSmallY, Width - (_left_padding - _prefix_padding) - _right_padding, _hintTextSmallSize);
+        var hintTextSize = 12;
 
         // bottom line base
         g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
@@ -750,7 +758,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         PreProcessIcons();
 
         Size = new Size(Width, _height);
-        _lineY = _height - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
+        _lineY = _height - _activationIndicatorHeight - _helperTextHeight;
 
     }
 
@@ -767,27 +775,27 @@ public partial class MaterialTextBox : Control, IMaterialControl
     {
         int newWidth, newHeight;
         //Resize icon if greater than ICON_SIZE
-        if (Icon.Width > ICON_SIZE || Icon.Height > ICON_SIZE)
+        if (Icon.Width > _iconSize || Icon.Height > _iconSize)
         {
             //calculate aspect ratio
             float aspect = Icon.Width / (float)Icon.Height;
 
             //calculate new dimensions based on aspect ratio
-            newWidth = (int)(ICON_SIZE * aspect);
+            newWidth = (int)(_iconSize * aspect);
             newHeight = (int)(newWidth / aspect);
 
             //if one of the two dimensions exceed the box dimensions
-            if (newWidth > ICON_SIZE || newHeight > ICON_SIZE)
+            if (newWidth > _iconSize || newHeight > _iconSize)
             {
                 //depending on which of the two exceeds the box dimensions set it as the box dimension and calculate the other one based on the aspect ratio
                 if (newWidth > newHeight)
                 {
-                    newWidth = ICON_SIZE;
+                    newWidth = _iconSize;
                     newHeight = (int)(newWidth / aspect);
                 }
                 else
                 {
-                    newHeight = ICON_SIZE;
+                    newHeight = _iconSize;
                     newWidth = (int)(newHeight * aspect);
                 }
             }
@@ -843,7 +851,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         _iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
 
         // Image Rect
-        var destRect = new Rectangle(0, 0, ICON_SIZE, ICON_SIZE);
+        var destRect = new Rectangle(0, 0, _iconSize, _iconSize);
 
         if (_leadingIcon != null)
         {
@@ -960,26 +968,26 @@ public partial class MaterialTextBox : Control, IMaterialControl
     {
         if (LeadingIcon != null)
         {
-            _left_padding = LEFT_PADDING + ICON_SIZE;
+            _left_padding = _leftPadding + _iconSize;
         }
         else
         {
-            _left_padding = LEFT_PADDING;
+            _left_padding = _leftPadding;
         }
 
         if (_trailingIcon != null)
         {
-            _right_padding = RIGHT_PADDING + ICON_SIZE;
+            _right_padding = _rightPadding + _iconSize;
         }
         else
         {
-            _right_padding = RIGHT_PADDING;
+            _right_padding = _rightPadding;
         }
 
         if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _left_padding += _prefix_padding;
         }
         else
@@ -990,7 +998,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (_prefixsuffix == PrefixSuffixTypes.Suffix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+            _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _right_padding += _suffix_padding;
         }
         else
@@ -1002,17 +1010,17 @@ public partial class MaterialTextBox : Control, IMaterialControl
         {
             _baseTextBox.Location = new Point(_left_padding, 22);
             _baseTextBox.Width = Width - (_left_padding + _right_padding);
-            _baseTextBox.Height = FONT_HEIGHT;
+            _baseTextBox.Height = _fontHeight;
         }
         else
         {
-            _baseTextBox.Location = new Point(_left_padding, (_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2 - FONT_HEIGHT / 2);
+            _baseTextBox.Location = new Point(_left_padding, (_lineY + _activationIndicatorHeight) / 2 - _fontHeight / 2);
             _baseTextBox.Width = Width - (_left_padding + _right_padding);
-            _baseTextBox.Height = FONT_HEIGHT;
+            _baseTextBox.Height = _fontHeight;
         }
 
-        _leadingIconBounds = new Rectangle(8, ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
-        _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((_lineY + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+        _leadingIconBounds = new Rectangle(8, ((_lineY + _activationIndicatorHeight) / 2) - (_iconSize / 2), _iconSize, _iconSize);
+        _trailingIconBounds = new Rectangle(Width - (_iconSize + 8), ((_lineY + _activationIndicatorHeight) / 2) - (_iconSize / 2), _iconSize, _iconSize);
     }
 
     public void SetErrorState(bool ErrorState)

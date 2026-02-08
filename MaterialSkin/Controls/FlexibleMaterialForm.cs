@@ -2,18 +2,27 @@ namespace MaterialSkin.Controls;
 
 /// <summary>
 /// The form to show the customized message box.
-/// It is defined as an internal class to keep the public interface of the FlexibleMessageBox clean.
 /// </summary>
 public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
 {
-    private readonly MaterialSkinManager _materialSkinManager;
+    //These separators are used for the "copy to clipboard" standard operation, triggered by Ctrl + C (behavior and clipboard format is like in a standard MessageBox)
+    private static readonly string _standardMessageBoxSeparatorLines = "---------------------------\n";
+    private static readonly string _standardMessageBoxSeparatorSpaces = "   ";
+
+    private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
+    private static readonly string[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
+    private static readonly string[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
+    private static readonly string[] BUTTON_TEXTS_ITALIAN_IT = ["OK", "Annulla", "&Sì", "&No", "&Interrompi", "&Riprova", "&Ignora"];
+    private static readonly string[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
+    private static readonly string[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
+    private static readonly string[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
 
     /// <summary>
     /// Defines the font for all FlexibleMessageBox instances.
     ///
     /// Default is: SystemFonts.MessageBoxFont
     /// </summary>
-    private static Font _font;
+    private static readonly Font _font = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
 
     /// <summary>
     /// Defines the maximum width for all FlexibleMessageBox instances in percent of the working area.
@@ -37,58 +46,90 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     /// </summary>
     private const double _maxHeightFactor = 0.9;
 
+    private readonly MaterialSkinManager _materialSkinManager;
+    private readonly TwoLetterISOLanguageID _languageID = TwoLetterISOLanguageID.en;
     private MaterialMultiLineTextBox _richTextBoxMessage;
     private MaterialLabel _materialLabel1;
     private MaterialButton _leftButton;
     private MaterialButton _middleButton;
     private MaterialButton _rightButton;
-    private IContainer? components = null;
+    private Container _components;
+    private BindingSource _flexibleMaterialFormBindingSource;
+    private Panel _messageContainer;
+    private PictureBox _pictureBoxForIcon;
+    private MessageBoxDefaultButton _defaultButton;
+    private int _visibleButtonsCount;
+
+    private FlexibleMaterialForm()
+    {
+        InitializeComponent();
+
+        //Try to evaluate the language. If this fails, the fallback language English will be used
+        _ = Enum.TryParse(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out _languageID);
+
+        KeyPreview = true;
+        KeyUp += FlexibleMaterialForm_KeyUp;
+
+        _materialSkinManager = MaterialSkinManager.Instance;
+        _materialSkinManager.AddFormToManage(this);
+        _messageContainer.BackColor = BackColor;
+    }
 
     protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
-            components?.Dispose();
+            _components?.Dispose();
         }
         base.Dispose(disposing);
     }
 
+    [MemberNotNull(
+        nameof(_components),
+        nameof(_richTextBoxMessage),
+        nameof(_materialLabel1),
+        nameof(_leftButton),
+        nameof(_middleButton),
+        nameof(_rightButton),
+        nameof(_flexibleMaterialFormBindingSource),
+        nameof(_messageContainer),
+        nameof(_pictureBoxForIcon))]
     private void InitializeComponent()
     {
-        components = new Container();
-        FlexibleMaterialFormBindingSource = new BindingSource(components);
-        messageContainer = new Panel();
+        _components = new Container();
+        _flexibleMaterialFormBindingSource = new BindingSource(_components);
+        _messageContainer = new Panel();
         _materialLabel1 = new MaterialLabel();
-        pictureBoxForIcon = new PictureBox();
+        _pictureBoxForIcon = new PictureBox();
         _richTextBoxMessage = new MaterialMultiLineTextBox();
         _leftButton = new MaterialButton();
         _middleButton = new MaterialButton();
         _rightButton = new MaterialButton();
-        ((ISupportInitialize)FlexibleMaterialFormBindingSource).BeginInit();
-        messageContainer.SuspendLayout();
-        ((ISupportInitialize)pictureBoxForIcon).BeginInit();
+        ((ISupportInitialize)_flexibleMaterialFormBindingSource).BeginInit();
+        _messageContainer.SuspendLayout();
+        ((ISupportInitialize)_pictureBoxForIcon).BeginInit();
         SuspendLayout();
         // 
         // messageContainer
         // 
-        messageContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+        _messageContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
         | AnchorStyles.Left
         | AnchorStyles.Right;
-        messageContainer.BackColor = Color.White;
-        messageContainer.Controls.Add(_materialLabel1);
-        messageContainer.Controls.Add(pictureBoxForIcon);
-        messageContainer.Controls.Add(_richTextBoxMessage);
-        messageContainer.Location = new Point(1, 65);
-        messageContainer.Name = "messageContainer";
-        messageContainer.Size = new Size(382, 89);
-        messageContainer.TabIndex = 1;
+        _messageContainer.BackColor = Color.White;
+        _messageContainer.Controls.Add(_materialLabel1);
+        _messageContainer.Controls.Add(_pictureBoxForIcon);
+        _messageContainer.Controls.Add(_richTextBoxMessage);
+        _messageContainer.Location = new Point(1, 65);
+        _messageContainer.Name = "messageContainer";
+        _messageContainer.Size = new Size(382, 89);
+        _messageContainer.TabIndex = 1;
         // 
         // materialLabel1
         // 
         _materialLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
         | AnchorStyles.Left
         | AnchorStyles.Right;
-        _materialLabel1.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        _materialLabel1.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         _materialLabel1.Depth = 0;
         _materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
         _materialLabel1.Location = new Point(56, 12);
@@ -101,12 +142,12 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         // 
         // pictureBoxForIcon
         // 
-        pictureBoxForIcon.BackColor = Color.Transparent;
-        pictureBoxForIcon.Location = new Point(12, 12);
-        pictureBoxForIcon.Name = "pictureBoxForIcon";
-        pictureBoxForIcon.Size = new Size(32, 32);
-        pictureBoxForIcon.TabIndex = 8;
-        pictureBoxForIcon.TabStop = false;
+        _pictureBoxForIcon.BackColor = Color.Transparent;
+        _pictureBoxForIcon.Location = new Point(12, 12);
+        _pictureBoxForIcon.Name = "pictureBoxForIcon";
+        _pictureBoxForIcon.Size = new Size(32, 32);
+        _pictureBoxForIcon.TabIndex = 8;
+        _pictureBoxForIcon.TabStop = false;
         // 
         // richTextBoxMessage
         // 
@@ -115,7 +156,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         | AnchorStyles.Right;
         _richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
         _richTextBoxMessage.BorderStyle = BorderStyle.None;
-        _richTextBoxMessage.DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
+        _richTextBoxMessage.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         _richTextBoxMessage.Depth = 0;
         _richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
         _richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
@@ -207,8 +248,8 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         Controls.Add(_leftButton);
         Controls.Add(_middleButton);
         Controls.Add(_rightButton);
-        Controls.Add(messageContainer);
-        DataBindings.Add(new Binding("Text", FlexibleMaterialFormBindingSource, "CaptionText", true));
+        Controls.Add(_messageContainer);
+        DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "CaptionText", true));
         MaximizeBox = false;
         MinimizeBox = false;
         MinimumSize = new Size(276, 140);
@@ -218,143 +259,23 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         StartPosition = FormStartPosition.CenterParent;
         Text = "<Caption>";
         Shown += new EventHandler(FlexibleMaterialForm_Shown);
-        ((ISupportInitialize)FlexibleMaterialFormBindingSource).EndInit();
-        messageContainer.ResumeLayout(false);
-        ((ISupportInitialize)pictureBoxForIcon).EndInit();
+        ((ISupportInitialize)_flexibleMaterialFormBindingSource).EndInit();
+        _messageContainer.ResumeLayout(false);
+        ((ISupportInitialize)_pictureBoxForIcon).EndInit();
         ResumeLayout(false);
-
     }
 
     /// <summary>
-    /// Defines the FlexibleMaterialFormBindingSource
+    /// Gets or sets the CaptionText
+    /// The text that is been used for the heading.
     /// </summary>
-    private BindingSource FlexibleMaterialFormBindingSource;
+    public string? CaptionText { get; set; }
 
     /// <summary>
-    /// Defines the panel1
+    /// Gets or sets the MessageText
+    /// The text that is been used in the FlexibleMaterialForm.
     /// </summary>
-    private Panel messageContainer;
-
-    /// <summary>
-    /// Defines the pictureBoxForIcon
-    /// </summary>
-    private PictureBox pictureBoxForIcon;
-
-    //These separators are used for the "copy to clipboard" standard operation, triggered by Ctrl + C (behavior and clipboard format is like in a standard MessageBox)
-    /// <summary>
-    /// Defines the STANDARD_MESSAGEBOX_SEPARATOR_LINES
-    /// </summary>
-    private static readonly string STANDARD_MESSAGEBOX_SEPARATOR_LINES = "---------------------------\n";
-
-    /// <summary>
-    /// Defines the STANDARD_MESSAGEBOX_SEPARATOR_SPACES
-    /// </summary>
-    private static readonly string STANDARD_MESSAGEBOX_SEPARATOR_SPACES = "   ";
-
-    //These are the possible buttons (in a standard MessageBox)
-    private enum ButtonID
-    { /// <summary>
-      /// Defines the OK
-      /// </summary>
-        OK = 0,
-
-        /// <summary>
-        /// Defines the CANCEL
-        /// </summary>
-        CANCEL,
-
-        /// <summary>
-        /// Defines the YES
-        /// </summary>
-        YES,
-
-        /// <summary>
-        /// Defines the NO
-        /// </summary>
-        NO,
-
-        /// <summary>
-        /// Defines the ABORT
-        /// </summary>
-        ABORT,
-
-        /// <summary>
-        /// Defines the RETRY
-        /// </summary>
-        RETRY,
-
-        /// <summary>
-        /// Defines the IGNORE
-        /// </summary>
-        IGNORE
-    };
-
-    //These are the buttons texts for different languages.
-    //If you want to add a new language, add it here and in the GetButtonText-Function
-    private enum TwoLetterISOLanguageID
-    { /// <summary>
-      /// Defines the en
-      /// </summary>
-        en,
-
-        /// <summary>
-        /// Defines the de
-        /// </summary>
-        de,
-
-        /// <summary>
-        /// Defines the es
-        /// </summary>
-        es,
-
-        /// <summary>
-        /// Defines the it
-        /// </summary>
-        it,
-
-        /// <summary>
-        /// Defines the fr
-        /// </summary>
-        fr,
-
-        /// <summary>
-        /// Defines the ro
-        /// </summary>
-        ro,
-
-        /// <summary>
-        /// Defines the pl
-        /// </summary>
-        pl
-    };
-
-    private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = ["OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore"];//Note: This is also the fallback language
-    private static readonly string[] BUTTON_TEXTS_GERMAN_DE = ["OK", "Abbrechen", "&Ja", "&Nein", "&Abbrechen", "&Wiederholen", "&Ignorieren"];
-    private static readonly string[] BUTTON_TEXTS_SPANISH_ES = ["Aceptar", "Cancelar", "&Sí", "&No", "&Abortar", "&Reintentar", "&Ignorar"];
-    private static readonly string[] BUTTON_TEXTS_ITALIAN_IT = ["OK", "Annulla", "&Sì", "&No", "&Interrompi", "&Riprova", "&Ignora"];
-    private static readonly string[] BUTTON_TEXTS_FRENCH_FR = ["OK", "Annuler", "&Oui", "&Non", "&Interrompre", "&Recommencer", "&Ignorer"];
-    private static readonly string[] BUTTON_TEXTS_ROMANIAN_RO = ["Acceptă", "Anulează", "&Da", "&Nu", "&Întrerupe", "&Reîncearcă", "&Ignoră"];
-    private static readonly string[] BUTTON_TEXTS_POLISH_PL = ["OK", "Anuluj", "Tak", "Nie", "Opuść", "Powtórz", "Ignoruj"];
-
-    private MessageBoxDefaultButton _defaultButton;
-    private int _visibleButtonsCount;
-    private readonly TwoLetterISOLanguageID _languageID = TwoLetterISOLanguageID.en;
-
-    private FlexibleMaterialForm()
-    {
-        InitializeComponent();
-
-        //Try to evaluate the language. If this fails, the fallback language English will be used
-        Enum.TryParse(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, out _languageID);
-
-        KeyPreview = true;
-        KeyUp += FlexibleMaterialForm_KeyUp;
-
-        _materialSkinManager = MaterialSkinManager.Instance;
-        _materialSkinManager.AddFormToManage(this);
-        _font = _materialSkinManager.GetFontByType(FontType.Body1);
-        messageContainer.BackColor = BackColor;
-    }
+    public string? MessageText { get; set; }
 
     /// <summary>
     /// Gets the string rows.
@@ -458,7 +379,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         var marginWidth = FlexibleMaterialForm.Width - FlexibleMaterialForm._richTextBoxMessage.Width;
         var marginHeight = FlexibleMaterialForm.Height - FlexibleMaterialForm._richTextBoxMessage.Height;
 
-        var minimumHeight = FlexibleMaterialForm.messageContainer.Top + FlexibleMaterialForm.pictureBoxForIcon.Height + 2 * 8 + 54;
+        var minimumHeight = FlexibleMaterialForm._messageContainer.Top + FlexibleMaterialForm._pictureBoxForIcon.Height + 2 * 8 + 54;
         if (marginHeight < minimumHeight) marginHeight = minimumHeight;
 
         //Set calculated dialog size (if the calculated values exceed the maximums, they were cut by windows forms automatically)
@@ -477,26 +398,26 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         switch (icon)
         {
             case MessageBoxIcon.Information:
-                FlexibleMaterialForm.pictureBoxForIcon.Image = SystemIcons.Information.ToBitmap();
+                FlexibleMaterialForm._pictureBoxForIcon.Image = SystemIcons.Information.ToBitmap();
                 break;
 
             case MessageBoxIcon.Warning:
-                FlexibleMaterialForm.pictureBoxForIcon.Image = SystemIcons.Warning.ToBitmap();
+                FlexibleMaterialForm._pictureBoxForIcon.Image = SystemIcons.Warning.ToBitmap();
                 break;
 
             case MessageBoxIcon.Error:
-                FlexibleMaterialForm.pictureBoxForIcon.Image = SystemIcons.Error.ToBitmap();
+                FlexibleMaterialForm._pictureBoxForIcon.Image = SystemIcons.Error.ToBitmap();
                 break;
 
             case MessageBoxIcon.Question:
-                FlexibleMaterialForm.pictureBoxForIcon.Image = SystemIcons.Question.ToBitmap();
+                FlexibleMaterialForm._pictureBoxForIcon.Image = SystemIcons.Question.ToBitmap();
                 break;
 
             default:
                 //When no icon is used: Correct placement and width of rich text box.
-                FlexibleMaterialForm.pictureBoxForIcon.Visible = false;
-                FlexibleMaterialForm._richTextBoxMessage.Left -= FlexibleMaterialForm.pictureBoxForIcon.Width;
-                FlexibleMaterialForm._richTextBoxMessage.Width += FlexibleMaterialForm.pictureBoxForIcon.Width;
+                FlexibleMaterialForm._pictureBoxForIcon.Visible = false;
+                FlexibleMaterialForm._richTextBoxMessage.Left -= FlexibleMaterialForm._pictureBoxForIcon.Width;
+                FlexibleMaterialForm._richTextBoxMessage.Width += FlexibleMaterialForm._pictureBoxForIcon.Width;
                 break;
         }
     }
@@ -668,35 +589,23 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         //Handle standard key strikes for clipboard copy: "Ctrl + C" and "Ctrl + Insert"
         if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.Insert))
         {
-            var buttonsTextLine = (_leftButton.Visible ? _leftButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
-                                + (_middleButton.Visible ? _middleButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty)
-                                + (_rightButton.Visible ? _rightButton.Text + STANDARD_MESSAGEBOX_SEPARATOR_SPACES : string.Empty);
+            var buttonsTextLine = (_leftButton.Visible ? _leftButton.Text + _standardMessageBoxSeparatorSpaces : string.Empty)
+                                + (_middleButton.Visible ? _middleButton.Text + _standardMessageBoxSeparatorSpaces : string.Empty)
+                                + (_rightButton.Visible ? _rightButton.Text + _standardMessageBoxSeparatorSpaces : string.Empty);
 
             //Build same clipboard text like the standard .Net MessageBox
-            var textForClipboard = STANDARD_MESSAGEBOX_SEPARATOR_LINES
+            var textForClipboard = _standardMessageBoxSeparatorLines
                                  + Text + Environment.NewLine
-                                 + STANDARD_MESSAGEBOX_SEPARATOR_LINES
+                                 + _standardMessageBoxSeparatorLines
                                  + _richTextBoxMessage.Text + Environment.NewLine
-                                 + STANDARD_MESSAGEBOX_SEPARATOR_LINES
+                                 + _standardMessageBoxSeparatorLines
                                  + buttonsTextLine.Replace("&", string.Empty) + Environment.NewLine
-                                 + STANDARD_MESSAGEBOX_SEPARATOR_LINES;
+                                 + _standardMessageBoxSeparatorLines;
 
             //Set text in clipboard
             Clipboard.SetText(textForClipboard);
         }
     }
-
-    /// <summary>
-    /// Gets or sets the CaptionText
-    /// The text that is been used for the heading.
-    /// </summary>
-    public string CaptionText { get; set; }
-
-    /// <summary>
-    /// Gets or sets the MessageText
-    /// The text that is been used in the FlexibleMaterialForm.
-    /// </summary>
-    public string MessageText { get; set; }
 
     /// <summary>
     /// Shows the specified message box.
@@ -720,7 +629,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
             CaptionText = caption,
             MessageText = text
         };
-        FlexibleMaterialForm.FlexibleMaterialFormBindingSource.DataSource = FlexibleMaterialForm;
+        FlexibleMaterialForm._flexibleMaterialFormBindingSource.DataSource = FlexibleMaterialForm;
 
 
         //Set the dialogs icon. When no icon is used: Correct placement and width of rich text box.
@@ -750,7 +659,7 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
     private static void SetButtonsPosition(FlexibleMaterialForm fMF, ButtonsPosition buttonsPosition)
     {
         const int padding = 10;
-        int visibleButtonsWidth = 0;
+        var visibleButtonsWidth = 0;
         switch (buttonsPosition)
         {
             case ButtonsPosition.Center:
@@ -843,4 +752,29 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         }
         fMF.Width = Math.Max(fMF.Width, visibleButtonsWidth);
     }
+
+    //These are the possible buttons (in a standard MessageBox)
+    private enum ButtonID
+    {
+        OK = 0,
+        CANCEL,
+        YES,
+        NO,
+        ABORT,
+        RETRY,
+        IGNORE
+    };
+
+    //These are the buttons texts for different languages.
+    //If you want to add a new language, add it here and in the GetButtonText-Function
+    private enum TwoLetterISOLanguageID
+    {
+        en,
+        de,
+        es,
+        it,
+        fr,
+        ro,
+        pl
+    };
 }

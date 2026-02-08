@@ -40,13 +40,12 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
     protected override void OnMouseUp(MouseEventArgs mea)
     {
         base.OnMouseUp(mea);
-
         _animationSource = mea.Location;
     }
 
     protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
     {
-        if (e.ClickedItem != null && !(e.ClickedItem is ToolStripSeparator))
+        if (e.ClickedItem != null && e.ClickedItem is not ToolStripSeparator)
         {
             if (e == _delayesArgs)
             {
@@ -65,26 +64,6 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
                 _animationManager.StartNewAnimation(AnimationDirection.In);
             }
         }
-    }
-}
-
-public class MaterialToolStripMenuItem : ToolStripMenuItem
-{
-    public MaterialToolStripMenuItem()
-    {
-        AutoSize = false;
-        Size = new Size(128, 32);
-    }
-
-    protected override ToolStripDropDown CreateDefaultDropDown()
-    {
-        var baseDropDown = base.CreateDefaultDropDown();
-        if (DesignMode) return baseDropDown;
-
-        var defaultDropDown = new MaterialContextMenuStrip();
-        defaultDropDown.Items.AddRange(baseDropDown.Items);
-
-        return defaultDropDown;
     }
 }
 
@@ -160,20 +139,20 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
     protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
     {
         var g = e.Graphics;
-        const int ARROW_SIZE = 4;
+        const int arrowSize = 4;
 
         var arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
         var arrowBrush = e.Item.Enabled ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
         using var arrowPath = new GraphicsPath();
         arrowPath.AddLines(
             [
-                new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y - ARROW_SIZE),
-                    new Point(arrowMiddle.X, arrowMiddle.Y),
-                    new Point(arrowMiddle.X - ARROW_SIZE, arrowMiddle.Y + ARROW_SIZE) ]);
+                new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y - arrowSize),
+                new Point(arrowMiddle.X, arrowMiddle.Y),
+                new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y + arrowSize)
+                ]);
         arrowPath.CloseFigure();
-
         g.FillPath(arrowBrush, arrowPath);
     }
 
-    private static Rectangle GetItemRect(ToolStripItem item) => new Rectangle(0, item.ContentRectangle.Y, item.ContentRectangle.Width, item.ContentRectangle.Height);
+    private static Rectangle GetItemRect(ToolStripItem item) => new(0, item.ContentRectangle.Y, item.ContentRectangle.Width, item.ContentRectangle.Height);
 }
