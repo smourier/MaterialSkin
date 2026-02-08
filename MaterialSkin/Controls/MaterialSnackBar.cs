@@ -9,91 +9,52 @@ public class MaterialSnackBar : MaterialForm
 
     private readonly MaterialButton _actionButton = new();
     private readonly Timer _duration = new();      // Timer that checks when the drop down is fully visible
+    private readonly AnimationManager _animationManager;
+    private bool _closingAnimationDone;
+    private bool _closeAnimation;
 
-    private readonly AnimationManager _AnimationManager;
-    private bool _closingAnimationDone = false;
-    private bool CloseAnimation = false;
-
-    [Category("Action")]
-    [Description("Fires when Action button is clicked")]
-    public event EventHandler ActionButtonClick;
-
-    [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
-    public bool UseAccentColor
+    public MaterialSnackBar()
+        : this("SnackBar Text", 3000, false, "OK", false)
     {
-        get;
-        set { field = value; Invalidate(); }
     }
 
-
-    /// <summary>
-    /// Get or Set SnackBar show duration in milliseconds
-    /// </summary>
-    [Category("Material Skin"), DefaultValue(2000)]
-    public int Duration
+    public MaterialSnackBar(string text)
+        : this(text, 3000, false, "OK", false)
     {
-        get => _duration.Interval; set => _duration.Interval = value;
     }
 
-    /// <summary>
-    /// The Text which gets displayed as the Content
-    /// </summary>
-    [Category("Material Skin"), DefaultValue("SnackBar text")]
-    public new string Text
+    public MaterialSnackBar(string text, int duration)
+        : this(text, duration, false, "OK", false)
     {
-        get;
-        set
-        {
-            field = value;
-            UpdateRects();
-            Invalidate();
-        }
     }
 
-    [Category("Material Skin"), DefaultValue(false), DisplayName("Show Action Button")]
-    public bool ShowActionButton
+    public MaterialSnackBar(string text, string actionButtonText)
+        : this(text, 3000, true, actionButtonText, false)
     {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
     }
 
-    /// <summary>
-    /// The Text which gets displayed as the Content
-    /// </summary>
-    [Category("Material Skin"), DefaultValue("OK")]
-    public string ActionButtonText
+    public MaterialSnackBar(string text, string actionButtonText, bool useAccentColor)
+        : this(text, 3000, true, actionButtonText, useAccentColor)
     {
-        get;
-        set
-        {
-            field = value;
-            Invalidate();
-        }
     }
 
-    /// <summary>
-    /// The Collection for the Buttons
-    /// </summary>
-    //public ObservableCollection<MaterialButton> Buttons { get; set; }
+    public MaterialSnackBar(string text, int duration, string actionButtonText)
+        : this(text, duration, true, actionButtonText, false)
+    {
+    }
 
-    [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-    private static extern IntPtr CreateRoundRectRgn
-    (
-        int nLeftRect,     // x-coordinate of upper-left corner
-        int nTopRect,      // y-coordinate of upper-left corner
-        int nRightRect,    // x-coordinate of lower-right corner
-        int nBottomRect,   // y-coordinate of lower-right corner
-        int nWidthEllipse, // width of ellipse
-        int nHeightEllipse // height of ellipse
-    );
+    public MaterialSnackBar(string text, int duration, string actionButtonText, bool useAccentColor)
+        : this(text, duration, true, actionButtonText, useAccentColor)
+    {
+    }
 
     /// <summary>
     /// Constructer Setting up the Layout
     /// </summary>
-    public MaterialSnackBar(string Text, int Duration, bool ShowActionButton, string ActionButtonText, bool UseAccentColor)
+    public MaterialSnackBar(string text, int duration, bool showActionButton, string actionButtonText, bool useAccentColor)
     {
-        this.Text = Text;
-        this.Duration = Duration;
+        Text = text;
+        Duration = duration;
         TopMost = true;
         ShowInTaskbar = false;
         Sizable = false;
@@ -101,22 +62,22 @@ public class MaterialSnackBar : MaterialForm
         BackColor = SkinManager.SnackBarBackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
-        this.ActionButtonText = ActionButtonText;
-        this.UseAccentColor = UseAccentColor;
+        ActionButtonText = actionButtonText;
+        UseAccentColor = useAccentColor;
         Height = 48;
         MinimumSize = new Size(344, 48);
         MaximumSize = new Size(568, 48);
 
-        this.ShowActionButton = ShowActionButton;
+        ShowActionButton = showActionButton;
 
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        _AnimationManager = new AnimationManager
+        _animationManager = new AnimationManager
         {
             AnimationType = AnimationType.EaseOut,
             Increment = 0.03
         };
-        _AnimationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
+        _animationManager.OnAnimationProgress += AnimationManager_OnAnimationProgress;
 
         _duration.Tick += Duration_Tick;
 
@@ -126,9 +87,9 @@ public class MaterialSnackBar : MaterialForm
             NoAccentTextColor = SkinManager.SnackBarTextButtonNoAccentTextColor,
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = this.UseAccentColor,
-            Visible = this.ShowActionButton,
-            Text = this.ActionButtonText
+            UseAccentColor = UseAccentColor,
+            Visible = ShowActionButton,
+            Text = ActionButtonText
         };
         _actionButton.Click += (sender, e) =>
         {
@@ -143,43 +104,52 @@ public class MaterialSnackBar : MaterialForm
         }
 
         UpdateRects();
-
     }
+    [Category("Action")]
+    [Description("Fires when Action button is clicked")]
+    public event EventHandler? ActionButtonClick;
 
-    public MaterialSnackBar() : this("SnackBar Text", 3000, false, "OK", false)
-    {
-    }
+    [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
+    public bool UseAccentColor { get; set { field = value; Invalidate(); } }
 
-    public MaterialSnackBar(string Text) : this(Text, 3000, false, "OK", false)
-    {
-    }
+    /// <summary>
+    /// Get or Set SnackBar show duration in milliseconds
+    /// </summary>
+    [Category("Material Skin"), DefaultValue(2000)]
+    public int Duration { get => _duration.Interval; set => _duration.Interval = value; }
 
-    public MaterialSnackBar(string Text, int Duration) : this(Text, Duration, false, "OK", false)
-    {
-    }
+    /// <summary>
+    /// The Text which gets displayed as the Content
+    /// </summary>
+    [Category("Material Skin"), DefaultValue("SnackBar text")]
+    public new string Text { get; set { field = value; UpdateRects(); Invalidate(); } }
 
-    public MaterialSnackBar(string Text, string ActionButtonText) : this(Text, 3000, true, ActionButtonText, false)
-    {
-    }
+    [Category("Material Skin"), DefaultValue(false), DisplayName("Show Action Button")]
+    public bool ShowActionButton { get; set { field = value; UpdateRects(); Invalidate(); } }
 
-    public MaterialSnackBar(string Text, string ActionButtonText, bool UseAccentColor) : this(Text, 3000, true, ActionButtonText, UseAccentColor)
-    {
-    }
+    /// <summary>
+    /// The Text which gets displayed as the Content
+    /// </summary>
+    [Category("Material Skin"), DefaultValue("OK")]
+    public string ActionButtonText { get; set { field = value; Invalidate(); } }
 
-    public MaterialSnackBar(string Text, int Duration, string ActionButtonText) : this(Text, Duration, true, ActionButtonText, false)
-    {
-    }
-
-    public MaterialSnackBar(string Text, int Duration, string ActionButtonText, bool UseAccentColor) : this(Text, Duration, true, ActionButtonText, UseAccentColor)
-    {
-    }
+    [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+    private static extern IntPtr CreateRoundRectRgn
+    (
+        int nLeftRect,     // x-coordinate of upper-left corner
+        int nTopRect,      // y-coordinate of upper-left corner
+        int nRightRect,    // x-coordinate of lower-right corner
+        int nBottomRect,   // y-coordinate of lower-right corner
+        int nWidthEllipse, // width of ellipse
+        int nHeightEllipse // height of ellipse
+    );
 
     private void UpdateRects()
     {
         if (ShowActionButton == true)
         {
-            int _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
-            Rectangle _actionbuttonBounds = new(Width - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
+            var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            var _actionbuttonBounds = new Rectangle(Width - BUTTON_PADDING - _buttonWidth, TOP_PADDING_SINGLE_LINE, _buttonWidth, BUTTON_HEIGHT);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
             _actionButton.Text = ActionButtonText;
@@ -190,15 +160,14 @@ public class MaterialSnackBar : MaterialForm
         {
             _actionButton.Width = 0;
         }
+
         _actionButton.Left = Width - BUTTON_PADDING - _actionButton.Width;  //Button minimum width management
         _actionButton.Visible = ShowActionButton;
-
         Width = TextRenderer.MeasureText(Text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * LEFT_RIGHT_PADDING) + _actionButton.Width + 48;
         Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
-
     }
 
-    private void Duration_Tick(object sender, EventArgs e)
+    private void Duration_Tick(object? sender, EventArgs e)
     {
         _duration.Stop();
         _closingAnimationDone = false;
@@ -209,7 +178,6 @@ public class MaterialSnackBar : MaterialForm
     {
         base.OnResize(e);
         UpdateRects();
-
     }
 
     /// <summary>
@@ -218,19 +186,22 @@ public class MaterialSnackBar : MaterialForm
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
-        Location = new Point(Convert.ToInt32(Owner.Location.X + (Owner.Width / 2) - (Width / 2)), Convert.ToInt32(Owner.Location.Y + Owner.Height - 60));
-        _AnimationManager.StartNewAnimation(AnimationDirection.In);
+        if (Owner == null)
+            return;
+
+        Location = new Point(Owner.Location.X + (Owner.Width / 2) - (Width / 2), Owner.Location.Y + Owner.Height - 60);
+        _animationManager.StartNewAnimation(AnimationDirection.In);
         _duration.Start();
     }
 
     /// <summary>
     /// Animates the Form slides
     /// </summary>
-    void AnimationManager_OnAnimationProgress(object sender, EventArgs e)
+    private void AnimationManager_OnAnimationProgress(object? sender, EventArgs e)
     {
-        if (CloseAnimation)
+        if (_closeAnimation)
         {
-            Opacity = _AnimationManager.GetProgress();
+            Opacity = _animationManager.GetProgress();
         }
     }
 
@@ -244,14 +215,14 @@ public class MaterialSnackBar : MaterialForm
         e.Graphics.Clear(BackColor);
 
         // Calc text Rect
-        Rectangle textRect = new(
+        var textRect = new Rectangle(
             LEFT_RIGHT_PADDING,
             0,
             Width - (2 * LEFT_RIGHT_PADDING) - _actionButton.Width,
             Height);
 
         //Draw  Text
-        using NativeTextRenderer NativeText = new(g);
+        using var NativeText = new NativeTextRenderer(g);
         // Draw header text
         NativeText.DrawTransparentText(
             Text,
@@ -260,7 +231,6 @@ public class MaterialSnackBar : MaterialForm
             textRect.Location,
             textRect.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);
-
     }
 
     /// <summary>
@@ -271,10 +241,10 @@ public class MaterialSnackBar : MaterialForm
         e.Cancel = !_closingAnimationDone;
         if (!_closingAnimationDone)
         {
-            CloseAnimation = true;
-            _AnimationManager.Increment = 0.06;
-            _AnimationManager.OnAnimationFinished += AnimationManager_OnAnimationFinished;
-            _AnimationManager.StartNewAnimation(AnimationDirection.Out);
+            _closeAnimation = true;
+            _animationManager.Increment = 0.06;
+            _animationManager.OnAnimationFinished += AnimationManager_OnAnimationFinished;
+            _animationManager.StartNewAnimation(AnimationDirection.Out);
         }
         base.OnClosing(e);
     }
@@ -282,7 +252,7 @@ public class MaterialSnackBar : MaterialForm
     /// <summary>
     /// Closes the Form after the pull out animation
     /// </summary>
-    void AnimationManager_OnAnimationFinished(object sender, EventArgs e)
+    private void AnimationManager_OnAnimationFinished(object? sender, EventArgs e)
     {
         _closingAnimationDone = true;
         Close();
@@ -293,15 +263,6 @@ public class MaterialSnackBar : MaterialForm
         base.OnClick(e);
         _closingAnimationDone = false;
         Close();
-    }
-
-    private void InitializeComponent()
-    {
-        SuspendLayout();
-        ClientSize = new Size(344, 48);
-        Name = "SnackBar";
-        ResumeLayout(false);
-
     }
 
     /// <summary>
@@ -315,7 +276,7 @@ public class MaterialSnackBar : MaterialForm
         switch (message.Msg)
         {
             case WM_SYSCOMMAND:
-                int command = message.WParam.ToInt32() & 0xfff0;
+                var command = message.WParam.ToInt32() & 0xfff0;
                 if (command == SC_MOVE)
                     return;
                 break;
@@ -327,9 +288,6 @@ public class MaterialSnackBar : MaterialForm
     public new void Show()
     {
         if (Owner == null)
-        {
-            throw new Exception("Owner is null. Set Owner first.");
-        }
+            throw new NotSupportedException();
     }
-
 }

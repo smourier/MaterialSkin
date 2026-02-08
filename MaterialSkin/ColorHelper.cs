@@ -71,7 +71,7 @@ public static class ColorHelper
             throw new ArgumentOutOfRangeException(nameof(lighting));
 
         if (0 == saturation)
-            return Color.FromArgb(alpha, Convert.ToInt32(lighting * 255), Convert.ToInt32(lighting * 255), Convert.ToInt32(lighting * 255));
+            return Color.FromArgb(alpha, (int)(lighting * 255), (int)(lighting * 255), (int)(lighting * 255));
 
         float fMax, fMid, fMin;
         int iSextant, iMax, iMid, iMin;
@@ -104,9 +104,9 @@ public static class ColorHelper
             fMid = fMin - hue * (fMax - fMin);
         }
 
-        iMax = Convert.ToInt32(fMax * 255);
-        iMid = Convert.ToInt32(fMid * 255);
-        iMin = Convert.ToInt32(fMin * 255);
+        iMax = (int)(fMax * 255);
+        iMid = (int)(fMid * 255);
+        iMin = (int)(fMin * 255);
 
         return iSextant switch
         {

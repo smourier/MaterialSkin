@@ -176,7 +176,7 @@ public class MaterialDialog : MaterialForm
 
         if (Owner != null)
         {
-            Location = new Point(Convert.ToInt32(Owner.Location.X + (Owner.Width / 2) - (Width / 2)), Convert.ToInt32(Owner.Location.Y + (Owner.Height / 2) - (Height / 2)));
+            Location = new Point(Owner.Location.X + (Owner.Width / 2) - (Width / 2), Owner.Location.Y + (Owner.Height / 2) - (Height / 2));
         }
 
         _animationManager.StartNewAnimation(AnimationDirection.In);

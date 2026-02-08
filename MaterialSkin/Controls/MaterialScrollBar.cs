@@ -547,7 +547,7 @@ public class MaterialScrollBar : Control, IMaterialControl
                         perc = thumbPos / (float)pixelRange;
                     }
 
-                    _curValue = Convert.ToInt32((perc * (Maximum - Minimum)) + Minimum);
+                    _curValue = (int)((perc * (Maximum - Minimum)) + Minimum);
                 }
 
                 if (oldScrollValue != _curValue)
@@ -762,7 +762,7 @@ public class MaterialScrollBar : Control, IMaterialControl
             perc = (_curValue - (float)Minimum) / realRange;
         }
 
-        return Math.Max(_thumbTopLimit, Math.Min(_thumbBottomLimitTop, Convert.ToInt32(perc * pixelRange)));
+        return Math.Max(_thumbTopLimit, Math.Min(_thumbBottomLimitTop, (int)(perc * pixelRange)));
     }
 
     private int GetThumbSize()
