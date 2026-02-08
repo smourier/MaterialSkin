@@ -125,7 +125,6 @@ public partial class MaterialListBox : Control, IMaterialControl
         get; set
         {
             field = value;
-
             if (SelectedItems?.Count > 1)
             {
                 SelectedItems.RemoveRange(1, SelectedItems.Count - 1);
@@ -151,14 +150,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     }
 
     [Category("Material Skin"), DefaultValue(true), Description("Gets or sets a value indicating whether the border shown or not.")]
-    public bool ShowBorder
-    {
-        get; set
-        {
-            field = value;
-            Refresh();
-        }
-    }
+    public bool ShowBorder { get; set { field = value; Refresh(); } }
 
     [Category("Material Skin"), Description("Gets or sets backcolor used by the control.")]
     public override Color BackColor { get; set; }
@@ -172,14 +164,7 @@ public partial class MaterialListBox : Control, IMaterialControl
     public override string Text { get => base.Text; set => base.Text = value; }
 
     [Category("Material Skin"), Description("Gets or sets border color used by the control.")]
-    public Color BorderColor
-    {
-        get; set
-        {
-            field = value;
-            Refresh();
-        }
-    }
+    public Color BorderColor { get; set { field = value; Refresh(); } }
 
     [Category("Material Skin"), DefaultValue(ListBoxStyle.SingleLine)]
     [Description("Gets or sets the control style.")]
@@ -189,7 +174,6 @@ public partial class MaterialListBox : Control, IMaterialControl
         {
             field = value;
             UpdateItemSpecs();
-
             InvalidateScroll(this, EventArgs.Empty);
             Refresh();
         }
@@ -197,15 +181,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Category("Material Skin"), DefaultValue(MaterialItemDensity.Dense)]
     [Description("Gets or sets list density")]
-    public MaterialItemDensity Density
-    {
-        get; set
-        {
-            field = value;
-            UpdateItemSpecs();
-            Invalidate();
-        }
-    }
+    public MaterialItemDensity Density { get; set { field = value; UpdateItemSpecs(); Invalidate(); } }
 
     private void SetDefaults()
     {

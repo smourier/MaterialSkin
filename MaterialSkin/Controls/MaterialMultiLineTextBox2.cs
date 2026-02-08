@@ -13,7 +13,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     private const uint WM_VSCROLL = 277;
 
     private readonly MaterialContextMenuStrip _cms = new BaseTextBoxContextMenuStrip();
-    private readonly nint ptrLparam;
     private readonly AnimationManager _animationManager;
     private readonly BaseTextBox _baseTextBox;
     private ContextMenuStrip _lastContextMenuStrip = new();
@@ -413,13 +412,13 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             if (v < 0)
             {
                 var ptrWparam = new IntPtr(SB_LINEDOWN);
-                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
+                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, 0);
             }
             //Up Movement
             else if (v > 0)
             {
                 var ptrWparam = new IntPtr(SB_LINEUP);
-                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, ptrLparam);
+                SendMessage(_baseTextBox.Handle, WM_VSCROLL, ptrWparam, 0);
             }
 
             _baseTextBox?.Focus();
