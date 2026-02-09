@@ -5,6 +5,16 @@ public static class MaterialSinkExtensions
     public static Color ToColor(this int argb) => Color.FromArgb((argb & 0xFF0000) >> 16, (argb & 0x00FF00) >> 8, argb & 0x0000FF);
     public static Color RemoveAlpha(this Color color) => Color.FromArgb(color.R, color.G, color.B);
 
+    public static Icon? LoadApplicationIcon(int size)
+    {
+        var path = Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName);
+        if (path == null)
+            return null;
+
+        var exeHandle = Functions.GetModuleHandleW(PWSTR.From(path));
+        return Icon.FromHandle(Functions.LoadImageW(exeHandle, Constants.IDI_APPLICATION, GDI_IMAGE_TYPE.IMAGE_ICON, size, size, 0));
+    }
+
     public static byte[]? GetBytesFromResource(string resourceName, bool throwOnError = true) => GetBytesFromResource(null, resourceName, throwOnError);
     public static byte[]? GetBytesFromResource(this Assembly? assembly, string resourceName, bool throwOnError = true)
     {

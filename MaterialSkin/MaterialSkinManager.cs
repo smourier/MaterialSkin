@@ -1,12 +1,13 @@
 ﻿namespace MaterialSkin;
 
-public partial class MaterialSkinManager
+public partial class MaterialSkinManager : IDisposable
 {
     public static MaterialSkinManager Instance { get; } = new();
 
     public event EventHandler? ColorSchemeChanged;
     public event EventHandler? ThemeChanged;
 
+    private bool _disposedValue;
     private readonly List<MaterialForm> _formsToManage = [];
     private readonly Dictionary<string, nint> _logicalFonts;
     private readonly Dictionary<string, FontFamily> _robotoFontFamilies;
@@ -61,15 +62,6 @@ public partial class MaterialSkinManager
             { "textBox13", AreateLogicalFont("Roboto Medium", 13, LogFontWeight.FW_MEDIUM) },
             { "textBox12", AreateLogicalFont("Roboto Medium", 12, LogFontWeight.FW_MEDIUM) }
         };
-    }
-
-    // Destructor
-    ~MaterialSkinManager()
-    {
-        foreach (var handle in _logicalFonts.Values)
-        {
-            Functions.DeleteObject(handle);
-        }
     }
 
     /// <summary>
@@ -404,4 +396,19 @@ public partial class MaterialSkinManager
             }
         }
     }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            foreach (var handle in _logicalFonts.Values)
+            {
+                Functions.DeleteObject(handle);
+            }
+            _disposedValue = true;
+        }
+    }
+
+    ~MaterialSkinManager() { Dispose(disposing: false); }
+    public void Dispose() { Dispose(disposing: true); GC.SuppressFinalize(this); }
 }

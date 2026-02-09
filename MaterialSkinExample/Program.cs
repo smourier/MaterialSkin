@@ -11,6 +11,7 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(true);
         Application.Run(new MainForm());
+        MaterialSkinManager.Instance.Dispose();
     }
 
     private static void HandleError(Exception? ex)

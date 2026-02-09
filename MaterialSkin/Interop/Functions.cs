@@ -12,6 +12,16 @@ internal static partial class Functions
     [PreserveSig]
     public static partial int DrawTextW(nint hdc, [MarshalUsing(CountElementName = nameof(cchText))] PWSTR lpchText, int cchText, ref RECT lprc, DRAW_TEXT_FORMAT format);
 
+    // https://learn.microsoft.com/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlew
+    [LibraryImport("KERNEL32", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    [PreserveSig]
+    public static partial nint GetModuleHandleW(PWSTR lpModuleName);
+
+    // https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-loadimagew
+    [LibraryImport("USER32", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    [PreserveSig]
+    public static partial nint LoadImageW(nint hInst, PWSTR name, GDI_IMAGE_TYPE type, int cx, int cy, IMAGE_FLAGS fuLoad);
+
     // https://learn.microsoft.com/windows/win32/api/wingdi/nf-wingdi-setbkmode
     [LibraryImport("GDI32")]
     [PreserveSig]

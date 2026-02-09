@@ -9,6 +9,9 @@ public partial class MainForm : MaterialForm
     {
         InitializeComponent();
 
+        Icon = MaterialSinkExtensions.LoadApplicationIcon(32);
+
+        menuIconList.ImageSize = new Size(24, 24);
         menuIconList.TransparentColor = Color.Transparent;
         menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_assessment_white_24dp.png")!);
         menuIconList.Images.SetKeyName(0, "round_assessment_white_24dp.png");
@@ -84,21 +87,21 @@ public partial class MainForm : MaterialForm
         materialComboBox6.SelectedIndex = 0;
 
         materialListBoxFormStyle.Clear();
-        foreach (var FormStyleItem in Enum.GetNames<FormStyles>())
+        foreach (var item in Enum.GetNames<FormStyles>())
         {
-            materialListBoxFormStyle.AddItem(FormStyleItem);
-            if (FormStyleItem == FormStyle.ToString())
+            materialListBoxFormStyle.AddItem(item);
+            if (item == FormStyle.ToString())
             {
                 materialListBoxFormStyle.SelectedIndex = materialListBoxFormStyle.Items.Count - 1;
             }
         }
 
-        materialListBoxFormStyle.SelectedIndexChanged += (sender, args) =>
+        materialListBoxFormStyle.SelectedIndexChanged += (s, e) =>
         {
-            if (args.Text == null)
+            if (e.Text == null)
                 return;
 
-            var SelectedStyle = Enum.Parse<FormStyles>(args.Text);
+            var SelectedStyle = Enum.Parse<FormStyles>(e.Text);
             if (FormStyle != SelectedStyle)
             {
                 FormStyle = SelectedStyle;
@@ -106,6 +109,15 @@ public partial class MainForm : MaterialForm
         };
 
         materialMaskedTextBox1.ValidatingType = typeof(short);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            components?.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
     private void SeedListView()
@@ -138,7 +150,9 @@ public partial class MainForm : MaterialForm
     {
         _colorSchemeIndex++;
         if (_colorSchemeIndex > 2)
+        {
             _colorSchemeIndex = 0;
+        }
         UpdateColor();
     }
 

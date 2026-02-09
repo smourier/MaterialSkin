@@ -13,4 +13,6 @@ internal static class Constants
     public const int WM_KILLFOCUS = 0x0008;
     public const int EM_SETBKGNDCOLOR = WM_USER + 67;
     public const int EM_SETCUEBANNER = 0x1501;
+
+    public static readonly PWSTR IDI_APPLICATION = new('\u7f00');
 }

@@ -126,8 +126,8 @@ public partial class MaterialForm : Form, IMaterialControl
             if (field == value) return;
 
             field = value;
-
-            if (_drawerControl == null) return;
+            if (_drawerControl == null)
+                return;
 
             _drawerControl.ShowIconsWhenHidden = field;
             _drawerControl.Refresh();
@@ -409,8 +409,8 @@ public partial class MaterialForm : Form, IMaterialControl
             _drawerOverlay.Opacity = (float)(_drawerShowHideAnimManager.GetProgress() * 0.55f);
         };
 
-        int H = ClientSize.Height - StatusBarBounds.Height - ActionBarBounds.Height;
-        int Y = PointToScreen(Point.Empty).Y + StatusBarBounds.Height + ActionBarBounds.Height;
+        var h = ClientSize.Height - StatusBarBounds.Height - ActionBarBounds.Height;
+        var y = PointToScreen(Point.Empty).Y + StatusBarBounds.Height + ActionBarBounds.Height;
 
         // Overlay Form definitions
         _drawerOverlay.BackColor = Color.Black;
@@ -422,8 +422,8 @@ public partial class MaterialForm : Form, IMaterialControl
         _drawerOverlay.ControlBox = false;
         _drawerOverlay.FormBorderStyle = FormBorderStyle.None;
         _drawerOverlay.Visible = true;
-        _drawerOverlay.Size = new Size(ClientSize.Width, H);
-        _drawerOverlay.Location = new Point(PointToScreen(Point.Empty).X, Y);
+        _drawerOverlay.Size = new Size(ClientSize.Width, h);
+        _drawerOverlay.Location = new Point(PointToScreen(Point.Empty).X, y);
         _drawerOverlay.ShowInTaskbar = false;
         _drawerOverlay.Owner = this;
         _drawerOverlay.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
@@ -438,8 +438,8 @@ public partial class MaterialForm : Form, IMaterialControl
         _drawerForm.ControlBox = false;
         _drawerForm.FormBorderStyle = FormBorderStyle.None;
         _drawerForm.Visible = true;
-        _drawerForm.Size = new Size(DrawerWidth, H);
-        _drawerForm.Location = new Point(PointToScreen(Point.Empty).X, Y);
+        _drawerForm.Size = new Size(DrawerWidth, h);
+        _drawerForm.Location = new Point(PointToScreen(Point.Empty).X, y);
         _drawerForm.ShowInTaskbar = false;
         _drawerForm.Owner = _drawerOverlay;
         _drawerForm.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
@@ -447,7 +447,7 @@ public partial class MaterialForm : Form, IMaterialControl
         // Add drawer to overlay form
         _drawerForm.Controls.Add(_drawerControl);
         _drawerControl.Location = new Point(0, 0);
-        _drawerControl.Size = new Size(DrawerWidth, H);
+        _drawerControl.Size = new Size(DrawerWidth, h);
         _drawerControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
         _drawerControl.BaseTabControl = DrawerTabControl;
         _drawerControl.ShowIconsWhenHidden = true;
@@ -481,9 +481,9 @@ public partial class MaterialForm : Form, IMaterialControl
 
         Resize += (sender, e) =>
         {
-            H = ClientSize.Height - StatusBarBounds.Height - ActionBarBounds.Height;
-            _drawerForm.Size = new Size(DrawerWidth, H);
-            _drawerOverlay.Size = new Size(ClientSize.Width, H);
+            h = ClientSize.Height - StatusBarBounds.Height - ActionBarBounds.Height;
+            _drawerForm.Size = new Size(DrawerWidth, h);
+            _drawerOverlay.Size = new Size(ClientSize.Width, h);
         };
 
         Move += (sender, e) =>
@@ -548,7 +548,9 @@ public partial class MaterialForm : Form, IMaterialControl
         // Form Padding corrections
 
         if (Padding.Top < (StatusBarBounds.Height + ActionBarBounds.Height))
+        {
             Padding = new Padding(Padding.Left, StatusBarBounds.Height + ActionBarBounds.Height, Padding.Right, Padding.Bottom);
+        }
 
         _originalPadding = Padding;
 
@@ -577,26 +579,39 @@ public partial class MaterialForm : Form, IMaterialControl
 
     private void UpdateButtons(MouseButtons button, Point location, bool up = false)
     {
-        if (DesignMode) return;
+        if (DesignMode)
+            return;
 
         var oldState = _buttonState;
-        bool showMin = MinimizeBox && ControlBox;
-        bool showMax = MaximizeBox && ControlBox;
+        var showMin = MinimizeBox && ControlBox;
+        var showMax = MaximizeBox && ControlBox;
 
         if (button == MouseButtons.Left && !up)
         {
             if (showMin && !showMax && MaxButtonBounds.Contains(location))
+            {
                 _buttonState = ButtonState.MinDown;
+            }
             else if (showMin && showMax && MinButtonBounds.Contains(location))
+            {
                 _buttonState = ButtonState.MinDown;
+            }
             else if (showMax && MaxButtonBounds.Contains(location))
+            {
                 _buttonState = ButtonState.MaxDown;
+            }
             else if (ControlBox && XButtonBounds.Contains(location))
+            {
                 _buttonState = ButtonState.XDown;
+            }
             else if (DrawerButtonBounds.Contains(location))
+            {
                 _buttonState = ButtonState.DrawerDown;
+            }
             else
+            {
                 _buttonState = ButtonState.None;
+            }
         }
         else
         {
@@ -605,28 +620,36 @@ public partial class MaterialForm : Form, IMaterialControl
                 _buttonState = ButtonState.MinOver;
 
                 if (oldState == ButtonState.MinDown && up)
+                {
                     WindowState = FormWindowState.Minimized;
+                }
             }
             else if (showMin && showMax && MinButtonBounds.Contains(location))
             {
                 _buttonState = ButtonState.MinOver;
 
                 if (oldState == ButtonState.MinDown && up)
+                {
                     WindowState = FormWindowState.Minimized;
+                }
             }
             else if (showMax && MaxButtonBounds.Contains(location))
             {
                 _buttonState = ButtonState.MaxOver;
 
                 if (oldState == ButtonState.MaxDown && up)
+                {
                     Maximized = !Maximized;
+                }
             }
             else if (ControlBox && XButtonBounds.Contains(location))
             {
                 _buttonState = ButtonState.XOver;
 
                 if (oldState == ButtonState.XDown && up)
+                {
                     Close();
+                }
             }
             else if (DrawerButtonBounds.Contains(location))
             {
@@ -639,13 +662,16 @@ public partial class MaterialForm : Form, IMaterialControl
         }
 
         if (oldState != _buttonState)
+        {
             Invalidate();
+        }
     }
 
     private void ResizeForm(ResizeDirection direction)
     {
         if (DesignMode)
             return;
+
         var dir = -1;
         switch (direction)
         {
@@ -699,26 +725,32 @@ public partial class MaterialForm : Form, IMaterialControl
                 _actionBarHeight = 0;
                 _statusBarHeight = 0;
                 break;
+
             case FormStyles.ActionBar_None:
                 _actionBarHeight = 0;
                 _statusBarHeight = _statusBarHeightDefault;
                 break;
+
             case FormStyles.ActionBar_40:
                 _actionBarHeight = _actionBarHeightDefault;
                 _statusBarHeight = _statusBarHeightDefault;
                 break;
+
             case FormStyles.ActionBar_48:
                 _actionBarHeight = 48;
                 _statusBarHeight = _statusBarHeightDefault;
                 break;
+
             case FormStyles.ActionBar_56:
                 _actionBarHeight = 56;
                 _statusBarHeight = _statusBarHeightDefault;
                 break;
+
             case FormStyles.ActionBar_64:
                 _actionBarHeight = 64;
                 _statusBarHeight = _statusBarHeightDefault;
                 break;
+
             default:
                 _actionBarHeight = _actionBarHeightDefault;
                 _statusBarHeight = _statusBarHeightDefault;
@@ -1010,8 +1042,8 @@ public partial class MaterialForm : Form, IMaterialControl
             // Minimize button.
             if (showMin)
             {
-                int x = showMax ? MinButtonBounds.X : MaxButtonBounds.X;
-                int y = showMax ? MinButtonBounds.Y : MaxButtonBounds.Y;
+                var x = showMax ? MinButtonBounds.X : MaxButtonBounds.X;
+                var y = showMax ? MinButtonBounds.Y : MaxButtonBounds.Y;
 
                 g.DrawLine(
                     formButtonsPen,

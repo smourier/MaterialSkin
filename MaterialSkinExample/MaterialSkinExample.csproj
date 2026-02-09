@@ -9,6 +9,7 @@
 		<PublishAot>true</PublishAot>
 		<_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
 		<ApplicationIcon>Resources\MaterialSkin.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup>
