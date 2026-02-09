@@ -138,6 +138,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
             else
                 Focus();
         };
+
         _baseTextBox.LostFocus += (sender, args) =>
         {
             _isFocused = false;
@@ -478,31 +479,43 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
 
     private void ContextMenuStripOnItemClickStart(object? sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
-        switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
+        if (toolStripItemClickedEventArgs.ClickedItem == null)
+            return;
+
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.UndoText)
         {
-            case "Undo":
-                Undo();
-                break;
+            Undo();
+            return;
+        }
 
-            case "Cut":
-                Cut();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CutText)
+        {
+            Cut();
+            return;
+        }
 
-            case "Copy":
-                Copy();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CopyText)
+        {
+            Copy();
+            return;
+        }
 
-            case "Paste":
-                Paste();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.PasteText)
+        {
+            Paste();
+            return;
+        }
 
-            case "Delete":
-                SelectedText = string.Empty;
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.DeleteText)
+        {
+            SelectedText = string.Empty;
+            return;
+        }
 
-            case "Select All":
-                SelectAll();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.SelectAllText)
+        {
+            SelectAll();
+            return;
         }
     }
 
@@ -510,12 +523,12 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     {
         if (sender is BaseTextBoxContextMenuStrip strip)
         {
-            strip.undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
-            strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.copy.Enabled = !string.IsNullOrEmpty(SelectedText);
-            strip.paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
-            strip.delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.selectAll.Enabled = !string.IsNullOrEmpty(Text);
+            strip.Undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
+            strip.Cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.Copy.Enabled = !string.IsNullOrEmpty(SelectedText);
+            strip.Paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
+            strip.Delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.SelectAll.Enabled = !string.IsNullOrEmpty(Text);
         }
     }
 

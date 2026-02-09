@@ -596,7 +596,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
             Rectangle prefixRect = new(
                 _left_padding - _prefix_padding,
                 _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
-                //                        NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width,
                 _prefix_padding,
                 _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
@@ -617,7 +616,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
             var suffixRect = new Rectangle(
                 Width - _right_padding,
                 _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
-                //NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(FontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING,
                 _suffix_padding,
                 _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
@@ -1040,33 +1038,46 @@ public partial class MaterialTextBox : Control, IMaterialControl
     }
 
     public bool GetErrorState() => _errorState;
+
     private void ContextMenuStripOnItemClickStart(object? sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
-        switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
+        if (toolStripItemClickedEventArgs.ClickedItem == null)
+            return;
+
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.UndoText)
         {
-            case "Undo":
-                Undo();
-                break;
+            Undo();
+            return;
+        }
 
-            case "Cut":
-                Cut();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CutText)
+        {
+            Cut();
+            return;
+        }
 
-            case "Copy":
-                Copy();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CopyText)
+        {
+            Copy();
+            return;
+        }
 
-            case "Paste":
-                Paste();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.PasteText)
+        {
+            Paste();
+            return;
+        }
 
-            case "Delete":
-                SelectedText = string.Empty;
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.DeleteText)
+        {
+            SelectedText = string.Empty;
+            return;
+        }
 
-            case "Select All":
-                SelectAll();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.SelectAllText)
+        {
+            SelectAll();
+            return;
         }
     }
 
@@ -1074,12 +1085,12 @@ public partial class MaterialTextBox : Control, IMaterialControl
     {
         if (sender is BaseTextBoxContextMenuStrip strip)
         {
-            strip.undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
-            strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.copy.Enabled = !string.IsNullOrEmpty(SelectedText);
-            strip.paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
-            strip.delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.selectAll.Enabled = !string.IsNullOrEmpty(Text);
+            strip.Undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
+            strip.Cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.Copy.Enabled = !string.IsNullOrEmpty(SelectedText);
+            strip.Paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
+            strip.Delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.SelectAll.Enabled = !string.IsNullOrEmpty(Text);
         }
     }
 

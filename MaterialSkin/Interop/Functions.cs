@@ -1,4 +1,6 @@
-﻿namespace MaterialSkin.Interop;
+﻿using System.Collections.Concurrent;
+
+namespace MaterialSkin.Interop;
 
 internal static partial class Functions
 {
@@ -154,4 +156,74 @@ internal static partial class Functions
     [LibraryImport("USER32")]
     [PreserveSig]
     public static partial nint SetCursor(nint hCursor);
+
+    // https://learn.microsoft.com/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryexw
+    [LibraryImport("KERNEL32", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    [PreserveSig]
+    public static partial nint LoadLibraryExW(PWSTR lpLibFileName, nint hFile, LOAD_LIBRARY_FLAGS dwFlags);
+
+    // https://learn.microsoft.com/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary
+    [LibraryImport("KERNEL32", SetLastError = true)]
+    [PreserveSig]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool FreeLibrary(nint hLibModule);
+
+    // https://learn.microsoft.com/windows/win32/api/winnls/nf-winnls-getthreaduilanguage
+    [LibraryImport("KERNEL32")]
+    [PreserveSig]
+    public static partial ushort GetThreadUILanguage();
+
+    // https://learn.microsoft.com/windows/win32/api/winnls/nf-winnls-setthreaduilanguage
+    [LibraryImport("KERNEL32", SetLastError = true)]
+    [PreserveSig]
+    public static partial ushort SetThreadUILanguage(ushort LangId);
+
+    // https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-loadstringw
+    [LibraryImport("USER32", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    [PreserveSig]
+    public static partial int LoadStringW(nint hInstance, uint uID, PWSTR lpBuffer, int cchBufferMax);
+
+    private static readonly ConcurrentDictionary<string, string?> _loadedStrings = new(StringComparer.OrdinalIgnoreCase);
+    public unsafe static string? LoadDllString(string libPath, uint id, int lcid = -1)
+    {
+        ArgumentNullException.ThrowIfNull(libPath);
+        if (lcid == -1) // default => current UI culture
+        {
+            lcid = Thread.CurrentThread.CurrentUICulture.LCID;
+        }
+
+        var key = lcid + "!" + id + "!" + libPath;
+        if (_loadedStrings.TryGetValue(key, out var str))
+            return str;
+
+        var h = LoadLibraryExW(PWSTR.From(libPath), 0, LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+        if (h == 0)
+        {
+            _loadedStrings[key] = null;
+            return null;
+        }
+
+        var oldLcid = GetThreadUILanguage();
+        SetThreadUILanguage((ushort)lcid);
+        try
+        {
+            long ptr = 0;
+            var ret = LoadStringW(h, id, new PWSTR((nint)(&ptr)), 0);
+            if (ret == 0)
+            {
+                _loadedStrings[key] = null;
+                return null;
+            }
+
+            var pwstr = new PWSTR((nint)ptr);
+            str = pwstr.ToString(ret) ?? key;
+            _loadedStrings[key] = str;
+            return str;
+        }
+        finally
+        {
+            SetThreadUILanguage(oldLcid);
+            FreeLibrary(h);
+        }
+    }
 }

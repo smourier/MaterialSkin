@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace MaterialSkin.Controls;
+﻿namespace MaterialSkin.Controls;
 
 /// <summary>
 /// Defines the <see cref="MaterialButton" />
@@ -26,7 +24,13 @@ public partial class MaterialButton : Button, IMaterialControl
     {
         base.InitLayout();
         Invalidate();
-        LocationChanged += (sender, e) => { if (DrawShadows) Parent?.Invalidate(); };
+        LocationChanged += (sender, e) =>
+        {
+            if (DrawShadows)
+            {
+                Parent?.Invalidate();
+            }
+        };
     }
 
     /// <summary>
@@ -167,11 +171,7 @@ public partial class MaterialButton : Button, IMaterialControl
     public CharacterCasingEnum CharacterCasing { get => _cc; set { _cc = value; Invalidate(); } }
 
     [DefaultValue(true)]
-    public override bool AutoSize
-    {
-        get => base.AutoSize;
-        set => base.AutoSize = value;
-    }
+    public override bool AutoSize { get => base.AutoSize; set => base.AutoSize = value; }
 
     /// <summary>
     /// Gets or sets the Text

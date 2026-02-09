@@ -13,47 +13,29 @@ public class MaterialSnackBar : MaterialForm
     private bool _closingAnimationDone;
     private bool _closeAnimation;
 
-    public MaterialSnackBar()
-        : this("SnackBar Text", 3000, false, "OK", false)
-    {
-    }
-
     public MaterialSnackBar(string text)
-        : this(text, 3000, false, "OK", false)
+        : this(text, 3000, false, null, false)
     {
     }
 
     public MaterialSnackBar(string text, int duration)
-        : this(text, duration, false, "OK", false)
+        : this(text, duration, false, null, false)
     {
     }
 
-    public MaterialSnackBar(string text, string actionButtonText)
-        : this(text, 3000, true, actionButtonText, false)
-    {
-    }
-
-    public MaterialSnackBar(string text, string actionButtonText, bool useAccentColor)
+    public MaterialSnackBar(string text, string? actionButtonText, bool useAccentColor = false)
         : this(text, 3000, true, actionButtonText, useAccentColor)
     {
     }
 
-    public MaterialSnackBar(string text, int duration, string actionButtonText)
-        : this(text, duration, true, actionButtonText, false)
-    {
-    }
-
-    public MaterialSnackBar(string text, int duration, string actionButtonText, bool useAccentColor)
+    public MaterialSnackBar(string text, int duration, string? actionButtonText, bool useAccentColor = false)
         : this(text, duration, true, actionButtonText, useAccentColor)
     {
     }
 
-    /// <summary>
-    /// Constructer Setting up the Layout
-    /// </summary>
-    public MaterialSnackBar(string text, int duration, bool showActionButton, string actionButtonText, bool useAccentColor)
+    public MaterialSnackBar(string text, int duration, bool showActionButton, string? actionButtonText, bool useAccentColor)
     {
-        Text = text;
+        Text = text ?? string.Empty;
         Duration = duration;
         TopMost = true;
         ShowInTaskbar = false;
@@ -62,7 +44,7 @@ public class MaterialSnackBar : MaterialForm
         BackColor = SkinManager.SnackBarBackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
-        ActionButtonText = actionButtonText;
+        ActionButtonText = actionButtonText ?? FlexibleMaterialForm.GetButtonText(ButtonId.Ok);
         UseAccentColor = useAccentColor;
         Height = 48;
         MinimumSize = new Size(344, 48);
@@ -105,6 +87,7 @@ public class MaterialSnackBar : MaterialForm
 
         UpdateRects();
     }
+
     [Category("Action")]
     [Description("Fires when Action button is clicked")]
     public event EventHandler? ActionButtonClick;
@@ -250,27 +233,18 @@ public class MaterialSnackBar : MaterialForm
         Close();
     }
 
-    // Prevents the Form from beeing dragged
+    // Prevents the Form from being dragged
     protected override void WndProc(ref Message message)
     {
-        const int WM_SYSCOMMAND = 0x0112;
-        const int SC_MOVE = 0xF010;
-
         switch (message.Msg)
         {
-            case WM_SYSCOMMAND:
+            case Constants.WM_SYSCOMMAND:
                 var command = message.WParam.ToInt32() & 0xfff0;
-                if (command == SC_MOVE)
+                if (command == Constants.SC_MOVE)
                     return;
                 break;
         }
 
         base.WndProc(ref message);
-    }
-
-    public new void Show()
-    {
-        if (Owner == null)
-            throw new NotSupportedException();
     }
 }

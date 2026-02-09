@@ -71,6 +71,7 @@ public partial class MaterialForm : Form, IMaterialControl
     private Rectangle ActionBarBounds => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight, ClientSize.Width, _actionBarHeight);
     private Rectangle DrawerButtonBounds => new(ClientRectangle.X + (SkinManager.FORM_PADDING / 2) + 3, _statusBarHeight + (_actionBarHeight / 2) - (_actionBarHeightDefault / 2), _actionBarHeightDefault, _actionBarHeightDefault);
     private Rectangle StatusBarBounds => new(ClientRectangle.X, ClientRectangle.Y, ClientSize.Width, _statusBarHeight);
+
     private bool Maximized
     {
         get => WindowState == FormWindowState.Maximized;
@@ -139,18 +140,10 @@ public partial class MaterialForm : Form, IMaterialControl
     public int DrawerWidth { get; set; }
 
     [Category("Drawer")]
-    public bool DrawerAutoHide
-    {
-        get;
-        set => _drawerControl.AutoHide = field = value;
-    }
+    public bool DrawerAutoHide { get; set => _drawerControl.AutoHide = field = value; }
 
     [Category("Drawer")]
-    public bool DrawerAutoShow
-    {
-        get;
-        set => _drawerControl.AutoShow = field = value;
-    }
+    public bool DrawerAutoShow { get; set => _drawerControl.AutoShow = field = value; }
 
     [Category("Drawer")]
     public int DrawerIndicatorWidth { get; set; }
@@ -161,14 +154,19 @@ public partial class MaterialForm : Form, IMaterialControl
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             field = value;
 
             if (value)
+            {
                 _drawerControl?.Show();
+            }
             else
+            {
                 _drawerControl?.Hide();
+            }
         }
     }
 
@@ -178,11 +176,13 @@ public partial class MaterialForm : Form, IMaterialControl
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             field = value;
 
-            if (_drawerControl == null) return;
+            if (_drawerControl == null)
+                return;
 
             _drawerControl.UseColors = value;
             _drawerControl.Refresh();
@@ -195,11 +195,13 @@ public partial class MaterialForm : Form, IMaterialControl
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             field = value;
 
-            if (_drawerControl == null) return;
+            if (_drawerControl == null)
+                return;
 
             _drawerControl.HighlightWithAccent = value;
             _drawerControl.Refresh();
@@ -212,11 +214,13 @@ public partial class MaterialForm : Form, IMaterialControl
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             field = value;
 
-            if (_drawerControl == null) return;
+            if (_drawerControl == null)
+                return;
 
             _drawerControl.BackgroundWithAccent = value;
             _drawerControl.Refresh();
@@ -227,171 +231,7 @@ public partial class MaterialForm : Form, IMaterialControl
     public MaterialTabControl? DrawerTabControl { get; set; }
 
     [AllowNull]
-    public override string Text
-    {
-        get => base.Text;
-        set { base.Text = value; Invalidate(); }
-    }
-
-    /// <summary>
-    /// Various directions the form can be resized in
-    /// </summary>
-    private enum ResizeDirection
-    {
-        BottomLeft,
-        Left,
-        Right,
-        BottomRight,
-        Bottom,
-        Top,
-        TopLeft,
-        TopRight,
-        None
-    }
-
-    /// <summary>
-    /// The states a button can be in
-    /// </summary>
-    private enum ButtonState
-    {
-        XOver,
-        MaxOver,
-        MinOver,
-        DrawerOver,
-        XDown,
-        MaxDown,
-        MinDown,
-        DrawerDown,
-        None
-    }
-
-    /// <summary>
-    /// Window Messages
-    /// <see href="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-messages-and-message-queues"/>
-    /// </summary>
-    private enum WM
-    {
-        /// <summary>
-        /// WM_NCCALCSIZE
-        /// </summary>
-        NonClientCalcSize = 0x0083,
-        /// <summary>
-        /// WM_NCACTIVATE
-        /// </summary>
-        NonClientActivate = 0x0086,
-        /// <summary>
-        /// WM_NCLBUTTONDOWN
-        /// </summary>
-        NonClientLeftButtonDown = 0x00A1,
-        /// <summary>
-        /// WM_SYSCOMMAND
-        /// </summary>
-        SystemCommand = 0x0112,
-        /// <summary>
-        /// WM_MOUSEMOVE
-        /// </summary>
-        MouseMove = 0x0200,
-        /// <summary>
-        /// WM_LBUTTONDOWN
-        /// </summary>
-        LeftButtonDown = 0x0201,
-        /// <summary>
-        /// WM_LBUTTONUP
-        /// </summary>
-        LeftButtonUp = 0x0202,
-        /// <summary>
-        /// WM_LBUTTONDBLCLK
-        /// </summary>
-        LeftButtonDoubleClick = 0x0203,
-        /// <summary>
-        /// WM_RBUTTONDOWN
-        /// </summary>
-        RightButtonDown = 0x0204,
-    }
-
-    /// <summary>
-    /// Hit Test Results
-    /// <see href="https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest"/>
-    /// </summary>
-    private enum HT
-    {
-        /// <summary>
-        /// HTNOWHERE - Nothing under cursor
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// HTCAPTION - Titlebar
-        /// </summary>
-        Caption = 2,
-        /// <summary>
-        /// HTLEFT - Left border
-        /// </summary>
-        Left = 10,
-        /// <summary>
-        /// HTRIGHT - Right border
-        /// </summary>
-        Right = 11,
-        /// <summary>
-        /// HTTOP - Top border
-        /// </summary>
-        Top = 12,
-        /// <summary>
-        /// HTTOPLEFT - Top left corner
-        /// </summary>
-        TopLeft = 13,
-        /// <summary>
-        /// HTTOPRIGHT - Top right corner
-        /// </summary>
-        TopRight = 14,
-        /// <summary>
-        /// HTBOTTOM - Bottom border
-        /// </summary>
-        Bottom = 15,
-        /// <summary>
-        /// HTBOTTOMLEFT - Bottom left corner
-        /// </summary>
-        BottomLeft = 16,
-        /// <summary>
-        /// HTBOTTOMRIGHT - Bottom right corner
-        /// </summary>
-        BottomRight = 17,
-    }
-
-    /// <summary>
-    /// Window Styles
-    /// <see href="https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles"/>
-    /// </summary>
-    private enum WS
-    {
-        /// <summary>
-        /// WS_MINIMIZEBOX - Allow minimizing from taskbar
-        /// </summary>
-        MinimizeBox = 0x20000,
-        /// <summary>
-        /// WS_SIZEFRAME - Required for Aero Snapping
-        /// </summary>
-        SizeFrame = 0x40000,
-        /// <summary>
-        /// WS_SYSMENU - Trigger the creation of the system menu
-        /// </summary>
-        SysMenu = 0x80000,
-    }
-
-    /// <summary>
-    /// Track Popup Menu Flags
-    /// <see href="https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu"/>
-    /// </summary>
-    private enum TPM
-    {
-        /// <summary>
-        /// TPM_LEFTALIGN
-        /// </summary>
-        LeftAlign = 0x0000,
-        /// <summary>
-        /// TPM_RETURNCMD
-        /// </summary>
-        ReturnCommand = 0x0100,
-    }
+    public override string Text { get => base.Text; set { base.Text = value; Invalidate(); } }
 
     protected void AddDrawerOverlayForm()
     {
@@ -1200,5 +1040,165 @@ public partial class MaterialForm : Form, IMaterialControl
             return Functions.SetWindowLongPtrW(hWnd, nIndex, dwNewLong);
 
         return Functions.SetWindowLongW(hWnd, nIndex, dwNewLong.ToInt32());
+    }
+
+    /// <summary>
+    /// Various directions the form can be resized in
+    /// </summary>
+    private enum ResizeDirection
+    {
+        BottomLeft,
+        Left,
+        Right,
+        BottomRight,
+        Bottom,
+        Top,
+        TopLeft,
+        TopRight,
+        None
+    }
+
+    /// <summary>
+    /// The states a button can be in
+    /// </summary>
+    private enum ButtonState
+    {
+        XOver,
+        MaxOver,
+        MinOver,
+        DrawerOver,
+        XDown,
+        MaxDown,
+        MinDown,
+        DrawerDown,
+        None
+    }
+
+    /// <summary>
+    /// Window Messages
+    /// <see href="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-messages-and-message-queues"/>
+    /// </summary>
+    private enum WM
+    {
+        /// <summary>
+        /// WM_NCCALCSIZE
+        /// </summary>
+        NonClientCalcSize = 0x0083,
+        /// <summary>
+        /// WM_NCACTIVATE
+        /// </summary>
+        NonClientActivate = 0x0086,
+        /// <summary>
+        /// WM_NCLBUTTONDOWN
+        /// </summary>
+        NonClientLeftButtonDown = 0x00A1,
+        /// <summary>
+        /// WM_SYSCOMMAND
+        /// </summary>
+        SystemCommand = 0x0112,
+        /// <summary>
+        /// WM_MOUSEMOVE
+        /// </summary>
+        MouseMove = 0x0200,
+        /// <summary>
+        /// WM_LBUTTONDOWN
+        /// </summary>
+        LeftButtonDown = 0x0201,
+        /// <summary>
+        /// WM_LBUTTONUP
+        /// </summary>
+        LeftButtonUp = 0x0202,
+        /// <summary>
+        /// WM_LBUTTONDBLCLK
+        /// </summary>
+        LeftButtonDoubleClick = 0x0203,
+        /// <summary>
+        /// WM_RBUTTONDOWN
+        /// </summary>
+        RightButtonDown = 0x0204,
+    }
+
+    /// <summary>
+    /// Hit Test Results
+    /// <see href="https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest"/>
+    /// </summary>
+    private enum HT
+    {
+        /// <summary>
+        /// HTNOWHERE - Nothing under cursor
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// HTCAPTION - Titlebar
+        /// </summary>
+        Caption = 2,
+        /// <summary>
+        /// HTLEFT - Left border
+        /// </summary>
+        Left = 10,
+        /// <summary>
+        /// HTRIGHT - Right border
+        /// </summary>
+        Right = 11,
+        /// <summary>
+        /// HTTOP - Top border
+        /// </summary>
+        Top = 12,
+        /// <summary>
+        /// HTTOPLEFT - Top left corner
+        /// </summary>
+        TopLeft = 13,
+        /// <summary>
+        /// HTTOPRIGHT - Top right corner
+        /// </summary>
+        TopRight = 14,
+        /// <summary>
+        /// HTBOTTOM - Bottom border
+        /// </summary>
+        Bottom = 15,
+        /// <summary>
+        /// HTBOTTOMLEFT - Bottom left corner
+        /// </summary>
+        BottomLeft = 16,
+        /// <summary>
+        /// HTBOTTOMRIGHT - Bottom right corner
+        /// </summary>
+        BottomRight = 17,
+    }
+
+    /// <summary>
+    /// Window Styles
+    /// <see href="https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles"/>
+    /// </summary>
+    private enum WS
+    {
+        /// <summary>
+        /// WS_MINIMIZEBOX - Allow minimizing from taskbar
+        /// </summary>
+        MinimizeBox = 0x20000,
+        /// <summary>
+        /// WS_SIZEFRAME - Required for Aero Snapping
+        /// </summary>
+        SizeFrame = 0x40000,
+        /// <summary>
+        /// WS_SYSMENU - Trigger the creation of the system menu
+        /// </summary>
+        SysMenu = 0x80000,
+    }
+
+    /// <summary>
+    /// Track Popup Menu Flags
+    /// <see href="https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenu"/>
+    /// </summary>
+    private enum TPM
+    {
+        /// <summary>
+        /// TPM_LEFTALIGN
+        /// </summary>
+        LeftAlign = 0x0000,
+        /// <summary>
+        /// TPM_RETURNCMD
+        /// </summary>
+        ReturnCommand = 0x0100,
     }
 }

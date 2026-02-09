@@ -21,14 +21,14 @@
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<Description>Google's Material Design for your windows forms. MaterialSkin 2 is a Google's Material Design skin for you windows forms app. This updated version brings new user controls, unified theming and consistency. This package supersedes the MaterialSkin package By IgnaceMaes. Example app and documentation is available on the project site.</Description>
 		<PackageReleaseNotes>See GitHub page for release notes.</PackageReleaseNotes>
-		<Copyright>Copyright Leonardo C Bottaro © 2021-2026 All rights reserved.</Copyright>
+		<Copyright>Copyright Material Skin authors © 2021-2026 All rights reserved.</Copyright>
 		<PackageTags>material design materialdesign google forms theme skin</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
-		<Version>3.0.0</Version>
-		<ProductVersion>3.0.0</ProductVersion>
-		<FileVersion>3.0.0</FileVersion>
-		<InformationalVersion>3.0.0</InformationalVersion>
+		<Version>3.0.1</Version>
+		<ProductVersion>3.0.1</ProductVersion>
+		<FileVersion>3.0.1</FileVersion>
+		<InformationalVersion>3.0.1</InformationalVersion>
 		<SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
 
 	</PropertyGroup>

@@ -71,7 +71,6 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
 internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, IMaterialControl
 {
     private const int _leftPadding = 16;
-    private const int _rightPadding = 8;
 
     //Properties for managing the material design properties
     public int Depth { get; set; }
@@ -87,7 +86,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
         var itemRect = GetItemRect(e.Item);
-        var textRect = new Rectangle(_leftPadding, itemRect.Y, itemRect.Width - (_leftPadding + _rightPadding), itemRect.Height);
+        var textRect = new Rectangle(_leftPadding, itemRect.Y, itemRect.Width - _leftPadding, itemRect.Height);
 
         using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(e.Text, SkinManager.GetLogFontByType(FontType.Body2),
@@ -149,11 +148,11 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         var arrowBrush = e.Item?.Enabled == true ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
         using var arrowPath = new GraphicsPath();
         arrowPath.AddLines(
-            [
-                new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y - arrowSize),
-                new Point(arrowMiddle.X, arrowMiddle.Y),
-                new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y + arrowSize)
-                ]);
+        [
+            new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y - arrowSize),
+            new Point(arrowMiddle.X, arrowMiddle.Y),
+            new Point(arrowMiddle.X - arrowSize, arrowMiddle.Y + arrowSize)
+        ]);
         arrowPath.CloseFigure();
         g.FillPath(arrowBrush, arrowPath);
     }

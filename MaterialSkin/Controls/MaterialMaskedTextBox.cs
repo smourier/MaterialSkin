@@ -235,6 +235,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     [Browsable(false)]
     public override Color ForeColor { get; set; }
+
     [Category("Material Skin"), DefaultValue(true), Description("Using a larger size enables the hint to always be visible")]
     public bool UseTallSize
     {
@@ -256,11 +257,14 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         {
             field = value;
             if (field)
+            {
                 _helperTextHeight = _helperTextHeightDefault;
+            }
             else
+            {
                 _helperTextHeight = 0;
+            }
             UpdateHeight();
-            //UpdateRects();
             Invalidate();
         }
     }
@@ -303,10 +307,11 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
     [Category("Material Skin"), DefaultValue(true)]
     public bool UseAccent { get; set; }
 
-    [Category("Material Skin"), Browsable(true), Localizable(false)]
+
     /// <summary>
     /// Gets or sets the leading Icon
     /// </summary>
+    [Category("Material Skin"), Browsable(true), Localizable(false)]
     public Image? LeadingIcon
     {
         get;
@@ -319,10 +324,10 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         }
     }
 
-    [Category("Material Skin"), Browsable(true), Localizable(false)]
     /// <summary>
     /// Gets or sets the trailing Icon
     /// </summary>
+    [Category("Material Skin"), Browsable(true), Localizable(false)]
     public Image? TrailingIcon
     {
         get;
@@ -344,9 +349,13 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
             field = value;
             UpdateRects();            //Génére une nullref exception
             if (field == PrefixSuffixTypes.Suffix)
+            {
                 RightToLeft = RightToLeft.Yes;
+            }
             else
+            {
                 RightToLeft = RightToLeft.No;
+            }
             Invalidate();
         }
     }
@@ -1065,31 +1074,43 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
 
     private void ContextMenuStripOnItemClickStart(object? sender, ToolStripItemClickedEventArgs toolStripItemClickedEventArgs)
     {
-        switch (toolStripItemClickedEventArgs.ClickedItem?.Text)
+        if (toolStripItemClickedEventArgs.ClickedItem == null)
+            return;
+
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.UndoText)
         {
-            case "Undo":
-                Undo();
-                break;
+            Undo();
+            return;
+        }
 
-            case "Cut":
-                Cut();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CutText)
+        {
+            Cut();
+            return;
+        }
 
-            case "Copy":
-                Copy();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.CopyText)
+        {
+            Copy();
+            return;
+        }
 
-            case "Paste":
-                Paste();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.PasteText)
+        {
+            Paste();
+            return;
+        }
 
-            case "Delete":
-                SelectedText = string.Empty;
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.DeleteText)
+        {
+            SelectedText = string.Empty;
+            return;
+        }
 
-            case "Select All":
-                SelectAll();
-                break;
+        if (toolStripItemClickedEventArgs.ClickedItem.Text == BaseTextBoxContextMenuStrip.SelectAllText)
+        {
+            SelectAll();
+            return;
         }
     }
 
@@ -1097,12 +1118,12 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
     {
         if (sender is BaseTextBoxContextMenuStrip strip)
         {
-            strip.undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
-            strip.cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.copy.Enabled = !string.IsNullOrEmpty(SelectedText);
-            strip.paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
-            strip.delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
-            strip.selectAll.Enabled = !string.IsNullOrEmpty(Text);
+            strip.Undo.Enabled = _baseTextBox.CanUndo && !ReadOnly;
+            strip.Cut.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.Copy.Enabled = !string.IsNullOrEmpty(SelectedText);
+            strip.Paste.Enabled = Clipboard.ContainsText() && !ReadOnly;
+            strip.Delete.Enabled = !string.IsNullOrEmpty(SelectedText) && !ReadOnly;
+            strip.SelectAll.Enabled = !string.IsNullOrEmpty(Text);
         }
     }
 

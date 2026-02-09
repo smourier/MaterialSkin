@@ -6,8 +6,6 @@ public class MaterialScrollBar : Control, IMaterialControl
 {
     internal const int _scrollBarDefaultSize = 10;
 
-    public const int WM_SETREDRAW = 0xb;
-
     private readonly Timer _progressTimer = new();
     private Timer? _autoHoverTimer;
     private bool _isHovered;
@@ -329,13 +327,13 @@ public class MaterialScrollBar : Control, IMaterialControl
     public bool HitTest(Point point) => _thumbRectangle.Contains(point);
     public void BeginUpdate()
     {
-        Functions.SendMessageW(Handle, WM_SETREDRAW, 0, 0);
+        Functions.SendMessageW(Handle, Constants.WM_SETREDRAW, 0, 0);
         _inUpdate = true;
     }
 
     public void EndUpdate()
     {
-        Functions.SendMessageW(Handle, WM_SETREDRAW, 1, 0);
+        Functions.SendMessageW(Handle, Constants.WM_SETREDRAW, 1, 0);
         _inUpdate = false;
         SetupScrollBar();
         Refresh();

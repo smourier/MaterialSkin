@@ -16,43 +16,49 @@ public class MaterialDialog : MaterialForm
     private readonly string _text;
     private readonly string _title;
 
-    public MaterialDialog(Form ParentForm)
-    : this(ParentForm, "Title", "Dialog box", "OK", false, "Cancel", false)
+    public MaterialDialog(Form parentForm, string text)
+        : this(parentForm, null, text, null, false, null, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Text)
-        : this(ParentForm, "Title", Text, "OK", false, "Cancel", false)
+    public MaterialDialog(Form parentForm, string? title, string text)
+        : this(parentForm, title, text, null, false, null, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text)
-        : this(ParentForm, Title, Text, "OK", false, "Cancel", false)
+    public MaterialDialog(Form parentForm, string? title, string text, string validationButtonText)
+        : this(parentForm, title, text, validationButtonText, false, null, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText)
-        : this(ParentForm, Title, Text, ValidationButtonText, false, "Cancel", false)
+    public MaterialDialog(Form parentForm, string? title, string text, bool showCancelButton)
+        : this(parentForm, title, text, null, showCancelButton, null, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton)
-        : this(ParentForm, Title, Text, "OK", ShowCancelButton, "Cancel", false)
+    public MaterialDialog(Form parentForm, string? title, string text, bool showCancelButton, string? cancelButtonText)
+        : this(parentForm, title, text, null, showCancelButton, cancelButtonText, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, bool ShowCancelButton, string CancelButtonText)
-        : this(ParentForm, Title, Text, "OK", ShowCancelButton, CancelButtonText, false)
+    public MaterialDialog(Form parentForm, string? title, string text, string? validationButtonText, bool showCancelButton, string? cancelButtonText)
+        : this(parentForm, title, text, validationButtonText, showCancelButton, cancelButtonText, false)
     {
     }
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText)
-        : this(ParentForm, Title, Text, ValidationButtonText, ShowCancelButton, CancelButtonText, false)
+    public MaterialDialog(Form parentForm, string? title, string text, string? validationButtonText, bool showCancelButton, string? cancelButtonText, bool useAccentColor)
     {
-    }
+        ArgumentNullException.ThrowIfNull(parentForm);
+        var asm = Assembly.GetEntryAssembly();
+        title ??= asm?.GetCustomAttribute<AssemblyTitleAttribute>()?.Title ??
+            asm?.GetCustomAttribute<AssemblyProductAttribute>()?.Product ??
+            asm?.GetName().Name ??
+            string.Empty;
 
-    public MaterialDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText, bool UseAccentColor)
-    {
+        text ??= string.Empty;
+        validationButtonText ??= FlexibleMaterialForm.GetButtonText(ButtonId.Ok);
+        cancelButtonText ??= FlexibleMaterialForm.GetButtonText(ButtonId.Cancel);
+
         _formOverlay = new Form
         {
             BackColor = Color.Black,
@@ -63,16 +69,16 @@ public class MaterialDialog : MaterialForm
             ShowIcon = false,
             ControlBox = false,
             FormBorderStyle = FormBorderStyle.None,
-            Size = new Size(ParentForm.Width, ParentForm.Height),
+            Size = new Size(parentForm.Width, parentForm.Height),
             ShowInTaskbar = false,
-            Owner = ParentForm,
+            Owner = parentForm,
             Visible = true,
-            Location = new Point(ParentForm.Location.X, ParentForm.Location.Y),
+            Location = new Point(parentForm.Location.X, parentForm.Location.Y),
             Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
         };
 
-        _title = Title;
-        if (Title.Length == 0)
+        _title = title;
+        if (title.Length == 0)
         {
             _header_Height = 0;
         }
@@ -81,7 +87,7 @@ public class MaterialDialog : MaterialForm
             _header_Height = 40;
         }
 
-        _text = Text;
+        _text = text;
         ShowInTaskbar = false;
         Sizable = false;
 
@@ -100,18 +106,19 @@ public class MaterialDialog : MaterialForm
             DialogResult = DialogResult.OK,
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = UseAccentColor,
-            Text = ValidationButtonText
+            UseAccentColor = useAccentColor,
+            Text = validationButtonText
         };
+
         _cancelButton = new MaterialButton
         {
             AutoSize = false,
             DialogResult = DialogResult.Cancel,
             DrawShadows = false,
             Type = MaterialButtonType.Text,
-            UseAccentColor = UseAccentColor,
-            Visible = ShowCancelButton,
-            Text = CancelButtonText
+            UseAccentColor = useAccentColor,
+            Visible = showCancelButton,
+            Text = cancelButtonText
         };
 
         AcceptButton = _validationButton;
@@ -140,7 +147,7 @@ public class MaterialDialog : MaterialForm
         Height = _header_Height + _textTopPadding + textRect.Height + _textBottomPadding + 52; //560;
         Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        var _buttonWidth = TextRenderer.MeasureText(validationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
         var _validationbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _validationButton.Width = _validationbuttonBounds.Width;
         _validationButton.Height = _validationbuttonBounds.Height;
@@ -148,7 +155,7 @@ public class MaterialDialog : MaterialForm
         _validationButton.Left = _validationbuttonBounds.Left;  //Button minimum width management
         _validationButton.Visible = true;
 
-        _buttonWidth = TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        _buttonWidth = TextRenderer.MeasureText(cancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
         var _cancelbuttonBounds = new Rectangle(_validationbuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _cancelButton.Width = _cancelbuttonBounds.Width;
         _cancelButton.Height = _cancelbuttonBounds.Height;
@@ -247,18 +254,15 @@ public class MaterialDialog : MaterialForm
     }
 
     /// <summary>
-    /// Prevents the Form from beeing dragged
+    /// Prevents the Form from being dragged
     /// </summary>
     protected override void WndProc(ref Message message)
     {
-        const int WM_SYSCOMMAND = 0x0112;
-        const int SC_MOVE = 0xF010;
-
         switch (message.Msg)
         {
-            case WM_SYSCOMMAND:
+            case Constants.WM_SYSCOMMAND:
                 var command = message.WParam.ToInt32() & 0xfff0;
-                if (command == SC_MOVE)
+                if (command == Constants.SC_MOVE)
                     return;
                 break;
         }

@@ -44,12 +44,12 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     {
         ShowValidationButtons = true;
         ValidationButtonEnable = false;
-        ValidationButtonText = "SAVE";
-        CancelButtonText = "CANCEL";
+        ValidationButtonText = Functions.LoadDllString("shell32.dll", 38243) ?? "SAVE";
+        CancelButtonText = FlexibleMaterialForm.GetButtonText(ButtonId.Cancel);
         ShowCollapseExpand = true;
         Collapse = false;
-        Title = "Title";
-        Description = "Description";
+        Title = Functions.LoadDllString("propsys.dll", 38662) ?? "Title";
+        Description = Functions.LoadDllString("propsys.dll", 38948) ?? "Description";
         DrawShadows = true;
         ExpandHeight = 240;
         AutoScroll = false;
@@ -69,7 +69,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             UseAccentColor = UseAccentColor,
             Enabled = ValidationButtonEnable,
             Visible = ShowValidationButtons,
-            Text = "SAVE"
+            Text = Functions.LoadDllString("shell32.dll", 38243) ?? "SAVE"
         };
 
         _cancelButton = new MaterialButton
@@ -78,7 +78,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             Type = MaterialButtonType.Text,
             UseAccentColor = UseAccentColor,
             Visible = ShowValidationButtons,
-            Text = "CANCEL"
+            Text = FlexibleMaterialForm.GetButtonText(ButtonId.Cancel)
         };
 
         if (!Controls.Contains(_validationButton))

@@ -224,7 +224,7 @@ public partial class MainForm : MaterialForm
 
     private void MaterialSwitch9_CheckedChanged(object sender, EventArgs e) => DrawerAutoShow = materialSwitch9.Checked;
     private void MaterialTextBox2_LeadingIconClick(object sender, EventArgs e) => new MaterialSnackBar("Leading Icon Click").Show(this);
-    private void MaterialButton6_Click(object sender, EventArgs e) => new MaterialSnackBar("SnackBar started succesfully", "OK", true).Show(this);
+    private void MaterialButton6_Click(object sender, EventArgs e) => new MaterialSnackBar("SnackBar started succesfully", null, true).Show(this);
     private void MaterialSwitch10_CheckedChanged(object sender, EventArgs e) => materialTextBox21.UseAccent = materialSwitch10.Checked;
     private void MaterialSwitch11_CheckedChanged(object sender, EventArgs e) => materialTextBox21.UseTallSize = materialSwitch11.Checked;
     private void MaterialSwitch12_CheckedChanged(object sender, EventArgs e)
@@ -286,7 +286,7 @@ public partial class MainForm : MaterialForm
     private void MsReadOnly_CheckedChanged(object sender, EventArgs e) => materialCheckbox1.ReadOnly = msReadOnly.Checked;
     private void MaterialButton25_Click(object sender, EventArgs e)
     {
-        var materialDialog = new MaterialDialog(this, "Dialog Title", "Dialogs inform users about a task and can contain critical information, require decisions, or involve multiple tasks.", "OK", true, "Cancel");
+        var materialDialog = new MaterialDialog(this, null, "Dialogs inform users about a task and can contain critical information, require decisions, or involve multiple tasks.", showCancelButton: true);
         var result = materialDialog.ShowDialog(this);
 
         var SnackBarMessage = new MaterialSnackBar(result.ToString(), 750);

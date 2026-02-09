@@ -32,7 +32,7 @@ public class MaterialSlider : Control, IMaterialControl
         RangeMax = 100;
         RangeMin = 0;
         Size = new Size(250, _thumbRadiusHoverPressed);
-        Text = "My Data";
+        Text = Functions.LoadDllString("shell32.dll", 4256) ?? "(None)";
         Value = 50;
         ValueSuffix = string.Empty;
         ShowText = true;
