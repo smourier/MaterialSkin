@@ -1,70 +1,45 @@
 ﻿namespace MaterialSkin;
 
-public class MouseWheelRedirector : IMessageFilter
+public static class MouseWheelRedirector
 {
-    private static MouseWheelRedirector? _instance = null;
-#pragma warning disable IDE1006 // Naming Styles
-    private const int WM_MOUSEWHEEL = 0x20A;
-#pragma warning restore IDE1006 // Naming Styles
-
-    public static bool Active
-    {
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                if (field)
-                {
-                    _instance ??= new MouseWheelRedirector();
-                    Application.AddMessageFilter(_instance);
-                }
-                else if (_instance != null)
-                {
-                    Application.RemoveMessageFilter(_instance);
-                }
-            }
-        }
-
-        get;
-    } = false;
+    private static readonly Filter _filter = new();
+    private static int _controls;
+    private static Control? _currentControl;
 
     public static void Attach(Control control)
     {
-        if (!Active)
+        if (Interlocked.Increment(ref _controls) == 1)
         {
-            Active = true;
+            //Application.AddMessageFilter(_filter);
         }
 
-        control.MouseEnter += _instance!.ControlMouseEnter;
-        control.MouseLeave += _instance.ControlMouseLeaveOrDisposed;
-        control.Disposed += _instance.ControlMouseLeaveOrDisposed;
+        control.MouseEnter += ControlMouseEnter;
+        control.MouseLeave += ControlMouseLeaveOrDisposed;
+        control.Disposed += ControlMouseLeaveOrDisposed;
     }
 
     public static void Detach(Control control)
     {
-        if (_instance == null)
-            return;
+        control.MouseEnter -= ControlMouseEnter;
+        control.MouseLeave -= ControlMouseLeaveOrDisposed;
+        control.Disposed -= ControlMouseLeaveOrDisposed;
 
-        control.MouseEnter -= _instance.ControlMouseEnter;
-        control.MouseLeave -= _instance.ControlMouseLeaveOrDisposed;
-        control.Disposed -= _instance.ControlMouseLeaveOrDisposed;
-
-        if (_instance._currentControl == control)
+        if (_currentControl == control)
         {
-            _instance._currentControl = null;
+            _currentControl = null;
+        }
+
+        if (Interlocked.Decrement(ref _controls) == 0)
+        {
+            Application.RemoveMessageFilter(_filter);
         }
     }
 
-    private Control? _currentControl;
-
-    public MouseWheelRedirector()
+    private static void ControlMouseEnter(object? sender, EventArgs e)
     {
-    }
+        if (sender is not Control control)
+            return;
 
-    private void ControlMouseEnter(object? sender, EventArgs e)
-    {
-        var control = (Control)sender!;
         if (!control.Focused)
         {
             _currentControl = control;
@@ -75,7 +50,7 @@ public class MouseWheelRedirector : IMessageFilter
         }
     }
 
-    private void ControlMouseLeaveOrDisposed(object? sender, EventArgs e)
+    private static void ControlMouseLeaveOrDisposed(object? sender, EventArgs e)
     {
         if (_currentControl == sender)
         {
@@ -83,13 +58,19 @@ public class MouseWheelRedirector : IMessageFilter
         }
     }
 
-    public bool PreFilterMessage(ref Message m)
+    private sealed class Filter : IMessageFilter
     {
-        if (_currentControl != null && m.Msg == WM_MOUSEWHEEL)
+        public bool PreFilterMessage(ref Message m)
         {
-            Functions.SendMessageW(_currentControl.Handle, m.Msg, m.WParam, m.LParam);
-            return true;
+            if (_currentControl != null &&
+                !_currentControl.IsDisposed &&
+                _currentControl.Handle != 0 &&
+                m.Msg == Constants.WM_MOUSEWHEEL)
+            {
+                Functions.SendMessageW(_currentControl.Handle, m.Msg, m.WParam, m.LParam);
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 }

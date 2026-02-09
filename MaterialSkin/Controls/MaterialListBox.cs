@@ -279,8 +279,9 @@ public partial class MaterialListBox : Control, IMaterialControl
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
         var mainRect = new Rectangle(0, 0, Width - (ShowBorder ? 1 : 0), Height - (ShowBorder ? 1 : 0));
 
-        var lastItem = (_scrollBar?.Value ?? 0 / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (_scrollBar?.Value ?? 0 / _itemHeight) + (Height / _itemHeight) + 1;
-        var firstItem = (_scrollBar?.Value ?? 0) / _itemHeight < 0 ? 0 : (_scrollBar?.Value ?? 0 / _itemHeight);
+        var sbv = _scrollBar?.Value ?? 0;
+        var lastItem = (sbv / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (sbv / _itemHeight) + (Height / _itemHeight) + 1;
+        var firstItem = sbv / _itemHeight < 0 ? 0 : (sbv / _itemHeight);
 
         g.FillRectangle(Enabled ? SkinManager.BackgroundBrush : SkinManager.BackgroundDisabledBrush, mainRect);
 

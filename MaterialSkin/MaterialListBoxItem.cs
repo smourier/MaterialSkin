@@ -1,32 +1,13 @@
 ﻿namespace MaterialSkin;
 
-public class MaterialListBoxItem
+public class MaterialListBoxItem(string text, string? secondarytext = null, object? tag = null)
 {
     public MaterialListBoxItem()
+        : this("ListBoxItem", string.Empty)
     {
-        Text = "ListBoxItem";
-        SecondaryText = "";
     }
 
-    public MaterialListBoxItem(string text)
-    {
-        Text = text;
-    }
-
-    public MaterialListBoxItem(string text, string secondarytext)
-    {
-        Text = text;
-        SecondaryText = secondarytext;
-    }
-
-    public MaterialListBoxItem(string text, string secondarytext, object tag)
-    {
-        Text = text;
-        SecondaryText = secondarytext;
-        Tag = tag;
-    }
-
-    public string Text { get; set; }
-    public string? SecondaryText { get; set; }
-    public object? Tag { get; set; }
+    public string Text { get; set; } = text;
+    public string? SecondaryText { get; set; } = secondarytext;
+    public object? Tag { get; set; } = tag;
 }

@@ -86,9 +86,7 @@ public class MaterialScrollBar : Control, IMaterialControl
         }
 
         if (Scroll == null)
-        {
             return;
-        }
 
         if (orientation == ScrollOrientation.HorizontalScroll)
         {
@@ -152,7 +150,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     }
 
     [DefaultValue(false)]
-    public bool HighlightOnWheel { get; set; } = false;
+    public bool HighlightOnWheel { get; set; }
 
     public MaterialScrollOrientation Orientation
     {

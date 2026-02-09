@@ -52,6 +52,7 @@ public partial class MaterialForm : Form, IMaterialControl
             AnimationType = AnimationType.EaseOut,
             Increment = 0.04
         };
+
         _clickAnimManager.OnAnimationProgress += (sender, e) => Invalidate();
 
         // Drawer
@@ -417,7 +418,7 @@ public partial class MaterialForm : Form, IMaterialControl
         _drawerOverlay.Opacity = 0;
         _drawerOverlay.MinimizeBox = false;
         _drawerOverlay.MaximizeBox = false;
-        _drawerOverlay.Text = "";
+        _drawerOverlay.Text = string.Empty;
         _drawerOverlay.ShowIcon = false;
         _drawerOverlay.ControlBox = false;
         _drawerOverlay.FormBorderStyle = FormBorderStyle.None;
@@ -433,7 +434,7 @@ public partial class MaterialForm : Form, IMaterialControl
         _drawerForm.TransparencyKey = Color.LimeGreen;
         _drawerForm.MinimizeBox = false;
         _drawerForm.MaximizeBox = false;
-        _drawerForm.Text = "";
+        _drawerForm.Text = string.Empty;
         _drawerForm.ShowIcon = false;
         _drawerForm.ControlBox = false;
         _drawerForm.FormBorderStyle = FormBorderStyle.None;
@@ -556,14 +557,7 @@ public partial class MaterialForm : Form, IMaterialControl
 
         _drawerControl.DrawerShowIconsWhenHiddenChanged += FixFormPadding;
         FixFormPadding(this, EventArgs.Empty);
-
-        // Fix Closing the Drawer or Overlay form with Alt+F4 not exiting the app
-        _drawerOverlay.FormClosed += TerminateOnClose;
-        _drawerForm.FormClosed += TerminateOnClose;
-        MaterialDrawerForm.Attach(_drawerControl);
     }
-
-    private void TerminateOnClose(object? sender, FormClosedEventArgs e) => Application.Exit();
 
     private void FixFormPadding(object? sender, EventArgs e)
     {

@@ -34,7 +34,7 @@ public class MaterialSlider : Control, IMaterialControl
         Size = new Size(250, _thumbRadiusHoverPressed);
         Text = "My Data";
         Value = 50;
-        ValueSuffix = "";
+        ValueSuffix = string.Empty;
         ShowText = true;
         ShowValue = true;
         UseAccentColor = false;
@@ -294,8 +294,8 @@ public class MaterialSlider : Control, IMaterialControl
         Size valueSize;
         using (var NativeText = new NativeTextRenderer(CreateGraphics()))
         {
-            textSize = NativeText.MeasureLogString(ShowText ? Text : "", SkinManager.GetLogFontByType(FontType));
-            valueSize = NativeText.MeasureLogString(ShowValue ? RangeMax.ToString() + ValueSuffix : "", SkinManager.GetLogFontByType(FontType));
+            textSize = NativeText.MeasureLogString(ShowText ? Text : string.Empty, SkinManager.GetLogFontByType(FontType));
+            valueSize = NativeText.MeasureLogString(ShowValue ? RangeMax.ToString() + ValueSuffix : string.Empty, SkinManager.GetLogFontByType(FontType));
         }
 
         _valueRectangle = new Rectangle(Width - valueSize.Width - _thumbRadiusHoverPressed / 4, 0, valueSize.Width + _thumbRadiusHoverPressed / 4, Height);
