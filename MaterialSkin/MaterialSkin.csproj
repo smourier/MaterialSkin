@@ -53,6 +53,7 @@
 		<Using Include="System.Drawing.Imaging" />
 		<Using Include="System.Drawing.Text" />
 		<Using Include="System.Globalization" />
+		<Using Include="System.Reflection" />
 		<Using Include="System.Runtime.CompilerServices" />
 		<Using Include="System.Runtime.InteropServices" />
 		<Using Include="System.Runtime.InteropServices.Marshalling" />

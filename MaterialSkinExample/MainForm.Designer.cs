@@ -657,7 +657,6 @@ namespace MaterialSkinExample
             this.materialButton23.Density = MaterialSkin.Controls.MaterialButtonDensity.Default;
             this.materialButton23.Depth = 0;
             this.materialButton23.HighEmphasis = false;
-            this.materialButton23.Icon = global::MaterialSkinExample.Properties.Resources.baseline_fingerprint_black_24dp;
             this.materialButton23.Location = new System.Drawing.Point(280, 221);
             this.materialButton23.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton23.MouseState = MaterialSkin.MouseState.HOVER;
@@ -716,7 +715,6 @@ namespace MaterialSkinExample
             // 
             this.materialFloatingActionButton1.AnimateShowHideButton = true;
             this.materialFloatingActionButton1.Depth = 0;
-            this.materialFloatingActionButton1.Icon = global::MaterialSkinExample.Properties.Resources.plus;
             this.materialFloatingActionButton1.Location = new System.Drawing.Point(761, 221);
             this.materialFloatingActionButton1.Margin = new System.Windows.Forms.Padding(2);
             this.materialFloatingActionButton1.MouseState = MaterialSkin.MouseState.HOVER;
@@ -760,7 +758,6 @@ namespace MaterialSkinExample
             this.materialButton24.Density = MaterialSkin.Controls.MaterialButtonDensity.Default;
             this.materialButton24.Depth = 0;
             this.materialButton24.HighEmphasis = false;
-            this.materialButton24.Icon = global::MaterialSkinExample.Properties.Resources.baseline_bluetooth_black_24dp;
             this.materialButton24.Location = new System.Drawing.Point(522, 221);
             this.materialButton24.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton24.MouseState = MaterialSkin.MouseState.HOVER;
@@ -780,7 +777,6 @@ namespace MaterialSkinExample
             this.materialButton22.Density = MaterialSkin.Controls.MaterialButtonDensity.Default;
             this.materialButton22.Depth = 0;
             this.materialButton22.HighEmphasis = false;
-            this.materialButton22.Icon = global::MaterialSkinExample.Properties.Resources.baseline_favorite_border_black_24dp;
             this.materialButton22.Location = new System.Drawing.Point(32, 221);
             this.materialButton22.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialButton22.MouseState = MaterialSkin.MouseState.HOVER;
@@ -803,7 +799,6 @@ namespace MaterialSkinExample
             this.materialLabel8.Name = "materialLabel8";
             this.materialLabel8.Size = new System.Drawing.Size(891, 95);
             this.materialLabel8.TabIndex = 57;
-            this.materialLabel8.Text = resources.GetString("materialLabel8.Text");
             // 
             // materialButton19
             // 
@@ -1792,7 +1787,6 @@ namespace MaterialSkinExample
             this.materialMaskedTextBox1.HideSelection = false;
             this.materialMaskedTextBox1.Hint = "Phone number mask";
             this.materialMaskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Default;
-            this.materialMaskedTextBox1.LeadingIcon = global::MaterialSkinExample.Properties.Resources.round_phone_black_24dp;
             this.materialMaskedTextBox1.Location = new System.Drawing.Point(528, 437);
             this.materialMaskedTextBox1.Mask = "+00-0-00-00-00-00";
             this.materialMaskedTextBox1.MaxLength = 32767;
@@ -2131,7 +2125,6 @@ namespace MaterialSkinExample
             this.materialTextBox2.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialTextBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.materialTextBox2.Hint = "Password";
-            this.materialTextBox2.LeadingIcon = global::MaterialSkinExample.Properties.Resources.baseline_fingerprint_black_24dp;
             this.materialTextBox2.Location = new System.Drawing.Point(25, 282);
             this.materialTextBox2.MaxLength = 50;
             this.materialTextBox2.MouseState = MaterialSkin.MouseState.OUT;
@@ -2158,7 +2151,6 @@ namespace MaterialSkinExample
             this.materialTextBox1.Size = new System.Drawing.Size(406, 50);
             this.materialTextBox1.TabIndex = 1;
             this.materialTextBox1.Text = "";
-            this.materialTextBox1.TrailingIcon = global::MaterialSkinExample.Properties.Resources.baseline_favorite_border_black_24dp;
             // 
             // materialSingleLineTextField2
             // 
@@ -2315,7 +2307,6 @@ namespace MaterialSkinExample
             this.materialFlatButton2.Density = MaterialSkin.Controls.MaterialButtonDensity.Default;
             this.materialFlatButton2.Depth = 0;
             this.materialFlatButton2.HighEmphasis = false;
-            this.materialFlatButton2.Icon = global::MaterialSkinExample.Properties.Resources.minus;
             this.materialFlatButton2.Location = new System.Drawing.Point(29, 156);
             this.materialFlatButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialFlatButton2.MouseState = MaterialSkin.MouseState.HOVER;
@@ -2365,7 +2356,6 @@ namespace MaterialSkinExample
             this.MaterialButton2.Density = MaterialSkin.Controls.MaterialButtonDensity.Default;
             this.MaterialButton2.Depth = 0;
             this.MaterialButton2.HighEmphasis = true;
-            this.MaterialButton2.Icon = global::MaterialSkinExample.Properties.Resources.round_add_black_24dp;
             this.MaterialButton2.Location = new System.Drawing.Point(755, 156);
             this.MaterialButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.MaterialButton2.MouseState = MaterialSkin.MouseState.HOVER;
@@ -3193,29 +3183,6 @@ namespace MaterialSkinExample
             this.materialLabel54.TabIndex = 63;
             this.materialLabel54.Text = "Label";
             // 
-            // menuIconList
-            // 
-            this.menuIconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("menuIconList.ImageStream")));
-            this.menuIconList.TransparentColor = System.Drawing.Color.Transparent;
-            this.menuIconList.Images.SetKeyName(0, "round_assessment_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(1, "round_backup_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(2, "round_bluetooth_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(3, "round_bookmark_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(4, "round_build_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(5, "round_gps_fixed_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(6, "round_http_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(7, "round_report_problem_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(8, "round_swap_vert_white_24dp.png");
-            this.menuIconList.Images.SetKeyName(9, "round_phone_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(10, "round_push_pin_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(11, "round_mail_outline_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(12, "round_person_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(13, "round_add_a_photo_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(14, "round_alternate_email_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(15, "round_cancel_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(16, "round_error_black_24dp.png");
-            this.menuIconList.Images.SetKeyName(17, "round_event_black_24dp.png");
-            // 
             // materialContextMenuStrip1
             // 
             this.materialContextMenuStrip1.BackColor = System.Drawing.Color.White;
@@ -3239,7 +3206,6 @@ namespace MaterialSkinExample
             this.item1ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.subItem1ToolStripMenuItem,
             this.subItem2ToolStripMenuItem});
-            this.item1ToolStripMenuItem.Image = global::MaterialSkinExample.Properties.Resources.minus;
             this.item1ToolStripMenuItem.Name = "item1ToolStripMenuItem";
             this.item1ToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.item1ToolStripMenuItem.Text = "Item 1";

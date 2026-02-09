@@ -23,15 +23,11 @@ public class BaseTextBox : TextBox, IMaterialControl
         }
     } = string.Empty;
 
-    public new void SelectAll() => BeginInvoke((MethodInvoker)delegate ()
-                                        {
-                                            Focus();
-                                            base.SelectAll();
-                                        });
-
-    public BaseTextBox()
+    public new void SelectAll() => BeginInvoke(() =>
     {
-    }
+        Focus();
+        base.SelectAll();
+    });
 
     protected override void OnGotFocus(EventArgs e)
     {
@@ -45,18 +41,13 @@ public class BaseTextBox : TextBox, IMaterialControl
         Invalidate();
     }
 
-    private const int WM_ENABLE = 0x0A;
-    private const int WM_PAINT = 0xF;
-    private const uint WM_USER = 0x0400;
-    private const uint EM_SETBKGNDCOLOR = WM_USER + 67;
-    private const uint WM_KILLFOCUS = 0x0008;
     protected override void WndProc(ref Message m)
     {
         base.WndProc(ref m);
 
-        if (m.Msg == WM_PAINT)
+        if (m.Msg == Constants.WM_PAINT)
         {
-            if (m.Msg == WM_ENABLE)
+            if (m.Msg == Constants.WM_ENABLE)
             {
                 Graphics g = Graphics.FromHwnd(Handle);
                 Rectangle bounds = new(0, 0, Width, Height);
@@ -64,26 +55,26 @@ public class BaseTextBox : TextBox, IMaterialControl
             }
         }
 
-        if (m.Msg == WM_PAINT && string.IsNullOrEmpty(Text) && !Focused)
+        if (m.Msg == Constants.WM_PAINT && string.IsNullOrEmpty(Text) && !Focused)
         {
-            using NativeTextRenderer NativeText = new(Graphics.FromHwnd(m.HWnd));
+            using var NativeText = new NativeTextRenderer(Graphics.FromHwnd(m.HWnd));
             NativeText.DrawTransparentText(
-            Hint,
-            SkinManager.GetFontByType(FontType.Subtitle1),
-            Enabled ?
-            ColorHelper.RemoveAlpha(SkinManager.TextMediumEmphasisColor, BackColor) : // not focused
-            ColorHelper.RemoveAlpha(SkinManager.TextDisabledOrHintColor, BackColor), // Disabled
-            ClientRectangle.Location,
-            ClientRectangle.Size,
-            TextAlignFlags.Left | TextAlignFlags.Top);
+                Hint,
+                SkinManager.GetFontByType(FontType.Subtitle1),
+                Enabled ?
+                ColorHelper.RemoveAlpha(SkinManager.TextMediumEmphasisColor, BackColor) : // not focused
+                ColorHelper.RemoveAlpha(SkinManager.TextDisabledOrHintColor, BackColor), // Disabled
+                ClientRectangle.Location,
+                ClientRectangle.Size,
+                TextAlignFlags.Left | TextAlignFlags.Top);
         }
 
-        if (m.Msg == EM_SETBKGNDCOLOR)
+        if (m.Msg == Constants.EM_SETBKGNDCOLOR)
         {
             Invalidate();
         }
 
-        if (m.Msg == WM_KILLFOCUS) //set border back to normal on lost focus
+        if (m.Msg == Constants.WM_KILLFOCUS) //set border back to normal on lost focus
         {
             Invalidate();
         }

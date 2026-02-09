@@ -8,7 +8,90 @@
 		<CustomResourceTypesSupport>true</CustomResourceTypesSupport>
 		<PublishAot>true</PublishAot>
 		<_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
+		<ApplicationIcon>Resources\MaterialSkin.ico</ApplicationIcon>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\baseline_bluetooth_black_24dp.png" />
+	  <None Remove="Resources\baseline_build_black_24dp.png" />
+	  <None Remove="Resources\baseline_favorite_border_black_24dp.png" />
+	  <None Remove="Resources\baseline_fingerprint_black_24dp.png" />
+	  <None Remove="Resources\baseline_thumb_up_black_24dp.png" />
+	  <None Remove="Resources\ic_settings_black_24dp_1x.png" />
+	  <None Remove="Resources\ic_settings_white_24dp_1x.png" />
+	  <None Remove="Resources\minus.png" />
+	  <None Remove="Resources\plus.png" />
+	  <None Remove="Resources\round_add_a_photo_black_24dp.png" />
+	  <None Remove="Resources\round_add_a_photo_black_24dp.png.png" />
+	  <None Remove="Resources\round_add_black_24dp.png" />
+	  <None Remove="Resources\round_alternate_email_black_24dp.png" />
+	  <None Remove="Resources\round_alternate_email_black_24dp.png.png" />
+	  <None Remove="Resources\round_assessment_white_24dp.png" />
+	  <None Remove="Resources\round_assessment_white_24dp.png.png" />
+	  <None Remove="Resources\round_backup_white_24dp.png" />
+	  <None Remove="Resources\round_backup_white_24dp.png.png" />
+	  <None Remove="Resources\round_bluetooth_white_24dp.png" />
+	  <None Remove="Resources\round_bluetooth_white_24dp.png.png" />
+	  <None Remove="Resources\round_bookmark_white_24dp.png" />
+	  <None Remove="Resources\round_bookmark_white_24dp.png.png" />
+	  <None Remove="Resources\round_build_white_24dp.png" />
+	  <None Remove="Resources\round_build_white_24dp.png.png" />
+	  <None Remove="Resources\round_cancel_black_24dp.png" />
+	  <None Remove="Resources\round_cancel_black_24dp.png.png" />
+	  <None Remove="Resources\round_error_black_24dp.png" />
+	  <None Remove="Resources\round_error_black_24dp.png.png" />
+	  <None Remove="Resources\round_event_black_24dp.png" />
+	  <None Remove="Resources\round_event_black_24dp.png.png" />
+	  <None Remove="Resources\round_gps_fixed_white_24dp.png" />
+	  <None Remove="Resources\round_gps_fixed_white_24dp.png.png" />
+	  <None Remove="Resources\round_http_white_24dp.png" />
+	  <None Remove="Resources\round_http_white_24dp.png.png" />
+	  <None Remove="Resources\round_mail_outline_black_24dp.png" />
+	  <None Remove="Resources\round_mail_outline_black_24dp.png.png" />
+	  <None Remove="Resources\round_person_black_24dp.png" />
+	  <None Remove="Resources\round_person_black_24dp.png.png" />
+	  <None Remove="Resources\round_phone_black_24dp.png" />
+	  <None Remove="Resources\round_phone_black_24dp.png.png" />
+	  <None Remove="Resources\round_push_pin_black_24dp.png" />
+	  <None Remove="Resources\round_push_pin_black_24dp.png.png" />
+	  <None Remove="Resources\round_report_problem_white_24dp.png" />
+	  <None Remove="Resources\round_report_problem_white_24dp.png.png" />
+	  <None Remove="Resources\round_swap_vert_white_24dp.png" />
+	  <None Remove="Resources\round_swap_vert_white_24dp.png.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Resources\MaterialSkin.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\baseline_bluetooth_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\baseline_build_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\baseline_favorite_border_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\baseline_fingerprint_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\baseline_thumb_up_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\minus.png" />
+	  <EmbeddedResource Include="Resources\plus.png" />
+	  <EmbeddedResource Include="Resources\round_add_a_photo_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_add_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_alternate_email_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_assessment_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_backup_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_bluetooth_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_bookmark_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_build_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_cancel_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_error_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_event_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_gps_fixed_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_http_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_mail_outline_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_person_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_phone_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_push_pin_black_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_report_problem_white_24dp.png" />
+	  <EmbeddedResource Include="Resources\round_swap_vert_white_24dp.png" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\MaterialSkin\MaterialSkin.csproj" />
@@ -18,6 +101,8 @@
 		<Using Include="MaterialSkin" />
 		<Using Include="MaterialSkin.Controls" />
 		<Using Include="System" />
+		<Using Include="System.Drawing" />
+		<Using Include="System.IO" />
 		<Using Include="System.Text" />
 		<Using Include="System.Windows.Forms" />
 	</ItemGroup>

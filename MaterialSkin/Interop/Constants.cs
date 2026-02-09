@@ -7,5 +7,10 @@ internal static class Constants
     public const int SB_LINEUP = 0;
     public const int SB_LINEDOWN = 1;
     public const int WM_VSCROLL = 0x0115;
+    public const int WM_ENABLE = 0x0A;
+    public const int WM_PAINT = 0xF;
+    public const int WM_USER = 0x0400;
+    public const int WM_KILLFOCUS = 0x0008;
+    public const int EM_SETBKGNDCOLOR = WM_USER + 67;
     public const int EM_SETCUEBANNER = 0x1501;
 }
