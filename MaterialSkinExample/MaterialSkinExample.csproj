@@ -34,6 +34,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\MaterialSkin.png" Pack="true" PackagePath="MaterialSkin.png" />
+		<None Include="..\README.md" Pack="true" PackagePath="README.md" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\baseline_bluetooth_black_24dp.png" />
 	  <None Remove="Resources\baseline_build_black_24dp.png" />
 	  <None Remove="Resources\baseline_favorite_border_black_24dp.png" />
