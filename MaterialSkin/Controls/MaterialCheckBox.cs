@@ -119,8 +119,8 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         var backgroundAlpha = Enabled ? (int)(MaterialSkinManager.Instance.CheckboxOffColor.A * (1.0 - animationProgress)) : MaterialSkinManager.Instance.CheckBoxOffDisabledColor.A;
         var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
 
-        var brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor));
-        var pen = new Pen(brush.Color, 2);
+        using var brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor));
+        using var pen = new Pen(brush.Color, 2);
 
         // draw hover animation
         if (Ripple)
@@ -185,10 +185,6 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
                 textLocation.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
         }
-
-        // dispose used paint objects
-        pen.Dispose();
-        brush.Dispose();
     }
 
     public override bool AutoSize

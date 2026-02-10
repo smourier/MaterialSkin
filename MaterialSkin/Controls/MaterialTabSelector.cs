@@ -133,13 +133,12 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         //Click feedback
         if (_animationManager.IsAnimating())
         {
-            var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationProgress * 50)), Color.White));
+            using var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationProgress * 50)), Color.White));
             var rippleSize = (int)(animationProgress * _tabRects[BaseTabControl.SelectedIndex].Width * 1.75);
 
             g.SetClip(_tabRects[BaseTabControl.SelectedIndex]);
             g.FillEllipse(rippleBrush, new Rectangle(_animationSource.X - rippleSize / 2, _animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             g.ResetClip();
-            rippleBrush.Dispose();
         }
 
         //Draw tab headers

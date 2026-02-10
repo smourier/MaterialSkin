@@ -7,12 +7,12 @@ public partial class MaterialSkinManager : IDisposable
     public event EventHandler? ColorSchemeChanged;
     public event EventHandler? ThemeChanged;
 
-    private bool _disposedValue;
     private readonly List<MaterialForm> _formsToManage = [];
     private readonly Dictionary<string, nint> _logicalFonts;
     private readonly Dictionary<string, FontFamily> _robotoFontFamilies;
     private readonly PrivateFontCollection _privateFontCollection = new();
     private ColorScheme _colorScheme;
+    private bool _disposedValue;
 
     // Constructor
     public MaterialSkinManager()

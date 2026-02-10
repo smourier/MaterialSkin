@@ -417,7 +417,7 @@ public class MaterialDrawer : Control, IMaterialControl
         // Ripple
         if (_clickAnimManager.IsAnimating())
         {
-            var rippleBrush = new SolidBrush(Color.FromArgb((int)(70 - (clickAnimProgress * 70)),
+            using var rippleBrush = new SolidBrush(Color.FromArgb((int)(70 - (clickAnimProgress * 70)),
                 UseColors ? MaterialSkinManager.Instance.ColorScheme.AccentColor : // Using colors
                 MaterialSkinManager.Instance.Theme == Themes.LIGHT ? MaterialSkinManager.Instance.ColorScheme.PrimaryColor : // light theme
                 MaterialSkinManager.Instance.ColorScheme.LightPrimaryColor)); // dark theme
@@ -429,7 +429,6 @@ public class MaterialDrawer : Control, IMaterialControl
 
             g.FillEllipse(rippleBrush, new Rectangle(_animationSource.X + dx - (rSize / 2), _animationSource.Y - rSize / 2, rSize, rSize));
             g.ResetClip();
-            rippleBrush.Dispose();
         }
 
         // Draw menu items

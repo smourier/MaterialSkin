@@ -35,7 +35,6 @@ public static class MaterialSinkExtensions
     }
 
     public static Bitmap? GetBitmapFromResource(string resourceName, bool throwOnError = true) => GetBitmapFromResource(null, resourceName, throwOnError);
-
     public static Bitmap? GetBitmapFromResource(this Assembly? assembly, string resourceName, bool throwOnError = true)
     {
         ArgumentNullException.ThrowIfNull(resourceName, nameof(resourceName));

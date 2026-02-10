@@ -958,24 +958,26 @@ public partial class MaterialForm : Form, IMaterialControl
         if (DrawerTabControl != null && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
         {
             if (_buttonState == ButtonState.DrawerOver)
+            {
                 g.FillRectangle(hoverBrush, DrawerButtonBounds);
+            }
 
             if (_buttonState == ButtonState.DrawerDown)
+            {
                 g.FillRectangle(downBrush, DrawerButtonBounds);
+            }
 
             _drawerIconRect = new Rectangle(MaterialSkinManager.Instance.FormPadding / 2, _statusBarHeight, _actionBarHeightDefault, _actionBarHeight);
             // Ripple
             if (_clickAnimManager.IsAnimating())
             {
                 var clickAnimProgress = _clickAnimManager.GetProgress();
-
-                var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (clickAnimProgress * 50)), Color.White));
+                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (clickAnimProgress * 50)), Color.White));
                 var rippleSize = (int)(clickAnimProgress * _drawerIconRect.Width * 1.75);
 
                 g.SetClip(_drawerIconRect);
                 g.FillEllipse(rippleBrush, new Rectangle(_animationSource.X - rippleSize / 2, _animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
                 g.ResetClip();
-                rippleBrush.Dispose();
             }
 
             using var formButtonsPen = new Pen(MaterialSkinManager.Instance.ColorScheme.TextColor, 2);

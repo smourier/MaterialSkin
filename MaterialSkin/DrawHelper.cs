@@ -1,19 +1,7 @@
 ﻿namespace MaterialSkin;
 
-/// <summary>
-/// Defines the <see cref="DrawHelper" />
-/// </summary>
 internal static class DrawHelper
 {
-    /// <summary>
-    /// The CreateRoundRect
-    /// </summary>
-    /// <param name="x">The x<see cref="float"/></param>
-    /// <param name="y">The y<see cref="float"/></param>
-    /// <param name="width">The width<see cref="float"/></param>
-    /// <param name="height">The height<see cref="float"/></param>
-    /// <param name="radius">The radius<see cref="float"/></param>
-    /// <returns>The <see cref="GraphicsPath"/></returns>
     public static GraphicsPath CreateRoundRect(float x, float y, float width, float height, float radius)
     {
         var gp = new GraphicsPath();
@@ -25,29 +13,8 @@ internal static class DrawHelper
         return gp;
     }
 
-    /// <summary>
-    /// The CreateRoundRect
-    /// </summary>
-    /// <param name="rect">The rect<see cref="Rectangle"/></param>
-    /// <param name="radius">The radius<see cref="float"/></param>
-    /// <returns>The <see cref="GraphicsPath"/></returns>
     public static GraphicsPath CreateRoundRect(Rectangle rect, float radius) => CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
-
-    /// <summary>
-    /// The CreateRoundRect
-    /// </summary>
-    /// <param name="rect">The rect<see cref="RectangleF"/></param>
-    /// <param name="radius">The radius<see cref="float"/></param>
-    /// <returns>The <see cref="GraphicsPath"/></returns>
     public static GraphicsPath CreateRoundRect(RectangleF rect, float radius) => CreateRoundRect(rect.X, rect.Y, rect.Width, rect.Height, radius);
-
-    /// <summary>
-    /// The BlendColor
-    /// </summary>
-    /// <param name="backgroundColor">The backgroundColor<see cref="Color"/></param>
-    /// <param name="frontColor">The frontColor<see cref="Color"/></param>
-    /// <param name="blend">The blend<see cref="double"/></param>
-    /// <returns>The <see cref="Color"/></returns>
     public static Color BlendColor(Color backgroundColor, Color frontColor, double blend)
     {
         var ratio = blend / 255d;
@@ -58,26 +25,27 @@ internal static class DrawHelper
         return Color.FromArgb(r, g, b);
     }
 
-    /// <summary>
-    /// The BlendColor
-    /// </summary>
-    /// <param name="backgroundColor">The backgroundColor<see cref="Color"/></param>
-    /// <param name="frontColor">The frontColor<see cref="Color"/></param>
-    /// <returns>The <see cref="Color"/></returns>
     public static Color BlendColor(Color backgroundColor, Color frontColor) => BlendColor(backgroundColor, frontColor, frontColor.A);
-
     public static void DrawSquareShadow(Graphics g, Rectangle bounds)
     {
         using var shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0));
         GraphicsPath path;
         path = CreateRoundRect(new RectangleF(bounds.X - 3.5f, bounds.Y - 1.5f, bounds.Width + 6, bounds.Height + 6), 8);
         g.FillPath(shadowBrush, path);
+        path.Dispose();
+
         path = CreateRoundRect(new RectangleF(bounds.X - 2.5f, bounds.Y - 1.5f, bounds.Width + 4, bounds.Height + 4), 6);
         g.FillPath(shadowBrush, path);
+        path.Dispose();
+
         path = CreateRoundRect(new RectangleF(bounds.X - 1.5f, bounds.Y - 0.5f, bounds.Width + 2, bounds.Height + 2), 4);
         g.FillPath(shadowBrush, path);
+        path.Dispose();
+
         path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 1.5f, bounds.Width + 0, bounds.Height + 0), 4);
         g.FillPath(shadowBrush, path);
+        path.Dispose();
+
         path = CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 2.5f, bounds.Width + 0, bounds.Height + 0), 4);
         g.FillPath(shadowBrush, path);
         path.Dispose();
