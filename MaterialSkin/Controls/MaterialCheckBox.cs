@@ -55,9 +55,6 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Browsable(false)]
@@ -97,7 +94,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         Size strSize;
         using (var NativeText = new NativeTextRenderer(CreateGraphics()))
         {
-            strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
+            strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1));
         }
 
         var w = _boxOffset + _textOffset + strSize.Width;
@@ -120,11 +117,11 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         var animationSource = new Point(checkboxCenter, checkboxCenter);
         var animationProgress = _checkAM.GetProgress();
 
-        var colorAlpha = Enabled ? (int)(animationProgress * 255.0) : SkinManager.CheckBoxOffDisabledColor.A;
-        var backgroundAlpha = Enabled ? (int)(SkinManager.CheckboxOffColor.A * (1.0 - animationProgress)) : SkinManager.CheckBoxOffDisabledColor.A;
+        var colorAlpha = Enabled ? (int)(animationProgress * 255.0) : MaterialSkinManager.Instance.CheckBoxOffDisabledColor.A;
+        var backgroundAlpha = Enabled ? (int)(MaterialSkinManager.Instance.CheckboxOffColor.A * (1.0 - animationProgress)) : MaterialSkinManager.Instance.CheckBoxOffDisabledColor.A;
         var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
 
-        var brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor));
+        var brush = new SolidBrush(Color.FromArgb(colorAlpha, Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor));
         var pen = new Pen(brush.Color, 2);
 
         // draw hover animation
@@ -134,7 +131,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
 
             using var rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * animationValue),
-                !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color)); // no animation
+                !Checked ? (MaterialSkinManager.Instance.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color)); // no animation
             g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
         }
 
@@ -146,7 +143,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
                 var animationValue = _rippleAM.GetProgress(i);
                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
+                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), !Checked ? (MaterialSkinManager.Instance.Theme == Themes.LIGHT ? Color.Black : Color.White) : brush.Color));
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }
         }
@@ -158,7 +155,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
             {
                 if (Parent != null)
                 {
-                    using var pen2 = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2);
+                    using var pen2 = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? MaterialSkinManager.Instance.CheckboxOffColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor, backgroundAlpha), 2);
                     g.DrawPath(pen2, checkmarkPath);
                 }
 
@@ -184,8 +181,8 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         using (var NativeText = new NativeTextRenderer(g))
         {
             var textLocation = new Rectangle(_boxOffset + _textOffset, 0, Width - (_boxOffset + _textOffset), _heightRipple);
-            NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.Body1),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            NativeText.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 textLocation.Location,
                 textLocation.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);

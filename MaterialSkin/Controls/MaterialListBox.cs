@@ -52,23 +52,20 @@ public partial class MaterialListBox : Control, IMaterialControl
 
         UpdateStyles();
         base.BackColor = Color.Transparent;
-        base.Font = SkinManager.GetFontByType(FontType.Subtitle1);
-        _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
+        base.Font = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1);
+        _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
         SetDefaults();
         ShowBorder = true;
         ShowScrollBar = false;
         MultiSelect = false;
         UseAccentColor = false;
-        ForeColor = SkinManager.TextHighEmphasisColor; // Color.Black;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor; // Color.Black;
         BackColor = Color.White;
         BorderColor = Color.LightGray;
         UpdateProperties();
     }
 
     //Properties for managing the material design properties
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
@@ -220,16 +217,16 @@ public partial class MaterialListBox : Control, IMaterialControl
                 _itemHeight = 60;
                 _secondaryTextBottomPadding = 10;
                 _primaryTextBottomPadding = 2;
-                _primaryFont = SkinManager.GetFontByType(FontType.Body1);
-                _secondaryFont = SkinManager.GetFontByType(FontType.Body2);
+                _primaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
+                _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body2);
             }
             else
             {
                 _itemHeight = 72;
                 _secondaryTextBottomPadding = 16;
                 _primaryTextBottomPadding = 4;
-                _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
-                _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
+                _primaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1);
+                _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
             }
         }
         else if (Style == ListBoxStyle.ThreeLine)
@@ -240,15 +237,15 @@ public partial class MaterialListBox : Control, IMaterialControl
             {
                 _itemHeight = 76;
                 _secondaryTextBottomPadding = 16;
-                _primaryFont = SkinManager.GetFontByType(FontType.Body1);
-                _secondaryFont = SkinManager.GetFontByType(FontType.Body2);
+                _primaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
+                _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body2);
             }
             else
             {
                 _itemHeight = 88;
                 _secondaryTextBottomPadding = 12;
-                _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
-                _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
+                _primaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1);
+                _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
             }
         }
         else
@@ -262,8 +259,8 @@ public partial class MaterialListBox : Control, IMaterialControl
             {
                 _itemHeight = 48;
             }
-            _primaryFont = SkinManager.GetFontByType(FontType.Subtitle1);
-            _secondaryFont = SkinManager.GetFontByType(FontType.Body1);
+            _primaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1);
+            _secondaryFont = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
         }
     }
 
@@ -280,7 +277,7 @@ public partial class MaterialListBox : Control, IMaterialControl
         var lastItem = (sbv / _itemHeight) + (Height / _itemHeight) + 1 > Items.Count ? Items.Count : (sbv / _itemHeight) + (Height / _itemHeight) + 1;
         var firstItem = sbv / _itemHeight < 0 ? 0 : (sbv / _itemHeight);
 
-        g.FillRectangle(Enabled ? SkinManager.BackgroundBrush : SkinManager.BackgroundDisabledBrush, mainRect);
+        g.FillRectangle(Enabled ? MaterialSkinManager.Instance.BackgroundBrush : MaterialSkinManager.Instance.BackgroundDisabledBrush, mainRect);
 
         //Set TextAlignFlags
         TextAlignFlags primaryTextAlignFlags;
@@ -299,11 +296,11 @@ public partial class MaterialListBox : Control, IMaterialControl
         Color selectedColor;
         if (UseAccentColor)
         {
-            selectedColor = SkinManager.ColorScheme.AccentColor;
+            selectedColor = MaterialSkinManager.Instance.ColorScheme.AccentColor;
         }
         else
         {
-            selectedColor = SkinManager.ColorScheme.PrimaryColor;
+            selectedColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
         }
 
         var SelectedBrush = new SolidBrush(selectedColor);
@@ -319,13 +316,13 @@ public partial class MaterialListBox : Control, IMaterialControl
             {
                 if (i == _hoveredItem && !_indicates.Contains(i))
                 {
-                    g.FillRectangle(SkinManager.BackgroundHoverBrush, itemRect);
+                    g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, itemRect);
                 }
                 else if (_indicates.Contains(i))
                 {
                     g.FillRectangle(Enabled ?
                         SelectedBrush :
-                        new SolidBrush(DrawHelper.BlendColor(selectedColor, SkinManager.SwitchOffDisabledThumbColor, 197)),
+                        new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
                         itemRect);
                 }
             }
@@ -333,13 +330,13 @@ public partial class MaterialListBox : Control, IMaterialControl
             {
                 if (i == _hoveredItem && i != SelectedIndex)
                 {
-                    g.FillRectangle(SkinManager.BackgroundHoverBrush, itemRect);
+                    g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, itemRect);
                 }
                 else if (i == SelectedIndex)
                 {
                     g.FillRectangle(Enabled ?
                         SelectedBrush :
-                        new SolidBrush(DrawHelper.BlendColor(selectedColor, SkinManager.SwitchOffDisabledThumbColor, 197)),
+                        new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
                         itemRect);
                 }
             }
@@ -370,9 +367,9 @@ public partial class MaterialListBox : Control, IMaterialControl
                 itemText,
                 _primaryFont,
                 Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                SkinManager.TextHighEmphasisColor :
-                SkinManager.ColorScheme.TextColor :
-                SkinManager.TextDisabledOrHintColor, // Disabled
+                MaterialSkinManager.Instance.TextHighEmphasisColor :
+                MaterialSkinManager.Instance.ColorScheme.TextColor :
+                MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 primaryTextRect.Location,
                 primaryTextRect.Size,
                 primaryTextAlignFlags);
@@ -382,9 +379,9 @@ public partial class MaterialListBox : Control, IMaterialControl
                     itemSecondaryText,
                     _secondaryFont,
                     Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                    SkinManager.TextDisabledOrHintColor :
-                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                    SkinManager.TextDisabledOrHintColor, // Disabled
+                    MaterialSkinManager.Instance.TextDisabledOrHintColor :
+                    MaterialSkinManager.Instance.ColorScheme.TextColor.Darken(0.25f) :
+                    MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                     secondaryTextRect.Location,
                     secondaryTextRect.Size,
                     secondaryTextAlignFlags);
@@ -395,9 +392,9 @@ public partial class MaterialListBox : Control, IMaterialControl
                     itemSecondaryText,
                     _secondaryFont,
                     Enabled ? (i != SelectedIndex || UseAccentColor) ?
-                    SkinManager.TextDisabledOrHintColor :
-                    SkinManager.ColorScheme.TextColor.Darken(0.25f) :
-                    SkinManager.TextDisabledOrHintColor, // Disabled
+                    MaterialSkinManager.Instance.TextDisabledOrHintColor :
+                    MaterialSkinManager.Instance.ColorScheme.TextColor.Darken(0.25f) :
+                    MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                     secondaryTextRect.Location,
                     secondaryTextRect.Size,
                     secondaryTextAlignFlags);

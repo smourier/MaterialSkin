@@ -28,7 +28,7 @@ public class MaterialSlider : Control, IMaterialControl
     public MaterialSlider()
     {
         SetStyle(ControlStyles.Selectable, true);
-        ForeColor = SkinManager.TextHighEmphasisColor; // Color.Black;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor; // Color.Black;
         RangeMax = 100;
         RangeMin = 0;
         Size = new Size(250, _thumbRadiusHoverPressed);
@@ -41,9 +41,6 @@ public class MaterialSlider : Control, IMaterialControl
         UpdateRects();
         DoubleBuffered = true;
     }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
@@ -157,7 +154,7 @@ public class MaterialSlider : Control, IMaterialControl
         set
         {
             field = value;
-            Font = SkinManager.GetFontByType(field);
+            Font = MaterialSkinManager.Instance.GetFontByType(field);
             Refresh();
         }
     } = FontType.Body1;
@@ -291,8 +288,8 @@ public class MaterialSlider : Control, IMaterialControl
         Size valueSize;
         using (var NativeText = new NativeTextRenderer(CreateGraphics()))
         {
-            textSize = NativeText.MeasureLogString(ShowText ? Text : string.Empty, SkinManager.GetLogFontByType(FontType));
-            valueSize = NativeText.MeasureLogString(ShowValue ? RangeMax.ToString() + ValueSuffix : string.Empty, SkinManager.GetLogFontByType(FontType));
+            textSize = NativeText.MeasureLogString(ShowText ? Text : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
+            valueSize = NativeText.MeasureLogString(ShowValue ? RangeMax.ToString() + ValueSuffix : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
         }
 
         _valueRectangle = new Rectangle(Width - valueSize.Width - _thumbRadiusHoverPressed / 4, 0, valueSize.Width + _thumbRadiusHoverPressed / 4, Height);
@@ -331,17 +328,17 @@ public class MaterialSlider : Control, IMaterialControl
 
         if (UseAccentColor)
         {
-            accentColor = SkinManager.ColorScheme.AccentColor;
+            accentColor = MaterialSkinManager.Instance.ColorScheme.AccentColor;
         }
         else
         {
-            accentColor = SkinManager.ColorScheme.PrimaryColor;
+            accentColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
         }
 
         accentBrush = new SolidBrush(accentColor);
         disabledBrush = new SolidBrush(Color.FromArgb(255, 158, 158, 158));
 
-        if (SkinManager.Theme == Themes.DARK)
+        if (MaterialSkinManager.Instance.Theme == Themes.DARK)
         {
             disabledColor = Color.FromArgb((int)(2.55 * 30), 255, 255, 255);
             inactiveTrackColor = accentColor.Darken(0.25f);
@@ -394,8 +391,8 @@ public class MaterialSlider : Control, IMaterialControl
             // Draw text
             NativeText.DrawTransparentText(
                 Text,
-                SkinManager.GetLogFontByType(FontType),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 _textRectangle.Location,
                 _textRectangle.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -404,8 +401,8 @@ public class MaterialSlider : Control, IMaterialControl
             // Draw value
             NativeText.DrawTransparentText(
                 Value.ToString() + ValueSuffix,
-                SkinManager.GetLogFontByType(FontType),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 _valueRectangle.Location,
                 _valueRectangle.Size,
                 TextAlignFlags.Right | TextAlignFlags.Middle);

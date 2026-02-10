@@ -131,23 +131,23 @@ public partial class MaterialTextBox : Control, IMaterialControl
         };
         _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
 
-        SkinManager.ColorSchemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ColorSchemeChanged += (sender, e) =>
         {
             PreProcessIcons();
         };
 
-        SkinManager.ThemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ThemeChanged += (sender, e) =>
         {
             PreProcessIcons();
         };
 
-        Font = SkinManager.GetFontByType(FontType.Subtitle1);
+        Font = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1);
 
         _baseTextBox = new BaseTextBox
         {
             BorderStyle = BorderStyle.None,
             Font = base.Font,
-            ForeColor = SkinManager.TextHighEmphasisColor,
+            ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor,
             Multiline = false,
             Location = new Point(_leftPadding, _height / 2 - _fontHeight / 2),
             Width = Width - (_leftPadding + _rightPadding),
@@ -199,9 +199,6 @@ public partial class MaterialTextBox : Control, IMaterialControl
     }
 
     //Properties for managing the material design properties
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
@@ -382,7 +379,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
+    public override Color BackColor => Parent == null ? MaterialSkinManager.Instance.BackgroundColor : Parent.BackColor;
 
     [AllowNull]
     public override string Text { get => _baseTextBox.Text; set { _baseTextBox.Text = value; UpdateRects(); } }
@@ -501,20 +498,20 @@ public partial class MaterialTextBox : Control, IMaterialControl
         var g = pevent.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
-        SolidBrush backBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
+        SolidBrush backBrush = new(DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(
-            !Enabled ? SkinManager.BackgroundDisabledBrush : // Disabled
-            _isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? SkinManager.BackgroundHoverBrush : // Hover
+            !Enabled ? MaterialSkinManager.Instance.BackgroundDisabledBrush : // Disabled
+            _isFocused ? MaterialSkinManager.Instance.BackgroundFocusBrush :  // Focused
+            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
             backBrush, // Normal
             ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
-            _isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundHoverColor, SkinManager.BackgroundHoverColor.A) : // Hover
-            DrawHelper.BlendColor(BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A); // Normal
+        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.BackgroundDisabledColor, BackColor) : //Disabled
+            _isFocused ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundFocusColor, MaterialSkinManager.Instance.BackgroundFocusColor.A) : //Focused
+            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundHoverColor, MaterialSkinManager.Instance.BackgroundHoverColor.A) : // Hover
+            DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A); // Normal
 
         //Leading Icon
         Brush? brush;
@@ -560,7 +557,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         var hintTextSize = 12;
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
+        g.FillRectangle(MaterialSkinManager.Instance.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (ReadOnly == false || (ReadOnly && AnimateReadOnly))
         {
@@ -571,7 +568,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
                 // bottom line
                 if (_isFocused)
                 {
-                    g.FillRectangle(_errorState ? SkinManager.BackgroundHoverRedBrush : _isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
+                    g.FillRectangle(_errorState ? MaterialSkinManager.Instance.BackgroundHoverRedBrush : _isFocused ? UseAccent ? MaterialSkinManager.Instance.ColorScheme.AccentBrush : MaterialSkinManager.Instance.ColorScheme.PrimaryBrush : MaterialSkinManager.Instance.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
                 }
             }
             else
@@ -582,7 +579,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
                 // Line Animation
                 int LineAnimationWidth = (int)(Width * animationProgress);
                 int LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
+                g.FillRectangle(UseAccent ? MaterialSkinManager.Instance.ColorScheme.AccentBrush : MaterialSkinManager.Instance.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
             }
         }
 
@@ -599,8 +596,8 @@ public partial class MaterialTextBox : Control, IMaterialControl
             // Draw Prefix text 
             NativeText.DrawTransparentText(
             PrefixSuffixText,
-            SkinManager.GetLogFontByType(FontType.Subtitle1),
-            Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1),
+            Enabled ? MaterialSkinManager.Instance.TextMediumEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             prefixRect.Location,
             prefixRect.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -619,8 +616,8 @@ public partial class MaterialTextBox : Control, IMaterialControl
             // Draw Suffix text 
             NativeText.DrawTransparentText(
                 PrefixSuffixText,
-                SkinManager.GetLogFontByType(FontType.Subtitle1),
-                Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1),
+                Enabled ? MaterialSkinManager.Instance.TextMediumEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 suffixRect.Location,
                 suffixRect.Size,
                 TextAlignFlags.Right | TextAlignFlags.Middle);
@@ -632,13 +629,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 Hint,
-                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                MaterialSkinManager.Instance.GetTextBoxFontBySize(hintTextSize),
                 Enabled ? !_errorState || (!userTextPresent && !_isFocused) ? _isFocused ? UseAccent ?
-                SkinManager.ColorScheme.AccentColor : // Focus Accent
-                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
+                MaterialSkinManager.Instance.ColorScheme.AccentColor : // Focus Accent
+                MaterialSkinManager.Instance.ColorScheme.PrimaryColor : // Focus Primary
+                MaterialSkinManager.Instance.TextMediumEmphasisColor : // not focused
+                MaterialSkinManager.Instance.BackgroundHoverRedColor : // error state
+                MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 hintRect.Location,
                 hintRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -650,13 +647,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 HelperText,
-                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                MaterialSkinManager.Instance.GetTextBoxFontBySize(hintTextSize),
                 Enabled ? !_errorState || (!userTextPresent && !_isFocused) ? _isFocused ? UseAccent ?
-                SkinManager.ColorScheme.AccentColor : // Focus Accent
-                SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
+                MaterialSkinManager.Instance.ColorScheme.AccentColor : // Focus Accent
+                MaterialSkinManager.Instance.ColorScheme.PrimaryColor : // Focus Primary
+                MaterialSkinManager.Instance.TextMediumEmphasisColor : // not focused
+                MaterialSkinManager.Instance.BackgroundHoverRedColor : // error state
+                MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 helperTextRect.Location,
                 helperTextRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -668,10 +665,10 @@ public partial class MaterialTextBox : Control, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 ErrorMessage,
-                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                MaterialSkinManager.Instance.GetTextBoxFontBySize(hintTextSize),
                 Enabled ?
-                SkinManager.BackgroundHoverRedColor : // error state
-                SkinManager.TextDisabledOrHintColor, // Disabled
+                MaterialSkinManager.Instance.BackgroundHoverRedColor : // error state
+                MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 helperTextRect.Location,
                 helperTextRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -814,7 +811,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             return;
 
         // Calculate lightness and color
-        var l = (SkinManager.Theme == Themes.LIGHT) ? 0f : 1f;
+        var l = (MaterialSkinManager.Instance.Theme == Themes.LIGHT) ? 0f : 1f;
 
         // Create matrices
         float[][] matrixGray = [
@@ -982,7 +979,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (PrefixSuffix == PrefixSuffixTypes.Prefix && PrefixSuffixText != null && PrefixSuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _prefix_padding = NativeText.MeasureLogString(PrefixSuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
+            _prefix_padding = NativeText.MeasureLogString(PrefixSuffixText, MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _left_padding += _prefix_padding;
         }
         else
@@ -993,7 +990,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         if (PrefixSuffix == PrefixSuffixTypes.Suffix && PrefixSuffixText != null && PrefixSuffixText.Length > 0)
         {
             using NativeTextRenderer NativeText = new(CreateGraphics());
-            _suffix_padding = NativeText.MeasureLogString(PrefixSuffixText, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
+            _suffix_padding = NativeText.MeasureLogString(PrefixSuffixText, MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1)).Width + _prefixSuffixPadding;
             _right_padding += _suffix_padding;
         }
         else
@@ -1023,11 +1020,11 @@ public partial class MaterialTextBox : Control, IMaterialControl
         _errorState = ErrorState;
         if (_errorState)
         {
-            _baseTextBox.ForeColor = SkinManager.BackgroundHoverRedColor;
+            _baseTextBox.ForeColor = MaterialSkinManager.Instance.BackgroundHoverRedColor;
         }
         else
         {
-            _baseTextBox.ForeColor = SkinManager.TextHighEmphasisColor;
+            _baseTextBox.ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
         }
 
         _baseTextBox.Invalidate();

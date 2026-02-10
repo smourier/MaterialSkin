@@ -8,9 +8,6 @@ public class MaterialTabControl : TabControl, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     protected override void WndProc(ref Message m)

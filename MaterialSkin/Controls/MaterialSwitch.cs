@@ -59,9 +59,6 @@ public class MaterialSwitch : CheckBox, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Browsable(false)]
@@ -113,7 +110,7 @@ public class MaterialSwitch : CheckBox, IMaterialControl
     public override Size GetPreferredSize(Size proposedSize)
     {
         using var NativeText = new NativeTextRenderer(CreateGraphics());
-        var strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
+        var strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1));
         var w = _trackSizeWidth + _thumbSize + strSize.Width;
         return Ripple ? new Size(w, _rippleDiameter) : new Size(w, _thumbSize);
     }
@@ -133,17 +130,17 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
         // Draw Track
         var thumbColor = DrawHelper.BlendColor(
-                    Enabled ? SkinManager.SwitchOffThumbColor : SkinManager.SwitchOffDisabledThumbColor, // Off color
-                    Enabled ? SkinManager.ColorScheme.AccentColor : DrawHelper.BlendColor(SkinManager.ColorScheme.AccentColor, SkinManager.SwitchOffDisabledThumbColor, 197), // On color
+                    Enabled ? MaterialSkinManager.Instance.SwitchOffThumbColor : MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, // Off color
+                    Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : DrawHelper.BlendColor(MaterialSkinManager.Instance.ColorScheme.AccentColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197), // On color
                     animationProgress * 255); // Blend amount
 
         using (var path = DrawHelper.CreateRoundRect(new Rectangle(_traceCenterXBegin - _trackRadius, _trackCenterY - _trackSizeHeight / 2, _trackSizeWidth, _trackSizeHeight), _trackRadius))
         {
             using var trackBrush = new SolidBrush(
-                Color.FromArgb(Enabled ? SkinManager.SwitchOffTrackColor.A : SkinManager.BackgroundDisabledColor.A, // Track alpha
+                Color.FromArgb(Enabled ? MaterialSkinManager.Instance.SwitchOffTrackColor.A : MaterialSkinManager.Instance.BackgroundDisabledColor.A, // Track alpha
                 DrawHelper.BlendColor( // animate color
-                    Enabled ? SkinManager.SwitchOffTrackColor : SkinManager.BackgroundDisabledColor, // Off color
-                    SkinManager.ColorScheme.AccentColor, // On color
+                    Enabled ? MaterialSkinManager.Instance.SwitchOffTrackColor : MaterialSkinManager.Instance.BackgroundDisabledColor, // Off color
+                    MaterialSkinManager.Instance.ColorScheme.AccentColor, // On color
                     animationProgress * 255) // Blend amount
                     .RemoveAlpha()));
             g.FillPath(trackBrush, path);
@@ -156,8 +153,8 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         var rippleSize = (Height % 2 == 0) ? Height - 2 : Height - 3;
 
         var rippleColor = Color.FromArgb(40, // color alpha
-            Checked ? SkinManager.ColorScheme.AccentColor : // On color
-            (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White)); // Off color
+            Checked ? MaterialSkinManager.Instance.ColorScheme.AccentColor : // On color
+            (MaterialSkinManager.Instance.Theme == Themes.LIGHT ? Color.Black : Color.White)); // Off color
 
         if (Ripple && _rippleAM.IsAnimating())
         {
@@ -203,8 +200,8 @@ public class MaterialSwitch : CheckBox, IMaterialControl
         var textLocation = new Rectangle(_textOffset + _trackSizeWidth, 0, Width - (_textOffset + _trackSizeWidth), Height);
         NativeText.DrawTransparentText(
             Text,
-            SkinManager.GetLogFontByType(FontType.Body1),
-            Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+            Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             textLocation.Location,
             textLocation.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);

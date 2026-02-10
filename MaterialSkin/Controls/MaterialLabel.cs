@@ -12,9 +12,6 @@ public class MaterialLabel : Label, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [DefaultValue(typeof(ContentAlignment), "TopLeft")]
@@ -45,7 +42,7 @@ public class MaterialLabel : Label, IMaterialControl
         set
         {
             field = value;
-            Font = SkinManager.GetFontByType(field);
+            Font = MaterialSkinManager.Instance.GetFontByType(field);
             Refresh();
         }
     } = FontType.Body1;
@@ -55,7 +52,7 @@ public class MaterialLabel : Label, IMaterialControl
         if (AutoSize)
         {
             using var NativeText = new NativeTextRenderer(CreateGraphics());
-            var strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType));
+            var strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType));
             strSize.Width += 1; // necessary to avoid a bug when autosize = true
             return strSize;
         }
@@ -88,18 +85,18 @@ public class MaterialLabel : Label, IMaterialControl
         using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawMultilineTransparentText(
             Text,
-            SkinManager.GetLogFontByType(FontType),
+            MaterialSkinManager.Instance.GetLogFontByType(FontType),
             Enabled ? HighEmphasis ? UseAccent ?
-            SkinManager.ColorScheme.AccentColor : // High emphasis, accent
-            (SkinManager.Theme == Themes.LIGHT) ?
-            SkinManager.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
-            SkinManager.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
-            SkinManager.TextHighEmphasisColor : // Normal
-            SkinManager.TextDisabledOrHintColor, // Disabled
+            MaterialSkinManager.Instance.ColorScheme.AccentColor : // High emphasis, accent
+            (MaterialSkinManager.Instance.Theme == Themes.LIGHT) ?
+            MaterialSkinManager.Instance.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
+            MaterialSkinManager.Instance.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
+            MaterialSkinManager.Instance.TextHighEmphasisColor : // Normal
+            MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
             ClientRectangle.Location,
             ClientRectangle.Size,
             _alignment);
     }
 
-    protected override void InitLayout() => Font = SkinManager.GetFontByType(FontType);
+    protected override void InitLayout() => Font = MaterialSkinManager.Instance.GetFontByType(FontType);
 }

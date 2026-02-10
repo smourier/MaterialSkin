@@ -9,14 +9,11 @@ public class MaterialCard : Panel, IMaterialControl
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         Paint += PaintControl;
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
-        Margin = new Padding(SkinManager.FORM_PADDING);
-        Padding = new Padding(SkinManager.FORM_PADDING);
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
+        Margin = new Padding(MaterialSkinManager.Instance.FormPadding);
+        Padding = new Padding(MaterialSkinManager.Instance.FormPadding);
     }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
@@ -39,7 +36,7 @@ public class MaterialCard : Panel, IMaterialControl
     protected override void InitLayout()
     {
         LocationChanged += (sender, e) => { Parent?.Invalidate(); };
-        ForeColor = SkinManager.TextHighEmphasisColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
     }
 
     protected override void OnParentChanged(EventArgs e)
@@ -97,7 +94,7 @@ public class MaterialCard : Panel, IMaterialControl
     protected override void OnBackColorChanged(EventArgs e)
     {
         base.OnBackColorChanged(e);
-        BackColor = SkinManager.BackgroundColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
     }
 
     private void PaintControl(object? sender, PaintEventArgs e)

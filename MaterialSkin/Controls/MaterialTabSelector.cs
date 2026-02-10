@@ -32,9 +32,6 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Category("Material Skin"), Browsable(true)]
@@ -116,7 +113,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-        Font = SkinManager.GetFontByType(FontType.Body1);
+        Font = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -124,7 +121,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         var g = e.Graphics;
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-        g.Clear(SkinManager.ColorScheme.PrimaryColor);
+        g.Clear(MaterialSkinManager.Instance.ColorScheme.PrimaryColor);
 
         if (BaseTabControl == null)
             return;
@@ -152,7 +149,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         if (_tabOverIndex >= 0)
         {
             //Change mouse over tab background color
-            g.FillRectangle(SkinManager.BackgroundHoverBrush, _tabRects[_tabOverIndex].X, _tabRects[_tabOverIndex].Y, _tabRects[_tabOverIndex].Width, _tabRects[_tabOverIndex].Height - TabIndicatorHeight);
+            g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, _tabRects[_tabOverIndex].X, _tabRects[_tabOverIndex].Y, _tabRects[_tabOverIndex].Width, _tabRects[_tabOverIndex].Height - TabIndicatorHeight);
         }
 
         foreach (TabPage tabPage in BaseTabControl.TabPages)
@@ -179,7 +176,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                     CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
                     CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
                     Font,
-                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
+                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
                     textLocation.Location,
                     textLocation.Size,
                     TextAlignFlags.Center | TextAlignFlags.Middle);
@@ -196,8 +193,8 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                     CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
                     CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
                     CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
-                    SkinManager.GetFontByType(FontType.Body2),
-                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
+                    MaterialSkinManager.Instance.GetFontByType(FontType.Body2),
+                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
                     textLocation.Location,
                     textLocation.Size,
                     TextAlignFlags.Center | TextAlignFlags.Middle);
@@ -236,13 +233,13 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         var x = previousActiveTabRect.X + (int)((activeTabPageRect.X - previousActiveTabRect.X) * animationProgress);
         var width = previousActiveTabRect.Width + (int)((activeTabPageRect.Width - previousActiveTabRect.Width) * animationProgress);
 
-        g.FillRectangle(SkinManager.ColorScheme.AccentBrush, x, y, width, TabIndicatorHeight);
+        g.FillRectangle(MaterialSkinManager.Instance.ColorScheme.AccentBrush, x, y, width, TabIndicatorHeight);
     }
 
     private int CalculateTextAlpha(int tabIndex, double animationProgress)
     {
-        var primaryA = SkinManager.TextHighEmphasisColor.A;
-        var secondaryA = SkinManager.TextMediumEmphasisColor.A;
+        var primaryA = MaterialSkinManager.Instance.TextHighEmphasisColor.A;
+        var secondaryA = MaterialSkinManager.Instance.TextMediumEmphasisColor.A;
 
         if (BaseTabControl != null && tabIndex == BaseTabControl.SelectedIndex && !_animationManager.IsAnimating())
             return primaryA;

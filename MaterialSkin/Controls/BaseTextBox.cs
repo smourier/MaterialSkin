@@ -4,12 +4,6 @@ namespace MaterialSkin.Controls;
 public class BaseTextBox : TextBox, IMaterialControl
 {
     //Properties for managing the material design properties
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     public string Hint
     {
         get;
@@ -48,7 +42,7 @@ public class BaseTextBox : TextBox, IMaterialControl
             {
                 Graphics g = Graphics.FromHwnd(Handle);
                 Rectangle bounds = new(0, 0, Width, Height);
-                g.FillRectangle(SkinManager.BackgroundDisabledBrush, bounds);
+                g.FillRectangle(MaterialSkinManager.Instance.BackgroundDisabledBrush, bounds);
             }
         }
 
@@ -57,10 +51,10 @@ public class BaseTextBox : TextBox, IMaterialControl
             using var NativeText = new NativeTextRenderer(Graphics.FromHwnd(m.HWnd));
             NativeText.DrawTransparentText(
                 Hint,
-                SkinManager.GetFontByType(FontType.Subtitle1),
+                MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
                 Enabled ?
-                ColorHelper.RemoveAlpha(SkinManager.TextMediumEmphasisColor, BackColor) : // not focused
-                ColorHelper.RemoveAlpha(SkinManager.TextDisabledOrHintColor, BackColor), // Disabled
+                ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextMediumEmphasisColor, BackColor) : // not focused
+                ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextDisabledOrHintColor, BackColor), // Disabled
                 ClientRectangle.Location,
                 ClientRectangle.Size,
                 TextAlignFlags.Left | TextAlignFlags.Top);

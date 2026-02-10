@@ -69,7 +69,7 @@ public partial class MaterialForm : Form, IMaterialControl
     private Rectangle MaxButtonBounds => new(ClientSize.Width - 2 * _statusBarButtonWidth, ClientRectangle.Y, _statusBarButtonWidth, _statusBarHeight);
     private Rectangle XButtonBounds => new(ClientSize.Width - _statusBarButtonWidth, ClientRectangle.Y, _statusBarButtonWidth, _statusBarHeight);
     private Rectangle ActionBarBounds => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight, ClientSize.Width, _actionBarHeight);
-    private Rectangle DrawerButtonBounds => new(ClientRectangle.X + (SkinManager.FORM_PADDING / 2) + 3, _statusBarHeight + (_actionBarHeight / 2) - (_actionBarHeightDefault / 2), _actionBarHeightDefault, _actionBarHeightDefault);
+    private Rectangle DrawerButtonBounds => new(ClientRectangle.X + (MaterialSkinManager.Instance.FormPadding / 2) + 3, _statusBarHeight + (_actionBarHeight / 2) - (_actionBarHeightDefault / 2), _actionBarHeightDefault, _actionBarHeightDefault);
     private Rectangle StatusBarBounds => new(ClientRectangle.X, ClientRectangle.Y, ClientSize.Width, _statusBarHeight);
 
     private bool Maximized
@@ -92,9 +92,6 @@ public partial class MaterialForm : Form, IMaterialControl
     }
 
     public Rectangle UserArea => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight + _actionBarHeight, ClientSize.Width, ClientSize.Height - (_statusBarHeight + _actionBarHeight));
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
@@ -300,12 +297,12 @@ public partial class MaterialForm : Form, IMaterialControl
         _drawerControl.BackgroundWithAccent = DrawerBackgroundWithAccent;
 
         // Changing colors or theme
-        SkinManager.ThemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ThemeChanged += (sender, e) =>
         {
             _drawerForm.Refresh();
         };
 
-        SkinManager.ColorSchemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ColorSchemeChanged += (sender, e) =>
         {
             _drawerForm.Refresh();
         };
@@ -811,15 +808,15 @@ public partial class MaterialForm : Form, IMaterialControl
 
     protected override void OnPaint(PaintEventArgs e)
     {
-        var hoverBrush = SkinManager.BackgroundHoverBrush;
-        var downBrush = SkinManager.BackgroundFocusBrush;
+        var hoverBrush = MaterialSkinManager.Instance.BackgroundHoverBrush;
+        var downBrush = MaterialSkinManager.Instance.BackgroundFocusBrush;
         var g = e.Graphics;
         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-        g.Clear(SkinManager.BackdropColor);
+        g.Clear(MaterialSkinManager.Instance.BackdropColor);
 
         //Draw border
-        using (var borderPen = new Pen(SkinManager.DividersColor, 1))
+        using (var borderPen = new Pen(MaterialSkinManager.Instance.DividersColor, 1))
         {
             g.DrawLine(borderPen, new Point(0, ActionBarBounds.Bottom), new Point(0, ClientSize.Height - 2));
             g.DrawLine(borderPen, new Point(ClientSize.Width - 1, ActionBarBounds.Bottom), new Point(ClientSize.Width - 1, ClientSize.Height - 2));
@@ -830,8 +827,8 @@ public partial class MaterialForm : Form, IMaterialControl
         {
             if (ControlBox)
             {
-                g.FillRectangle(SkinManager.ColorScheme.DarkPrimaryBrush, StatusBarBounds);
-                g.FillRectangle(SkinManager.ColorScheme.PrimaryBrush, ActionBarBounds);
+                g.FillRectangle(MaterialSkinManager.Instance.ColorScheme.DarkPrimaryBrush, StatusBarBounds);
+                g.FillRectangle(MaterialSkinManager.Instance.ColorScheme.PrimaryBrush, ActionBarBounds);
             }
 
             // Determine whether or not we even should be drawing the buttons.
@@ -861,15 +858,15 @@ public partial class MaterialForm : Form, IMaterialControl
 
             if (_buttonState == ButtonState.XOver && ControlBox)
             {
-                g.FillRectangle(SkinManager.BackgroundHoverRedBrush, XButtonBounds);
+                g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverRedBrush, XButtonBounds);
             }
 
             if (_buttonState == ButtonState.XDown && ControlBox)
             {
-                g.FillRectangle(SkinManager.BackgroundDownRedBrush, XButtonBounds);
+                g.FillRectangle(MaterialSkinManager.Instance.BackgroundDownRedBrush, XButtonBounds);
             }
 
-            using var formButtonsPen = new Pen(SkinManager.ColorScheme.TextColor, 2);
+            using var formButtonsPen = new Pen(MaterialSkinManager.Instance.ColorScheme.TextColor, 2);
             // Minimize button.
             if (showMin)
             {
@@ -969,7 +966,7 @@ public partial class MaterialForm : Form, IMaterialControl
             if (_buttonState == ButtonState.DrawerDown)
                 g.FillRectangle(downBrush, DrawerButtonBounds);
 
-            _drawerIconRect = new Rectangle(SkinManager.FORM_PADDING / 2, _statusBarHeight, _actionBarHeightDefault, _actionBarHeight);
+            _drawerIconRect = new Rectangle(MaterialSkinManager.Instance.FormPadding / 2, _statusBarHeight, _actionBarHeightDefault, _actionBarHeight);
             // Ripple
             if (_clickAnimManager.IsAnimating())
             {
@@ -984,29 +981,29 @@ public partial class MaterialForm : Form, IMaterialControl
                 rippleBrush.Dispose();
             }
 
-            using var formButtonsPen = new Pen(SkinManager.ColorScheme.TextColor, 2);
+            using var formButtonsPen = new Pen(MaterialSkinManager.Instance.ColorScheme.TextColor, 2);
             // Middle line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding,
                _drawerIconRect.Y + _actionBarHeight / 2,
-               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18,
                _drawerIconRect.Y + _actionBarHeight / 2);
 
             // Bottom line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding,
                _drawerIconRect.Y + _actionBarHeight / 2 - 6,
-               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18,
                _drawerIconRect.Y + _actionBarHeight / 2 - 6);
 
             // Top line
             g.DrawLine(
                formButtonsPen,
-               _drawerIconRect.X + SkinManager.FORM_PADDING,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding,
                _drawerIconRect.Y + _actionBarHeight / 2 + 6,
-               _drawerIconRect.X + SkinManager.FORM_PADDING + 18,
+               _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18,
                _drawerIconRect.Y + _actionBarHeight / 2 + 6);
         }
 
@@ -1015,8 +1012,8 @@ public partial class MaterialForm : Form, IMaterialControl
             //Form title
             using var NativeText = new NativeTextRenderer(g);
             var textLocation = new Rectangle(DrawerTabControl != null ? _titleLeftPadding : _titleLeftPadding - (_iconSize + (_actionBarPadding * 2)), _statusBarHeight, ClientSize.Width, _actionBarHeight);
-            NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.H6),
-                SkinManager.ColorScheme.TextColor,
+            NativeText.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
+                MaterialSkinManager.Instance.ColorScheme.TextColor,
                 textLocation.Location,
                 textLocation.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);

@@ -4,9 +4,6 @@
 public class MaterialMessageBox : IMaterialControl
 {
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Browsable(false)]

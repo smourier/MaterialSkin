@@ -55,8 +55,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         AutoScroll = false;
 
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
 
         Padding = new Padding(24, 64, 24, 16);
         Margin = new Padding(3, 16, 3, 16);
@@ -96,9 +96,6 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
         UpdateRects();
     }
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
@@ -231,13 +228,13 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-        Font = SkinManager.GetFontByType(FontType.Body1);
+        Font = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
     }
 
     protected override void InitLayout()
     {
         LocationChanged += (sender, e) => { Parent?.Invalidate(); };
-        ForeColor = SkinManager.TextHighEmphasisColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
     }
 
     protected override void OnParentChanged(EventArgs e)
@@ -314,7 +311,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     protected override void OnBackColorChanged(EventArgs e)
     {
         base.OnBackColorChanged(e);
-        BackColor = SkinManager.BackgroundColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
     }
 
     protected override void OnResize(EventArgs e)
@@ -436,7 +433,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         {
             if (Parent != null)
             {
-                using var disabledBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundDisabledColor, SkinManager.BackgroundDisabledColor.A));
+                using var disabledBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundDisabledColor, MaterialSkinManager.Instance.BackgroundDisabledColor.A));
                 g.FillPath(disabledBrush, expansionPanelPath);
             }
         }
@@ -450,11 +447,11 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
                 expansionPanelBorderRectF.Y -= 0.5f;
                 var expansionPanelBoarderPath = DrawHelper.CreateRoundRect(expansionPanelBorderRectF, 2);
 
-                g.FillPath(SkinManager.ExpansionPanelFocusBrush, expansionPanelBoarderPath);
+                g.FillPath(MaterialSkinManager.Instance.ExpansionPanelFocusBrush, expansionPanelBoarderPath);
             }
             else
             {
-                using SolidBrush normalBrush = new(SkinManager.BackgroundColor);
+                using SolidBrush normalBrush = new(MaterialSkinManager.Instance.BackgroundColor);
                 g.FillPath(normalBrush, expansionPanelPath);
             }
         }
@@ -472,8 +469,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             // Draw header text
             NativeText.DrawTransparentText(
                 Title,
-                SkinManager.GetLogFontByType(FontType.Body1),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 headerRect.Location,
                 headerRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -491,8 +488,8 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 Description,
-                SkinManager.GetLogFontByType(FontType.Body1),
-                 SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+                 MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 headerDescriptionRect.Location,
                 headerDescriptionRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -500,7 +497,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
 
         if (ShowCollapseExpand)
         {
-            using var formButtonsPen = new Pen(UseAccentColor && Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.TextDisabledOrHintColor, 2);
+            using var formButtonsPen = new Pen(UseAccentColor && Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.TextDisabledOrHintColor, 2);
             if (Collapse)
             {
                 //Draw Expand button
@@ -528,7 +525,7 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         if (!Collapse && ShowValidationButtons)
         {
             //Draw divider
-            g.DrawLine(new Pen(SkinManager.DividersColor, 1), new Point(0, Height - _footerHeight), new Point(Width, Height - _footerHeight));
+            g.DrawLine(new Pen(MaterialSkinManager.Instance.DividersColor, 1), new Point(0, Height - _footerHeight), new Point(Width, Height - _footerHeight));
         }
     }
 
@@ -558,9 +555,9 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
     {
         if (!Collapse && ShowValidationButtons)
         {
-            var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
             _savebuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
-            _buttonWidth = TextRenderer.MeasureText(CancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            _buttonWidth = TextRenderer.MeasureText(CancelButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
             _cancelbuttonBounds = new Rectangle(_savebuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _expansionPanelDefaultPadding - _footerButtonHeight, _buttonWidth, _footerButtonHeight);
 
             if (_validationButton != null)

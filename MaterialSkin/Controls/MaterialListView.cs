@@ -16,7 +16,7 @@ public class MaterialListView : ListView, IMaterialControl
         MinimumSize = new Size(200, 100);
 
         SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
-        BackColor = SkinManager.BackgroundColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
 
         // Fix for hovers, by default it doesn't redraw
         MouseLocation = new Point(-1, -1);
@@ -57,9 +57,6 @@ public class MaterialListView : ListView, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Browsable(false)]
@@ -86,8 +83,8 @@ public class MaterialListView : ListView, IMaterialControl
         using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(
             e.Header?.Text,
-            SkinManager.GetLogFontByType(FontType.Subtitle2),
-            Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle2),
+            Enabled ? MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             new Point(e.Bounds.Location.X + _pad, e.Bounds.Location.Y),
             new Size(e.Bounds.Size.Width - _pad * 2, e.Bounds.Size.Height),
             TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -99,21 +96,21 @@ public class MaterialListView : ListView, IMaterialControl
         g.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Always draw default background
-        g.FillRectangle(SkinManager.BackgroundBrush, e.Bounds);
+        g.FillRectangle(MaterialSkinManager.Instance.BackgroundBrush, e.Bounds);
 
         if (e.Item.Selected)
         {
             // Selected background
-            g.FillRectangle(SkinManager.BackgroundFocusBrush, e.Bounds);
+            g.FillRectangle(MaterialSkinManager.Instance.BackgroundFocusBrush, e.Bounds);
         }
         else if (e.Bounds.Contains(MouseLocation) && MouseState == MouseState.HOVER)
         {
             // Hover background
-            g.FillRectangle(SkinManager.BackgroundHoverBrush, e.Bounds);
+            g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, e.Bounds);
         }
 
         // Draw separator line
-        g.DrawLine(new Pen(SkinManager.DividersColor), e.Bounds.Left, e.Bounds.Y, e.Bounds.Right, e.Bounds.Y);
+        g.DrawLine(new Pen(MaterialSkinManager.Instance.DividersColor), e.Bounds.Left, e.Bounds.Y, e.Bounds.Right, e.Bounds.Y);
 
         foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
         {
@@ -121,8 +118,8 @@ public class MaterialListView : ListView, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 subItem.Text,
-                SkinManager.GetLogFontByType(FontType.Body2),
-                Enabled ? SkinManager.TextHighEmphasisNoAlphaColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 new Point(subItem.Bounds.X + _pad, subItem.Bounds.Y),
                 new Size(subItem.Bounds.Width - _pad * 2, subItem.Bounds.Height),
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -191,6 +188,6 @@ public class MaterialListView : ListView, IMaterialControl
     protected override void OnBackColorChanged(EventArgs e)
     {
         base.OnBackColorChanged(e);
-        BackColor = SkinManager.BackgroundColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
     }
 }

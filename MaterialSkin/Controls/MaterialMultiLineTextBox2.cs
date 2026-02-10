@@ -112,8 +112,8 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         _baseTextBox = new BaseTextBox
         {
             BorderStyle = BorderStyle.None,
-            Font = SkinManager.GetFontByType(FontType.Subtitle1),
-            ForeColor = SkinManager.TextHighEmphasisColor,
+            Font = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
+            ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor,
             Multiline = true
         };
 
@@ -158,9 +158,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     }
 
     //Properties for managing the material design properties
-
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
     public MouseState MouseState { get; set; }
@@ -227,7 +224,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public override Color BackColor => Parent == null ? SkinManager.BackgroundColor : Parent.BackColor;
+    public override Color BackColor => Parent == null ? MaterialSkinManager.Instance.BackgroundColor : Parent.BackColor;
 
     [AllowNull]
     public override string Text { get => _baseTextBox.Text; set => _baseTextBox.Text = value; }
@@ -347,23 +344,23 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         }
 
         g.Clear(parentBackColor);
-        var backBrush = new SolidBrush(DrawHelper.BlendColor(parentBackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A));
+        var backBrush = new SolidBrush(DrawHelper.BlendColor(parentBackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(
-            !Enabled ? SkinManager.BackgroundDisabledBrush : // Disabled
-            _isFocused ? SkinManager.BackgroundFocusBrush :  // Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? SkinManager.BackgroundHoverBrush : // Hover
+            !Enabled ? MaterialSkinManager.Instance.BackgroundDisabledBrush : // Disabled
+            _isFocused ? MaterialSkinManager.Instance.BackgroundFocusBrush :  // Focused
+            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
             backBrush, // Normal
             ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(SkinManager.BackgroundDisabledColor, BackColor) : //Disabled
-            _isFocused ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundFocusColor, SkinManager.BackgroundFocusColor.A) : //Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, SkinManager.BackgroundHoverColor, SkinManager.BackgroundHoverColor.A) : // Hover
-            DrawHelper.BlendColor(BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A); // Normal
+        _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.BackgroundDisabledColor, BackColor) : //Disabled
+            _isFocused ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundFocusColor, MaterialSkinManager.Instance.BackgroundFocusColor.A) : //Focused
+            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundHoverColor, MaterialSkinManager.Instance.BackgroundHoverColor.A) : // Hover
+            DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A); // Normal
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
+        g.FillRectangle(MaterialSkinManager.Instance.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (!ReadOnly || (ReadOnly && AnimateReadOnly))
         {
@@ -373,7 +370,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
                 if (_isFocused)
                 {
                     //No animation
-                    g.FillRectangle(_isFocused ? UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush : SkinManager.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
+                    g.FillRectangle(_isFocused ? UseAccent ? MaterialSkinManager.Instance.ColorScheme.AccentBrush : MaterialSkinManager.Instance.ColorScheme.PrimaryBrush : MaterialSkinManager.Instance.DividersBrush, 0, _lineY, Width, _isFocused ? 2 : 1);
                 }
             }
             else
@@ -384,7 +381,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
                 // Line Animation
                 var LineAnimationWidth = (int)(Width * animationProgress);
                 var LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-                g.FillRectangle(UseAccent ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
+                g.FillRectangle(UseAccent ? MaterialSkinManager.Instance.ColorScheme.AccentBrush : MaterialSkinManager.Instance.ColorScheme.PrimaryBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
             }
         }
     }

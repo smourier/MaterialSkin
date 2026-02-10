@@ -18,9 +18,6 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     private bool _hovered;
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Browsable(false)]
@@ -92,7 +89,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     public override Size GetPreferredSize(Size proposedSize)
     {
         using var NativeText = new NativeTextRenderer(CreateGraphics());
-        var strSize = NativeText.MeasureLogString(Text, SkinManager.GetLogFontByType(FontType.Body1));
+        var strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1));
 
         var w = _boxOffset + _textOffset + strSize.Width;
         return Ripple ? new Size(w, _heightRipple) : new Size(w, _heightNoRipple);
@@ -115,13 +112,13 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
 
         var animationProgress = _checkAM.GetProgress();
 
-        var colorAlpha = Enabled ? (int)(animationProgress * 255.0) : SkinManager.CheckBoxOffDisabledColor.A;
-        var backgroundAlpha = Enabled ? (int)(SkinManager.CheckboxOffColor.A * (1.0 - animationProgress)) : SkinManager.CheckBoxOffDisabledColor.A;
+        var colorAlpha = Enabled ? (int)(animationProgress * 255.0) : MaterialSkinManager.Instance.CheckBoxOffDisabledColor.A;
+        var backgroundAlpha = Enabled ? (int)(MaterialSkinManager.Instance.CheckboxOffColor.A * (1.0 - animationProgress)) : MaterialSkinManager.Instance.CheckBoxOffDisabledColor.A;
         var animationSize = (float)(animationProgress * 9f);
         var animationSizeHalf = animationSize / 2;
         var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
 
-        var RadioColor = Color.FromArgb(colorAlpha, Enabled ? SkinManager.ColorScheme.AccentColor : SkinManager.CheckBoxOffDisabledColor);
+        var RadioColor = Color.FromArgb(colorAlpha, Enabled ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor);
 
         // draw hover animation
         if (Ripple)
@@ -129,7 +126,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             var animationValue = _hoverAM.GetProgress();
             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
 
-            using var rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * animationValue), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
+            using var rippleBrush = new SolidBrush(Color.FromArgb((int)(40 * animationValue), !Checked ? (MaterialSkinManager.Instance.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
             g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize - 1, rippleSize - 1));
         }
 
@@ -141,7 +138,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
                 var animationValue = _rippleAM.GetProgress(i);
                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
 
-                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), !Checked ? (SkinManager.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
+                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(animationValue * 40), !Checked ? (MaterialSkinManager.Instance.Theme == Themes.LIGHT ? Color.Black : Color.White) : RadioColor));
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize - 1, rippleSize - 1));
             }
         }
@@ -149,7 +146,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         // draw radiobutton circle
         if (Parent != null)
         {
-            using var pen = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? SkinManager.CheckboxOffColor : SkinManager.CheckBoxOffDisabledColor, backgroundAlpha), 2);
+            using var pen = new Pen(DrawHelper.BlendColor(Parent.BackColor, Enabled ? MaterialSkinManager.Instance.CheckboxOffColor : MaterialSkinManager.Instance.CheckBoxOffDisabledColor, backgroundAlpha), 2);
             g.DrawEllipse(pen, new Rectangle(_boxOffset, _boxOffset, _radioButtonSize, _radioButtonSize));
         }
 
@@ -168,8 +165,8 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         // Text
         using var NativeText = new NativeTextRenderer(g);
         var textLocation = new Rectangle(_boxOffset + _textOffset, 0, Width, Height);
-        NativeText.DrawTransparentText(Text, SkinManager.GetLogFontByType(FontType.Body1),
-            Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+        NativeText.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+            Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             textLocation.Location,
             textLocation.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);

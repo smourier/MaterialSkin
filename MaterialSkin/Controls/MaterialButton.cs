@@ -64,12 +64,12 @@ public partial class MaterialButton : Button, IMaterialControl
             AnimationType = AnimationType.Linear
         };
 
-        SkinManager.ColorSchemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ColorSchemeChanged += (sender, e) =>
         {
             PreProcessIcons();
         };
 
-        SkinManager.ThemeChanged += (sender, e) =>
+        MaterialSkinManager.Instance.ThemeChanged += (sender, e) =>
         {
             PreProcessIcons();
         };
@@ -104,12 +104,6 @@ public partial class MaterialButton : Button, IMaterialControl
             Invalidate();
         }
     }
-
-    /// <summary>
-    /// Gets the SkinManager
-    /// </summary>
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     /// <summary>
     /// Gets or sets the MouseState
@@ -179,7 +173,7 @@ public partial class MaterialButton : Button, IMaterialControl
             base.Text = value;
             if (!string.IsNullOrEmpty(value))
             {
-                _textSize = CreateGraphics().MeasureString(value.ToUpper(), SkinManager.GetFontByType(FontType.Button));
+                _textSize = CreateGraphics().MeasureString(value.ToUpper(), MaterialSkinManager.Instance.GetFontByType(FontType.Button));
             }
             else
             {
@@ -313,7 +307,7 @@ public partial class MaterialButton : Button, IMaterialControl
         var IconResized = new Bitmap(Icon, newWidth, newHeight);
 
         // Calculate lightness and color
-        var l = (SkinManager.Theme == Themes.LIGHT & (HighEmphasis == false | Enabled == false | Type != MaterialButtonType.Contained)) ? 0f : 1.5f;
+        var l = (MaterialSkinManager.Instance.Theme == Themes.LIGHT & (HighEmphasis == false | Enabled == false | Type != MaterialButtonType.Contained)) ? 0f : 1.5f;
 
         // Create matrices
         float[][] matrixGray = [
@@ -391,18 +385,18 @@ public partial class MaterialButton : Button, IMaterialControl
             // Disabled
             if (!Enabled)
             {
-                using SolidBrush disabledBrush = new(DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundDisabledColor, SkinManager.BackgroundDisabledColor.A));
+                using SolidBrush disabledBrush = new(DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundDisabledColor, MaterialSkinManager.Instance.BackgroundDisabledColor.A));
                 g.FillPath(disabledBrush, buttonPath);
             }
             // High emphasis
             else if (HighEmphasis)
             {
-                g.FillPath(UseAccentColor ? SkinManager.ColorScheme.AccentBrush : SkinManager.ColorScheme.PrimaryBrush, buttonPath);
+                g.FillPath(UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentBrush : MaterialSkinManager.Instance.ColorScheme.PrimaryBrush, buttonPath);
             }
             // Mormal
             else
             {
-                using SolidBrush normalBrush = new(SkinManager.BackgroundColor);
+                using SolidBrush normalBrush = new(MaterialSkinManager.Instance.BackgroundColor);
                 g.FillPath(normalBrush, buttonPath);
             }
         }
@@ -415,11 +409,11 @@ public partial class MaterialButton : Button, IMaterialControl
         if (hoverAnimProgress > 0)
         {
             using var hoverBrush = new SolidBrush(Color.FromArgb(
-                (int)(HighEmphasis && Type == MaterialButtonType.Contained ? hoverAnimProgress * 80 : hoverAnimProgress * SkinManager.BackgroundHoverColor.A), (UseAccentColor ? (HighEmphasis && Type == MaterialButtonType.Contained ?
-                SkinManager.ColorScheme.AccentColor.Lighten(0.5f) : // Contained with Emphasis - with accent
-                SkinManager.ColorScheme.AccentColor) : // Not Contained Or Low Emphasis - with accent
-                (Type == MaterialButtonType.Contained && HighEmphasis ? SkinManager.ColorScheme.LightPrimaryColor : // Contained with Emphasis without accent
-                SkinManager.ColorScheme.PrimaryColor)).RemoveAlpha())); // Normal or Emphasis without accent
+                (int)(HighEmphasis && Type == MaterialButtonType.Contained ? hoverAnimProgress * 80 : hoverAnimProgress * MaterialSkinManager.Instance.BackgroundHoverColor.A), (UseAccentColor ? (HighEmphasis && Type == MaterialButtonType.Contained ?
+                MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.5f) : // Contained with Emphasis - with accent
+                MaterialSkinManager.Instance.ColorScheme.AccentColor) : // Not Contained Or Low Emphasis - with accent
+                (Type == MaterialButtonType.Contained && HighEmphasis ? MaterialSkinManager.Instance.ColorScheme.LightPrimaryColor : // Contained with Emphasis without accent
+                MaterialSkinManager.Instance.ColorScheme.PrimaryColor)).RemoveAlpha())); // Normal or Emphasis without accent
             g.FillPath(hoverBrush, buttonPath);
         }
 
@@ -427,17 +421,17 @@ public partial class MaterialButton : Button, IMaterialControl
         if (focusAnimProgress > 0)
         {
             using var focusBrush = new SolidBrush(Color.FromArgb(
-                (int)(HighEmphasis && Type == MaterialButtonType.Contained ? focusAnimProgress * 80 : focusAnimProgress * SkinManager.BackgroundFocusColor.A), (UseAccentColor ? (HighEmphasis && Type == MaterialButtonType.Contained ?
-                SkinManager.ColorScheme.AccentColor.Lighten(0.5f) : // Contained with Emphasis - with accent
-                SkinManager.ColorScheme.AccentColor) : // Not Contained Or Low Emphasis - with accent
-                (Type == MaterialButtonType.Contained && HighEmphasis ? SkinManager.ColorScheme.LightPrimaryColor : // Contained with Emphasis without accent
-                SkinManager.ColorScheme.PrimaryColor)).RemoveAlpha())); // Normal or Emphasis without accent
+                (int)(HighEmphasis && Type == MaterialButtonType.Contained ? focusAnimProgress * 80 : focusAnimProgress * MaterialSkinManager.Instance.BackgroundFocusColor.A), (UseAccentColor ? (HighEmphasis && Type == MaterialButtonType.Contained ?
+                MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.5f) : // Contained with Emphasis - with accent
+                MaterialSkinManager.Instance.ColorScheme.AccentColor) : // Not Contained Or Low Emphasis - with accent
+                (Type == MaterialButtonType.Contained && HighEmphasis ? MaterialSkinManager.Instance.ColorScheme.LightPrimaryColor : // Contained with Emphasis without accent
+                MaterialSkinManager.Instance.ColorScheme.PrimaryColor)).RemoveAlpha())); // Normal or Emphasis without accent
             g.FillPath(focusBrush, buttonPath);
         }
 
         if (Type == MaterialButtonType.Outlined)
         {
-            using var outlinePen = new Pen(Enabled ? SkinManager.DividersAlternativeColor : SkinManager.DividersColor, 1);
+            using var outlinePen = new Pen(Enabled ? MaterialSkinManager.Instance.DividersAlternativeColor : MaterialSkinManager.Instance.DividersColor, 1);
             buttonRectF.X += 0.5f;
             buttonRectF.Y += 0.5f;
             g.DrawPath(outlinePen, buttonPath);
@@ -455,10 +449,10 @@ public partial class MaterialButton : Button, IMaterialControl
                 using Brush rippleBrush = new SolidBrush(
                     Color.FromArgb((int)(100 - (animationValue * 100)), // Alpha animation
                     Type == MaterialButtonType.Contained && HighEmphasis ? (UseAccentColor ?
-                        SkinManager.ColorScheme.AccentColor.Lighten(0.5f) : // Emphasis with accent
-                        SkinManager.ColorScheme.LightPrimaryColor) : // Emphasis
-                        (UseAccentColor ? SkinManager.ColorScheme.AccentColor : // Normal with accent
-                        SkinManager.Theme == Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : SkinManager.ColorScheme.LightPrimaryColor))); // Normal
+                        MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.5f) : // Emphasis with accent
+                        MaterialSkinManager.Instance.ColorScheme.LightPrimaryColor) : // Emphasis
+                        (UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : // Normal with accent
+                        MaterialSkinManager.Instance.Theme == Themes.LIGHT ? MaterialSkinManager.Instance.ColorScheme.PrimaryColor : MaterialSkinManager.Instance.ColorScheme.LightPrimaryColor))); // Normal
                 var rippleSize = (int)(animationValue * Width * 2);
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }
@@ -474,20 +468,20 @@ public partial class MaterialButton : Button, IMaterialControl
         }
 
         var textColor = Enabled ? (HighEmphasis ? (Type == MaterialButtonType.Text || Type == MaterialButtonType.Outlined) ?
-            UseAccentColor ? SkinManager.ColorScheme.AccentColor : // Outline or Text and accent and emphasis
+            UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : // Outline or Text and accent and emphasis
             NoAccentTextColor == Color.Empty ?
-            SkinManager.ColorScheme.PrimaryColor :  // Outline or Text and emphasis
+            MaterialSkinManager.Instance.ColorScheme.PrimaryColor :  // Outline or Text and emphasis
             NoAccentTextColor : // User defined Outline or Text and emphasis
-            SkinManager.ColorScheme.TextColor : // Contained and Emphasis
-            SkinManager.TextHighEmphasisColor) : // Cointained and accent
-            SkinManager.TextDisabledOrHintColor; // Disabled
+            MaterialSkinManager.Instance.ColorScheme.TextColor : // Contained and Emphasis
+            MaterialSkinManager.Instance.TextHighEmphasisColor) : // Cointained and accent
+            MaterialSkinManager.Instance.TextDisabledOrHintColor; // Disabled
 
         using (var NativeText = new NativeTextRenderer(g))
         {
             NativeText.DrawMultilineTransparentText(
                 CharacterCasing == CharacterCasingEnum.Upper ? base.Text.ToUpper() : CharacterCasing == CharacterCasingEnum.Lower ? base.Text.ToLower() :
                     CharacterCasing == CharacterCasingEnum.Title ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(base.Text.ToLower()) : base.Text,
-                SkinManager.GetLogFontByType(FontType.Button),
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Button),
                 textColor,
                 textRect.Location,
                 textRect.Size,
@@ -508,12 +502,6 @@ public partial class MaterialButton : Button, IMaterialControl
             g.FillRectangle(_iconsBrushes, iconRect);
         }
     }
-
-    /// <summary>
-    /// The GetPreferredSize
-    /// </summary>
-    /// <returns>The <see cref="Size"/></returns>
-    private Size GetPreferredSize() => GetPreferredSize(Size);
 
     /// <summary>
     /// The GetPreferredSize

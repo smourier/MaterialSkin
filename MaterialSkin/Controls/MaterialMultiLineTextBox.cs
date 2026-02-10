@@ -8,17 +8,14 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         Multiline = true;
 
         BorderStyle = BorderStyle.None;
-        Font = SkinManager.GetFontByType(FontType.Body1);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
-        BackColorChanged += (sender, args) => BackColor = SkinManager.BackgroundColor;
-        ForeColorChanged += (sender, args) => ForeColor = SkinManager.TextHighEmphasisColor;
+        Font = MaterialSkinManager.Instance.GetFontByType(FontType.Body1);
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
+        BackColorChanged += (sender, args) => BackColor = MaterialSkinManager.Instance.BackgroundColor;
+        ForeColorChanged += (sender, args) => ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
     }
 
     //Properties for managing the material design properties
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 

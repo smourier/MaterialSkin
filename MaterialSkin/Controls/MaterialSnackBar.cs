@@ -41,7 +41,7 @@ public class MaterialSnackBar : MaterialForm
         ShowInTaskbar = false;
         Sizable = false;
 
-        BackColor = SkinManager.SnackBarBackgroundColor;
+        BackColor = MaterialSkinManager.Instance.SnackBarBackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
         ActionButtonText = actionButtonText ?? FlexibleMaterialForm.GetButtonText(ButtonId.Ok);
@@ -66,7 +66,7 @@ public class MaterialSnackBar : MaterialForm
         _actionButton = new MaterialButton
         {
             AutoSize = false,
-            NoAccentTextColor = SkinManager.SnackBarTextButtonNoAccentTextColor,
+            NoAccentTextColor = MaterialSkinManager.Instance.SnackBarTextButtonNoAccentTextColor,
             DrawShadows = false,
             Type = MaterialButtonType.Text,
             UseAccentColor = UseAccentColor,
@@ -120,7 +120,7 @@ public class MaterialSnackBar : MaterialForm
     {
         if (ShowActionButton == true)
         {
-            var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+            var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
             var _actionbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, _topPaddingSingleLine, _buttonWidth, _buttonHeight);
             _actionButton.Width = _actionbuttonBounds.Width;
             _actionButton.Height = _actionbuttonBounds.Height;
@@ -135,7 +135,7 @@ public class MaterialSnackBar : MaterialForm
 
         _actionButton.Left = Width - _buttonPadding - _actionButton.Width;  //Button minimum width management
         _actionButton.Visible = ShowActionButton;
-        Width = TextRenderer.MeasureText(Text, SkinManager.GetFontByType(FontType.Body2)).Width + (2 * _leftRightPadding) + _actionButton.Width + 48;
+        Width = TextRenderer.MeasureText(Text, MaterialSkinManager.Instance.GetFontByType(FontType.Body2)).Width + (2 * _leftRightPadding) + _actionButton.Width + 48;
         Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
     }
 
@@ -198,8 +198,8 @@ public class MaterialSnackBar : MaterialForm
         // Draw header text
         NativeText.DrawTransparentText(
             Text,
-            SkinManager.GetLogFontByType(FontType.Body2),
-            SkinManager.SnackBarTextHighEmphasisColor,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
+            MaterialSkinManager.Instance.SnackBarTextHighEmphasisColor,
             textRect.Location,
             textRect.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);

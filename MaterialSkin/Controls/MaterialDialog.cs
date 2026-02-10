@@ -91,7 +91,7 @@ public class MaterialDialog : MaterialForm
         ShowInTaskbar = false;
         Sizable = false;
 
-        BackColor = SkinManager.BackgroundColor;
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
         FormStyle = FormStyles.StatusAndActionBar_None;
 
         _animationManager = new AnimationManager
@@ -135,7 +135,7 @@ public class MaterialDialog : MaterialForm
         }
 
         Width = 560;
-        var TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
+        var TextWidth = TextRenderer.MeasureText(_text, MaterialSkinManager.Instance.GetFontByType(FontType.Body1)).Width;
         var RectWidth = Width - (2 * _leftRightPadding) - _buttonPadding;
         var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
         var textRect = new Rectangle(
@@ -147,7 +147,7 @@ public class MaterialDialog : MaterialForm
         Height = _header_Height + _textTopPadding + textRect.Height + _textBottomPadding + 52; //560;
         Region = Region.FromHrgn(Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
-        var _buttonWidth = TextRenderer.MeasureText(validationButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        var _buttonWidth = TextRenderer.MeasureText(validationButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
         var _validationbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _validationButton.Width = _validationbuttonBounds.Width;
         _validationButton.Height = _validationbuttonBounds.Height;
@@ -155,7 +155,7 @@ public class MaterialDialog : MaterialForm
         _validationButton.Left = _validationbuttonBounds.Left;  //Button minimum width management
         _validationButton.Visible = true;
 
-        _buttonWidth = TextRenderer.MeasureText(cancelButtonText, SkinManager.GetFontByType(FontType.Button)).Width + 32;
+        _buttonWidth = TextRenderer.MeasureText(cancelButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
         var _cancelbuttonBounds = new Rectangle(_validationbuttonBounds.Left - _buttonPadding - _buttonWidth, Height - _buttonPadding - _buttonHeight, _buttonWidth, _buttonHeight);
         _cancelButton.Width = _cancelbuttonBounds.Width;
         _cancelButton.Height = _cancelbuttonBounds.Height;
@@ -200,8 +200,8 @@ public class MaterialDialog : MaterialForm
             // Draw header text
             NativeText.DrawTransparentText(
                 _title,
-                SkinManager.GetLogFontByType(FontType.H6),
-                SkinManager.TextHighEmphasisColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
+                MaterialSkinManager.Instance.TextHighEmphasisColor,
                 titleRect.Location,
                 titleRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Bottom);
@@ -209,7 +209,7 @@ public class MaterialDialog : MaterialForm
 
         // Calc text Rect
 
-        var TextWidth = TextRenderer.MeasureText(_text, SkinManager.GetFontByType(FontType.Body1)).Width;
+        var TextWidth = TextRenderer.MeasureText(_text, MaterialSkinManager.Instance.GetFontByType(FontType.Body1)).Width;
         var RectWidth = Width - (2 * _leftRightPadding) - _buttonPadding;
         var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
 
@@ -225,8 +225,8 @@ public class MaterialDialog : MaterialForm
             // Draw header text
             NativeText.DrawMultilineTransparentText(
                 _text,
-                SkinManager.GetLogFontByType(FontType.Body1),
-                SkinManager.TextHighEmphasisColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+                MaterialSkinManager.Instance.TextHighEmphasisColor,
                 textRect.Location,
                 textRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);

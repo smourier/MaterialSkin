@@ -11,10 +11,8 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
+
     public bool Striped { get; set; }
     public Color StripeDarkColor { get; set; }
     public ItemsList Items { get; set; }
@@ -32,8 +30,8 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
         }
         else
         {
-            BackColorChanged += (sender, args) => BackColor = DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A);
-            BackColor = DrawHelper.BlendColor(Parent.BackColor, SkinManager.BackgroundAlternativeColor, SkinManager.BackgroundAlternativeColor.A);
+            BackColorChanged += (sender, args) => BackColor = DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A);
+            BackColor = DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A);
         }
     }
 

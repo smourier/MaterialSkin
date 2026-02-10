@@ -65,9 +65,6 @@ public class MaterialScrollBar : Control, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
@@ -347,7 +344,7 @@ public class MaterialScrollBar : Control, IMaterialControl
         e.Graphics.Clear(Parent.BackColor);
     }
 
-    protected override void OnPaint(PaintEventArgs e) => DrawScrollBar(e.Graphics, MaterialSkinManager.Instance.CardsColor, SkinManager.SwitchOffTrackColor, UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.ColorScheme.PrimaryColor);
+    protected override void OnPaint(PaintEventArgs e) => DrawScrollBar(e.Graphics, MaterialSkinManager.Instance.CardsColor, MaterialSkinManager.Instance.SwitchOffTrackColor, UseAccentColor ? MaterialSkinManager.Instance.ColorScheme.AccentColor : MaterialSkinManager.Instance.ColorScheme.PrimaryColor);
     private void DrawScrollBar(Graphics g, Color backColor, Color thumbColor, Color barColor)
     {
         if (UseBarColor)

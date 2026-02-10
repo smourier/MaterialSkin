@@ -22,13 +22,10 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
         _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
         _animationManager.OnAnimationFinished += (sender, e) => OnItemClicked(_delayedArgs);
 
-        BackColor = SkinManager.BackdropColor;
+        BackColor = MaterialSkinManager.Instance.BackdropColor;
     }
 
     //Properties for managing the material design properties
-    [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
     [Browsable(false)]
     public MouseState MouseState { get; set; }
 
@@ -70,7 +67,6 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
     private const int _leftPadding = 16;
 
     //Properties for managing the material design properties
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
     public MouseState MouseState { get; set; }
 
     protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
@@ -85,8 +81,8 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         var textRect = new Rectangle(_leftPadding, itemRect.Y, itemRect.Width - _leftPadding, itemRect.Height);
 
         using var NativeText = new NativeTextRenderer(g);
-        NativeText.DrawTransparentText(e.Text, SkinManager.GetLogFontByType(FontType.Body2),
-            e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+        NativeText.DrawTransparentText(e.Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
+            e.Item.Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             textRect.Location,
             textRect.Size,
             TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -95,11 +91,11 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
     protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
     {
         var g = e.Graphics;
-        g.Clear(SkinManager.BackgroundColor);
+        g.Clear(MaterialSkinManager.Instance.BackgroundColor);
 
         //Draw background
         var itemRect = GetItemRect(e.Item);
-        g.FillRectangle(e.Item.Selected && e.Item.Enabled ? SkinManager.BackgroundFocusBrush : SkinManager.BackgroundBrush, itemRect);
+        g.FillRectangle(e.Item.Selected && e.Item.Enabled ? MaterialSkinManager.Instance.BackgroundFocusBrush : MaterialSkinManager.Instance.BackgroundBrush, itemRect);
 
         //Ripple animation
         if (e.ToolStrip is MaterialContextMenuStrip toolStrip)
@@ -127,21 +123,21 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
     {
         var g = e.Graphics;
 
-        g.FillRectangle(SkinManager.BackgroundBrush, e.Item.Bounds);
+        g.FillRectangle(MaterialSkinManager.Instance.BackgroundBrush, e.Item.Bounds);
         g.DrawLine(
-            new Pen(SkinManager.DividersColor),
+            new Pen(MaterialSkinManager.Instance.DividersColor),
             new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2),
             new Point(e.Item.Bounds.Right, e.Item.Bounds.Height / 2));
     }
 
-    protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e) => e.ToolStrip.BackColor = SkinManager.BackgroundColor;
+    protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e) => e.ToolStrip.BackColor = MaterialSkinManager.Instance.BackgroundColor;
     protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
     {
         var g = e.Graphics;
         const int arrowSize = 4;
 
         var arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
-        var arrowBrush = e.Item?.Enabled == true ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
+        var arrowBrush = e.Item?.Enabled == true ? MaterialSkinManager.Instance.TextHighEmphasisBrush : MaterialSkinManager.Instance.TextDisabledOrHintBrush;
         using var arrowPath = new GraphicsPath();
         arrowPath.AddLines(
         [

@@ -22,9 +22,9 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         UseTallSize = true;
         MaxDropDownItems = 4;
 
-        Font = SkinManager.GetFontByType(FontType.Subtitle2);
-        BackColor = SkinManager.BackgroundColor;
-        ForeColor = SkinManager.TextHighEmphasisColor;
+        Font = MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle2);
+        BackColor = MaterialSkinManager.Instance.BackgroundColor;
+        ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
         DrawMode = DrawMode.OwnerDrawVariable;
         DropDownStyle = ComboBoxStyle.DropDownList;
         DropDownWidth = Width;
@@ -148,9 +148,6 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
     //Properties for managing the material design properties
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     protected override void OnPaint(PaintEventArgs pevent)
@@ -163,48 +160,48 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         }
 
         g.FillRectangle(Enabled ? Focused ?
-            SkinManager.BackgroundFocusBrush : // Focused
+            MaterialSkinManager.Instance.BackgroundFocusBrush : // Focused
             MouseState == MouseState.HOVER ?
-            SkinManager.BackgroundHoverBrush : // Hover
-            SkinManager.BackgroundAlternativeBrush : // normal
-            SkinManager.BackgroundDisabledBrush // Disabled
+            MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
+            MaterialSkinManager.Instance.BackgroundAlternativeBrush : // normal
+            MaterialSkinManager.Instance.BackgroundDisabledBrush // Disabled
             , ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
         Color SelectedColor;
         if (UseAccent)
         {
-            SelectedColor = SkinManager.ColorScheme.AccentColor;
+            SelectedColor = MaterialSkinManager.Instance.ColorScheme.AccentColor;
         }
         else
         {
-            SelectedColor = SkinManager.ColorScheme.PrimaryColor;
+            SelectedColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
         }
 
         var SelectedBrush = new SolidBrush(SelectedColor);
 
         // Create and Draw the arrow
         var pth = new GraphicsPath();
-        var TopRight = new PointF(Width - 0.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
-        var MidBottom = new PointF(Width - 4.5f - SkinManager.FORM_PADDING, (Height >> 1) + 2.5f);
-        var TopLeft = new PointF(Width - 8.5f - SkinManager.FORM_PADDING, (Height >> 1) - 2.5f);
+        var TopRight = new PointF(Width - 0.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
+        var MidBottom = new PointF(Width - 4.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) + 2.5f);
+        var TopLeft = new PointF(Width - 8.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
         pth.AddLine(TopLeft, TopRight);
         pth.AddLine(TopRight, MidBottom);
 
         g.SmoothingMode = SmoothingMode.AntiAlias;
         g.FillPath((SolidBrush)(Enabled ? DroppedDown || Focused ?
             SelectedBrush : //DroppedDown or Focused
-            SkinManager.TextHighEmphasisBrush : //Not DroppedDown and not Focused
-            new SolidBrush(DrawHelper.BlendColor(SkinManager.TextHighEmphasisColor, SkinManager.SwitchOffDisabledThumbColor, 197))  //Disabled
+            MaterialSkinManager.Instance.TextHighEmphasisBrush : //Not DroppedDown and not Focused
+            new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.TextHighEmphasisColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197))  //Disabled
             ), pth);
         g.SmoothingMode = SmoothingMode.None;
 
         // HintText
         var userTextPresent = SelectedIndex >= 0;
-        var hintRect = new Rectangle(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, _lineY);
+        var hintRect = new Rectangle(MaterialSkinManager.Instance.FormPadding, ClientRectangle.Y, Width, _lineY);
         var hintTextSize = 16;
 
         // bottom line base
-        g.FillRectangle(SkinManager.DividersAlternativeBrush, 0, _lineY, Width, 1);
+        g.FillRectangle(MaterialSkinManager.Instance.DividersAlternativeBrush, 0, _lineY, Width, 1);
 
         if (!_animationManager.IsAnimating())
         {
@@ -212,7 +209,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             if (_hasHint && UseTallSize && (DroppedDown || Focused || SelectedIndex >= 0))
             {
                 // hint text
-                hintRect = new Rectangle(SkinManager.FORM_PADDING, _textSmallY, Width, _textSmallSize);
+                hintRect = new Rectangle(MaterialSkinManager.Instance.FormPadding, _textSmallY, Width, _textSmallSize);
                 hintTextSize = 12;
             }
 
@@ -231,7 +228,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             if (_hasHint && UseTallSize)
             {
                 hintRect = new Rectangle(
-                    SkinManager.FORM_PADDING,
+                    MaterialSkinManager.Instance.FormPadding,
                     userTextPresent && !_animationManager.IsAnimating() ? _textSmallY : ClientRectangle.Y + (int)((_textSmallY - ClientRectangle.Y) * animationProgress),
                     Width,
                     userTextPresent && !_animationManager.IsAnimating() ? _textSmallSize : (int)(_lineY + (_textSmallSize - _lineY) * animationProgress));
@@ -246,9 +243,9 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         // Calc text Rect
         var textRect = new Rectangle(
-            SkinManager.FORM_PADDING,
+            MaterialSkinManager.Instance.FormPadding,
             _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
-            ClientRectangle.Width - SkinManager.FORM_PADDING * 3 - 8,
+            ClientRectangle.Width - MaterialSkinManager.Instance.FormPadding * 3 - 8,
             _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
 
         g.Clip = new Region(textRect);
@@ -258,8 +255,8 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             // Draw user text
             NativeText.DrawTransparentText(
                 Text,
-                SkinManager.GetLogFontByType(FontType.Subtitle1),
-                Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1),
+                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
                 textRect.Location,
                 textRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -273,11 +270,11 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             using var NativeText = new NativeTextRenderer(g);
             NativeText.DrawTransparentText(
                 Hint,
-                SkinManager.GetTextBoxFontBySize(hintTextSize),
+                MaterialSkinManager.Instance.GetTextBoxFontBySize(hintTextSize),
                 Enabled ? DroppedDown || Focused ?
                 SelectedColor : // Focus 
-                SkinManager.TextMediumEmphasisColor : // not focused
-                SkinManager.TextDisabledOrHintColor, // Disabled
+                MaterialSkinManager.Instance.TextMediumEmphasisColor : // not focused
+                MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 hintRect.Location,
                 hintRect.Size,
                 TextAlignFlags.Left | TextAlignFlags.Middle);
@@ -294,12 +291,12 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         var g = e.Graphics;
 
         // Draw the background of the item.
-        g.FillRectangle(SkinManager.BackgroundBrush, e.Bounds);
+        g.FillRectangle(MaterialSkinManager.Instance.BackgroundBrush, e.Bounds);
 
         // Hover
         if (e.State.HasFlag(DrawItemState.Focus)) // Focus == hover
         {
-            g.FillRectangle(SkinManager.BackgroundHoverBrush, e.Bounds);
+            g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, e.Bounds);
         }
 
         string? text;
@@ -326,10 +323,10 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         using var NativeText = new NativeTextRenderer(g);
         NativeText.DrawTransparentText(
             text,
-            SkinManager.GetFontByType(FontType.Subtitle1),
-            SkinManager.TextHighEmphasisNoAlphaColor,
-            new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
-            new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
+            MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
+            MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor,
+            new Point(e.Bounds.Location.X + MaterialSkinManager.Instance.FormPadding, e.Bounds.Location.Y),
+            new Size(e.Bounds.Size.Width - MaterialSkinManager.Instance.FormPadding * 2, e.Bounds.Size.Height),
             TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
@@ -367,7 +364,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             return;
 
         var w = DropDownWidth;
-        var padding = SkinManager.FORM_PADDING * 3;
+        var padding = MaterialSkinManager.Instance.FormPadding * 3;
         var vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
 
         var g = CreateGraphics();
@@ -379,7 +376,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
                 if (s == null)
                     continue;
 
-                var newWidth = NativeText.MeasureLogString(s, SkinManager.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+                var newWidth = NativeText.MeasureLogString(s, MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
                 if (w < newWidth)
                 {
                     w = newWidth;

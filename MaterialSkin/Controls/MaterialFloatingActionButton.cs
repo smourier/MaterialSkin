@@ -38,9 +38,6 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
     }
 
     [Browsable(false)]
-    public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-
-    [Browsable(false)]
     public MouseState MouseState { get; set; }
 
     [DefaultValue(true)]
@@ -182,9 +179,9 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
 
         // draw fab
         g.FillEllipse(Enabled ? _mouseHover ?
-            new SolidBrush(SkinManager.ColorScheme.AccentColor.Lighten(0.25f)) :
-            SkinManager.ColorScheme.AccentBrush :
-            new SolidBrush(DrawHelper.BlendColor(SkinManager.ColorScheme.AccentColor, SkinManager.SwitchOffDisabledThumbColor, 197)),
+            new SolidBrush(MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.25f)) :
+            MaterialSkinManager.Instance.ColorScheme.AccentBrush :
+            new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.ColorScheme.AccentColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
             _fabBounds);
 
         if (_animationManager.IsAnimating())
