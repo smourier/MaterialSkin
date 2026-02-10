@@ -18,9 +18,6 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     private bool _hovered;
 
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]

@@ -57,9 +57,6 @@ public class MaterialListView : ListView, IMaterialControl
     }
 
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]

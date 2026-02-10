@@ -106,12 +106,6 @@ public partial class MaterialButton : Button, IMaterialControl
     }
 
     /// <summary>
-    /// Gets or sets the Depth
-    /// </summary>
-    [Browsable(false)]
-    public int Depth { get; set; }
-
-    /// <summary>
     /// Gets the SkinManager
     /// </summary>
     [Browsable(false)]

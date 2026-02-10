@@ -160,9 +160,6 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     //Properties for managing the material design properties
 
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]

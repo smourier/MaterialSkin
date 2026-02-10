@@ -27,9 +27,6 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
 
     //Properties for managing the material design properties
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
@@ -73,7 +70,6 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
     private const int _leftPadding = 16;
 
     //Properties for managing the material design properties
-    public int Depth { get; set; }
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
     public MouseState MouseState { get; set; }
 

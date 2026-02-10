@@ -6,11 +6,6 @@
 public interface IMaterialControl
 {
     /// <summary>
-    /// Gets or sets the Depth
-    /// </summary>
-    int Depth { get; set; }
-
-    /// <summary>
     /// Gets the SkinManager
     /// </summary>
     MaterialSkinManager SkinManager { get; }

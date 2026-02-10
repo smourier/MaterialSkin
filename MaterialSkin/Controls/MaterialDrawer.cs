@@ -174,9 +174,6 @@ public class MaterialDrawer : Control, IMaterialControl
     public int IndicatorWidth { get; set; }
 
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]
@@ -502,6 +499,9 @@ public class MaterialDrawer : Control, IMaterialControl
 
         // Animate tab indicator
         var previousSelectedTabIndexIfHasOne = _previousSelectedTabIndex == -1 ? BaseTabControl.SelectedIndex : _previousSelectedTabIndex;
+        if (_drawerItemRects.Count == 0 || previousSelectedTabIndexIfHasOne >= _drawerItemRects.Count || BaseTabControl.SelectedIndex >= _drawerItemRects.Count)
+            return;
+
         var previousActiveTabRect = _drawerItemRects[previousSelectedTabIndexIfHasOne];
         var activeTabPageRect = _drawerItemRects[BaseTabControl.SelectedIndex];
 

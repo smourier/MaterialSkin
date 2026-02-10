@@ -118,7 +118,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         | AnchorStyles.Left
         | AnchorStyles.Right;
         _materialLabel1.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
-        _materialLabel1.Depth = 0;
         _materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
         _materialLabel1.Location = new Point(56, 12);
         _materialLabel1.MouseState = MouseState.HOVER;
@@ -145,7 +144,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
         _richTextBoxMessage.BorderStyle = BorderStyle.None;
         _richTextBoxMessage.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
-        _richTextBoxMessage.Depth = 0;
         _richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
         _richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
         _richTextBoxMessage.Location = new Point(56, 12);
@@ -166,7 +164,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _leftButton.AutoSize = false;
         _leftButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         _leftButton.Density = MaterialButtonDensity.Default;
-        _leftButton.Depth = 0;
         _leftButton.DialogResult = DialogResult.OK;
         _leftButton.HighEmphasis = false;
         _leftButton.Icon = null;
@@ -189,7 +186,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _middleButton.AutoSize = false;
         _middleButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         _middleButton.Density = MaterialButtonDensity.Default;
-        _middleButton.Depth = 0;
         _middleButton.DialogResult = DialogResult.OK;
         _middleButton.HighEmphasis = true;
         _middleButton.Icon = null;
@@ -212,7 +208,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _rightButton.AutoSize = false;
         _rightButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         _rightButton.Density = MaterialButtonDensity.Default;
-        _rightButton.Depth = 0;
         _rightButton.DialogResult = DialogResult.OK;
         _rightButton.HighEmphasis = true;
         _rightButton.Icon = null;

@@ -94,9 +94,6 @@ public partial class MaterialForm : Form, IMaterialControl
     public Rectangle UserArea => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight + _actionBarHeight, ClientSize.Width, ClientSize.Height - (_statusBarHeight + _actionBarHeight));
 
     [Browsable(false)]
-    public int Depth { get; set; }
-
-    [Browsable(false)]
     public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
 
     [Browsable(false)]

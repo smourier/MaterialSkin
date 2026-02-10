@@ -25,10 +25,10 @@
 		<PackageTags>material design materialdesign google forms theme skin</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
-		<Version>3.0.1</Version>
-		<ProductVersion>3.0.1</ProductVersion>
-		<FileVersion>3.0.1</FileVersion>
-		<InformationalVersion>3.0.1</InformationalVersion>
+		<Version>3.0.2</Version>
+		<ProductVersion>3.0.2</ProductVersion>
+		<FileVersion>3.0.2</FileVersion>
+		<InformationalVersion>3.0.2</InformationalVersion>
 		<SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/smourier/MaterialSkin</PackageProjectUrl>
