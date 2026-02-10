@@ -9,7 +9,7 @@ public class MaterialTabControl : TabControl, IMaterialControl
 
     protected override void WndProc(ref Message m)
     {
-        if (m.Msg == 0x1328 && !DesignMode)
+        if (m.Msg == Constants.TCM_ADJUSTRECT && !DesignMode)
         {
             m.Result = 1;
         }

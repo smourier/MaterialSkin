@@ -18,6 +18,8 @@ internal static class Constants
     public const int WM_SYSCOMMAND = 0x0112;
     public const int WM_SETREDRAW = 0xB;
 
+    public const int TCM_ADJUSTRECT = 0x1328;
+
     public const int EM_SETBKGNDCOLOR = WM_USER + 67;
     public const int EM_SETCUEBANNER = 0x1501;
 
