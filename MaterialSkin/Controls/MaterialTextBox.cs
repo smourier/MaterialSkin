@@ -430,7 +430,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         set
         {
             field = value;
-            if (Enabled == true)
+            if (Enabled)
             {
                 _baseTextBox.ReadOnly = field;
             }

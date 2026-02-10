@@ -1006,7 +1006,7 @@ public partial class MaterialForm : Form, IMaterialControl
                _drawerIconRect.Y + _actionBarHeight / 2 + 6);
         }
 
-        if (ControlBox == true && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
+        if (ControlBox && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
         {
             //Form title
             using var NativeText = new NativeTextRenderer(g);

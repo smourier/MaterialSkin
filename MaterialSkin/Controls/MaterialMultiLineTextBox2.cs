@@ -279,7 +279,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         set
         {
             field = value;
-            if (Enabled == true)
+            if (Enabled)
             {
                 _baseTextBox.ReadOnly = field;
             }

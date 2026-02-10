@@ -14,7 +14,6 @@ public partial class MaterialSkinManager : IDisposable
     private ColorScheme _colorScheme;
     private bool _disposedValue;
 
-    // Constructor
     public MaterialSkinManager()
     {
         Theme = Themes.LIGHT;

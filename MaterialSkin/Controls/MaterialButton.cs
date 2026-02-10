@@ -1,8 +1,5 @@
 ﻿namespace MaterialSkin.Controls;
 
-/// <summary>
-/// Defines the <see cref="MaterialButton" />
-/// </summary>
 public partial class MaterialButton : Button, IMaterialControl
 {
     private const int _iconSize = 24;
@@ -20,22 +17,6 @@ public partial class MaterialButton : Button, IMaterialControl
     private SizeF _textSize;
     private TextureBrush? _iconsBrushes;
 
-    protected override void InitLayout()
-    {
-        base.InitLayout();
-        Invalidate();
-        LocationChanged += (sender, e) =>
-        {
-            if (DrawShadows)
-            {
-                Parent?.Invalidate();
-            }
-        };
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MaterialButton"/> class.
-    /// </summary>
     public MaterialButton()
     {
         DrawShadows = true;
@@ -84,9 +65,6 @@ public partial class MaterialButton : Button, IMaterialControl
         Padding = new Padding(0);
     }
 
-    /// <summary>
-    /// Gets or sets the Icon
-    /// </summary>
     [Category("Material Skin")]
     public Image? Icon
     {
@@ -105,9 +83,6 @@ public partial class MaterialButton : Button, IMaterialControl
         }
     }
 
-    /// <summary>
-    /// Gets or sets the MouseState
-    /// </summary>
     [Browsable(false)]
     public MouseState MouseState { get; private set; }
 
@@ -117,9 +92,6 @@ public partial class MaterialButton : Button, IMaterialControl
     [Category("Material Skin")]
     public bool UseAccentColor { get; set { field = value; Invalidate(); } }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether HighEmphasis
-    /// </summary>
     [Category("Material Skin")]
     public bool HighEmphasis { get; set { field = value; Invalidate(); } }
 
@@ -131,9 +103,6 @@ public partial class MaterialButton : Button, IMaterialControl
     [Category("Material Skin")]
     public MaterialButtonType Type { get; set { field = value; PreProcessIcons(); Invalidate(); } }
 
-    /// <summary>
-    /// Gets or sets a value indicating button density
-    /// </summary>
     [Category("Material Skin")]
     public MaterialButtonDensity Density
     {
@@ -161,9 +130,6 @@ public partial class MaterialButton : Button, IMaterialControl
     [DefaultValue(true)]
     public override bool AutoSize { get => base.AutoSize; set => base.AutoSize = value; }
 
-    /// <summary>
-    /// Gets or sets the Text
-    /// </summary>
     [AllowNull]
     public override string Text
     {
@@ -188,6 +154,19 @@ public partial class MaterialButton : Button, IMaterialControl
 
             Invalidate();
         }
+    }
+
+    protected override void InitLayout()
+    {
+        base.InitLayout();
+        Invalidate();
+        LocationChanged += (sender, e) =>
+        {
+            if (DrawShadows)
+            {
+                Parent?.Invalidate();
+            }
+        };
     }
 
     protected override void OnParentChanged(EventArgs e)
@@ -348,10 +327,6 @@ public partial class MaterialButton : Button, IMaterialControl
         _iconsBrushes = textureBrushGray;
     }
 
-    /// <summary>
-    /// The OnPaint
-    /// </summary>
-    /// <param name="pevent">The pevent<see cref="PaintEventArgs"/></param>
     protected override void OnPaint(PaintEventArgs pevent)
     {
         if (Parent == null)
@@ -503,11 +478,6 @@ public partial class MaterialButton : Button, IMaterialControl
         }
     }
 
-    /// <summary>
-    /// The GetPreferredSize
-    /// </summary>
-    /// <param name="proposedSize">The proposedSize<see cref="Size"/></param>
-    /// <returns>The <see cref="Size"/></returns>
     public override Size GetPreferredSize(Size proposedSize)
     {
         var s = base.GetPreferredSize(proposedSize);
@@ -545,9 +515,6 @@ public partial class MaterialButton : Button, IMaterialControl
         return s;
     }
 
-    /// <summary>
-    /// The OnCreateControl
-    /// </summary>
     protected override void OnCreateControl()
     {
         base.OnCreateControl();

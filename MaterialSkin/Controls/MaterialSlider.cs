@@ -384,7 +384,7 @@ public class MaterialSlider : Control, IMaterialControl
         }
 
         using var NativeText = new NativeTextRenderer(g);
-        if (ShowText == true)
+        if (ShowText)
             // Draw text
             NativeText.DrawTransparentText(
                 Text,

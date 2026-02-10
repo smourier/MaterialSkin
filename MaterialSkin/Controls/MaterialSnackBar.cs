@@ -118,7 +118,7 @@ public class MaterialSnackBar : MaterialForm
 
     private void UpdateRects()
     {
-        if (ShowActionButton == true)
+        if (ShowActionButton)
         {
             var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
             var _actionbuttonBounds = new Rectangle(Width - _buttonPadding - _buttonWidth, _topPaddingSingleLine, _buttonWidth, _buttonHeight);

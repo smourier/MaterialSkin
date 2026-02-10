@@ -262,7 +262,7 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     protected override void OnPaint(PaintEventArgs e)
     {
-        if (_updating == true)
+        if (_updating)
             return;
 
         var g = e.Graphics;
