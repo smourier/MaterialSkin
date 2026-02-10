@@ -31,9 +31,6 @@ public partial class MaterialTabSelector : Control, IMaterialControl
         _animationManager.OnAnimationProgress += (sender, e) => Invalidate();
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Material Skin"), Browsable(true)]
     public MaterialTabControl? BaseTabControl
     {

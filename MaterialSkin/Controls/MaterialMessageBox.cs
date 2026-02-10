@@ -3,12 +3,6 @@
 ///Adapted from http://www.codeproject.com/Articles/601900/FlexibleMessageBox
 public class MaterialMessageBox : IMaterialControl
 {
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    [Browsable(false)]
-    public Point MouseLocation { get; set; }
-
     public static DialogResult Show(string text, bool UseRichTextBox = true, ButtonsPosition buttonsPosition = ButtonsPosition.Right)
         => FlexibleMaterialForm.Show(null, text, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, UseRichTextBox, buttonsPosition);
 

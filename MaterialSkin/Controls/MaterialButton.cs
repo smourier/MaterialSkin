@@ -109,7 +109,7 @@ public partial class MaterialButton : Button, IMaterialControl
     /// Gets or sets the MouseState
     /// </summary>
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
+    public MouseState MouseState { get; private set; }
 
     [Browsable(false)]
     public Color NoAccentTextColor { get; set; }
@@ -561,18 +561,18 @@ public partial class MaterialButton : Button, IMaterialControl
         if (DesignMode)
             return;
 
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
 
         MouseEnter += (sender, args) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
             _hoverAnimationManager.StartNewAnimation(AnimationDirection.In);
             Invalidate();
         };
 
         MouseLeave += (sender, args) =>
         {
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             _hoverAnimationManager.StartNewAnimation(AnimationDirection.Out);
             Invalidate();
         };
@@ -581,7 +581,7 @@ public partial class MaterialButton : Button, IMaterialControl
         {
             if (args.Button == MouseButtons.Left)
             {
-                MouseState = MouseState.DOWN;
+                MouseState = MouseState.Down;
 
                 _animationManager.StartNewAnimation(AnimationDirection.In, args.Location);
                 Invalidate();
@@ -590,7 +590,7 @@ public partial class MaterialButton : Button, IMaterialControl
 
         MouseUp += (sender, args) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
             Invalidate();
         };
 
@@ -602,7 +602,7 @@ public partial class MaterialButton : Button, IMaterialControl
 
         LostFocus += (sender, args) =>
         {
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             _focusAnimationManager.StartNewAnimation(AnimationDirection.Out);
             Invalidate();
         };

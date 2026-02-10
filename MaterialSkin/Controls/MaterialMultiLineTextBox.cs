@@ -15,10 +15,6 @@ public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
         ForeColorChanged += (sender, args) => ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor;
     }
 
-    //Properties for managing the material design properties
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Material Skin"), DefaultValue(""), Localizable(true)]
     public string Hint
     {

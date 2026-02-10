@@ -8,9 +8,6 @@ public class MaterialProgressBar : ProgressBar, IMaterialControl
         SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified) => base.SetBoundsCore(x, y, width, 5, specified);
     protected override void OnPaint(PaintEventArgs e)
     {

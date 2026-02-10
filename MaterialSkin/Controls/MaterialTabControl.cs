@@ -7,9 +7,6 @@ public class MaterialTabControl : TabControl, IMaterialControl
         Multiline = true;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     protected override void WndProc(ref Message m)
     {
         if (m.Msg == 0x1328 && !DesignMode)

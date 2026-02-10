@@ -64,9 +64,6 @@ public class MaterialScrollBar : Control, IMaterialControl
         _progressTimer.Tick += ProgressTimerTick;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor { get; set { field = value; Invalidate(); } }
 

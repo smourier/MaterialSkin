@@ -93,9 +93,6 @@ public partial class MaterialForm : Form, IMaterialControl
 
     public Rectangle UserArea => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight + _actionBarHeight, ClientSize.Width, ClientSize.Height - (_statusBarHeight + _actionBarHeight));
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Layout")]
     public bool Sizable { get; set; }
 

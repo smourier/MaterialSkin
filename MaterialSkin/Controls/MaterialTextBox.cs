@@ -118,7 +118,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
     {
         // Material Properties
         UseAccent = true;
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
 
         SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.DoubleBuffer, true);
 
@@ -200,7 +200,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
 
     //Properties for managing the material design properties
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
+    public MouseState MouseState { get; private set; }
 
     //Unused properties
     [Browsable(false)]
@@ -504,13 +504,13 @@ public partial class MaterialTextBox : Control, IMaterialControl
         g.FillRectangle(
             !Enabled ? MaterialSkinManager.Instance.BackgroundDisabledBrush : // Disabled
             _isFocused ? MaterialSkinManager.Instance.BackgroundFocusBrush :  // Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
+            MouseState == MouseState.Hover && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
             backBrush, // Normal
             ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
         _baseTextBox.BackColor = !Enabled ? ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.BackgroundDisabledColor, BackColor) : //Disabled
             _isFocused ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundFocusColor, MaterialSkinManager.Instance.BackgroundFocusColor.A) : //Focused
-            MouseState == MouseState.HOVER && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundHoverColor, MaterialSkinManager.Instance.BackgroundHoverColor.A) : // Hover
+            MouseState == MouseState.Hover && (!ReadOnly || (ReadOnly && !AnimateReadOnly)) ? DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundHoverColor, MaterialSkinManager.Instance.BackgroundHoverColor.A) : // Hover
             DrawHelper.BlendColor(BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A); // Normal
 
         //Leading Icon
@@ -723,7 +723,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
             return;
 
         base.OnMouseEnter(e);
-        MouseState = MouseState.HOVER;
+        MouseState = MouseState.Hover;
         Invalidate();
     }
 
@@ -737,7 +737,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         else
         {
             base.OnMouseLeave(e);
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             Invalidate();
         }
     }
@@ -759,7 +759,7 @@ public partial class MaterialTextBox : Control, IMaterialControl
         base.OnCreateControl();
 
         // events
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
 
     }
 

@@ -4,6 +4,7 @@ public class MaterialListView : ListView, IMaterialControl
 {
     private const int _pad = 16;
     private ListViewItem? _hoveredItem;
+    private Point _mouseLocation;
 
     public MaterialListView()
     {
@@ -19,35 +20,35 @@ public class MaterialListView : ListView, IMaterialControl
         BackColor = MaterialSkinManager.Instance.BackgroundColor;
 
         // Fix for hovers, by default it doesn't redraw
-        MouseLocation = new Point(-1, -1);
-        MouseState = MouseState.OUT;
+        _mouseLocation = new Point(-1, -1);
+        MouseState = MouseState.Out;
         MouseEnter += (s, e) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
         };
 
         MouseLeave += (s, e) =>
         {
-            MouseState = MouseState.OUT;
-            MouseLocation = new Point(-1, -1);
+            MouseState = MouseState.Out;
+            _mouseLocation = new Point(-1, -1);
             _hoveredItem = null;
             Invalidate();
         };
 
         MouseDown += (s, e) =>
         {
-            MouseState = MouseState.DOWN;
+            MouseState = MouseState.Down;
         };
 
         MouseUp += (s, e) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
         };
 
         MouseMove += (s, e) =>
         {
-            MouseLocation = e.Location;
-            var currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
+            _mouseLocation = e.Location;
+            var currentHoveredItem = GetItemAt(_mouseLocation.X, _mouseLocation.Y);
             if (_hoveredItem != currentHoveredItem)
             {
                 _hoveredItem = currentHoveredItem;
@@ -57,10 +58,7 @@ public class MaterialListView : ListView, IMaterialControl
     }
 
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    [Browsable(false)]
-    public Point MouseLocation { get; set; }
+    public MouseState MouseState { get; private set; }
 
     [Category("Appearance"), Browsable(true)]
     public bool AutoSizeTable
@@ -103,7 +101,7 @@ public class MaterialListView : ListView, IMaterialControl
             // Selected background
             g.FillRectangle(MaterialSkinManager.Instance.BackgroundFocusBrush, e.Bounds);
         }
-        else if (e.Bounds.Contains(MouseLocation) && MouseState == MouseState.HOVER)
+        else if (e.Bounds.Contains(_mouseLocation) && MouseState == MouseState.Hover)
         {
             // Hover background
             g.FillRectangle(MaterialSkinManager.Instance.BackgroundHoverBrush, e.Bounds);

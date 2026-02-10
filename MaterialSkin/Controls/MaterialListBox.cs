@@ -65,10 +65,6 @@ public partial class MaterialListBox : Control, IMaterialControl
         UpdateProperties();
     }
 
-    //Properties for managing the material design properties
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor { get; set { field = value; _scrollBar?.UseAccentColor = value; Invalidate(); } }
 

@@ -41,13 +41,13 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         DropDownClosed += (sender, args) =>
         {
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             if (SelectedIndex < 0 && !Focused) _animationManager.StartNewAnimation(AnimationDirection.Out);
         };
 
         LostFocus += (sender, args) =>
         {
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             if (SelectedIndex < 0) _animationManager.StartNewAnimation(AnimationDirection.Out);
         };
 
@@ -64,13 +64,13 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         MouseEnter += (sender, args) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
             Invalidate();
         };
 
         MouseLeave += (sender, args) =>
         {
-            MouseState = MouseState.OUT;
+            MouseState = MouseState.Out;
             Invalidate();
         };
 
@@ -148,7 +148,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
     //Properties for managing the material design properties
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
+    public MouseState MouseState { get; private set; }
 
     protected override void OnPaint(PaintEventArgs pevent)
     {
@@ -161,7 +161,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
 
         g.FillRectangle(Enabled ? Focused ?
             MaterialSkinManager.Instance.BackgroundFocusBrush : // Focused
-            MouseState == MouseState.HOVER ?
+            MouseState == MouseState.Hover ?
             MaterialSkinManager.Instance.BackgroundHoverBrush : // Hover
             MaterialSkinManager.Instance.BackgroundAlternativeBrush : // normal
             MaterialSkinManager.Instance.BackgroundDisabledBrush // Disabled
@@ -333,7 +333,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
         MeasureItem += CustomMeasureItem;
         DrawItem += CustomDrawItem;
         DropDownStyle = ComboBoxStyle.DropDownList;

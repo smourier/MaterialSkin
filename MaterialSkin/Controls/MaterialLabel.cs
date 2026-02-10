@@ -11,9 +11,6 @@ public class MaterialLabel : Label, IMaterialControl
         TextAlign = ContentAlignment.TopLeft;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [DefaultValue(typeof(ContentAlignment), "TopLeft")]
     public override ContentAlignment TextAlign
     {

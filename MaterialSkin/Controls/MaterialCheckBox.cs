@@ -15,6 +15,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
     private static readonly Point[] _checkmarkLine = [new Point(3, 8), new Point(7, 12), new Point(14, 5)];
     private bool _hovered;
     private CheckState _oldCheckState;
+    private Point _mouseLocation;
 
     public MaterialCheckbox()
     {
@@ -51,14 +52,11 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
         Ripple = true;
         Height = _heightRipple;
-        MouseLocation = new Point(-1, -1);
+        _mouseLocation = new Point(-1, -1);
     }
 
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    [Browsable(false)]
-    public Point MouseLocation { get; set; }
+    public MouseState MouseState { get; private set; }
 
     [Category("Appearance")]
     public bool Ripple
@@ -212,7 +210,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         if (DesignMode)
             return;
 
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
 
         GotFocus += (sender, AddingNewEventArgs) =>
         {
@@ -234,19 +232,19 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
         MouseEnter += (sender, args) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
             _oldCheckState = CheckState;
         };
 
         MouseLeave += (sender, args) =>
         {
-            MouseLocation = new Point(-1, -1);
-            MouseState = MouseState.OUT;
+            _mouseLocation = new Point(-1, -1);
+            MouseState = MouseState.Out;
         };
 
         MouseDown += (sender, args) =>
         {
-            MouseState = MouseState.DOWN;
+            MouseState = MouseState.Down;
             if (Ripple)
             {
                 _rippleAM.SecondaryIncrement = 0;
@@ -269,7 +267,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         {
             if (Ripple)
             {
-                MouseState = MouseState.HOVER;
+                MouseState = MouseState.Hover;
                 _rippleAM.SecondaryIncrement = 0.08;
                 _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 _hovered = false;
@@ -281,7 +279,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         {
             if (Ripple && (args.KeyCode == Keys.Space))
             {
-                MouseState = MouseState.HOVER;
+                MouseState = MouseState.Hover;
                 _rippleAM.SecondaryIncrement = 0.08;
             }
             if (ReadOnly) CheckState = _oldCheckState;
@@ -289,7 +287,7 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
         MouseMove += (sender, args) =>
         {
-            MouseLocation = args.Location;
+            _mouseLocation = args.Location;
             Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
         };
     }
@@ -312,5 +310,5 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         return checkMark;
     }
 
-    private bool IsMouseInCheckArea() => ClientRectangle.Contains(MouseLocation);
+    private bool IsMouseInCheckArea() => ClientRectangle.Contains(_mouseLocation);
 }

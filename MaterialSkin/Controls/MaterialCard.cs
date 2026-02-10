@@ -15,9 +15,6 @@ public class MaterialCard : Panel, IMaterialControl
         Padding = new Padding(MaterialSkinManager.Instance.FormPadding);
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     private void DrawShadowOnParent(object? sender, PaintEventArgs e)
     {
         if (Parent == null)

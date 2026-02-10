@@ -25,10 +25,6 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
         BackColor = MaterialSkinManager.Instance.BackdropColor;
     }
 
-    //Properties for managing the material design properties
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     protected override void OnMouseUp(MouseEventArgs mea)
     {
         base.OnMouseUp(mea);
@@ -65,9 +61,6 @@ public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
 internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, IMaterialControl
 {
     private const int _leftPadding = 16;
-
-    //Properties for managing the material design properties
-    public MouseState MouseState { get; set; }
 
     protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
     {

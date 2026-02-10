@@ -97,118 +97,58 @@ public class MaterialExpansionPanel : Panel, IMaterialControl
         UpdateRects();
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
-    public bool UseAccentColor
-    {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
-    }
+    public bool UseAccentColor { get; set { field = value; UpdateRects(); Invalidate(); } }
 
     [DefaultValue(false)]
     [Description("Collapses the control when set to true")]
     [Category("Material Skin")]
-    public bool Collapse
-    {
-        get;
-        set
-        {
-            field = value;
-            CollapseOrExpand();
-            Invalidate();
-        }
-    }
+    public bool Collapse { get; set { field = value; CollapseOrExpand(); Invalidate(); } }
 
     [DefaultValue("Title")]
     [Category("Material Skin"), DisplayName("Title")]
     [Description("Title to show in expansion panel's header")]
-    public string? Title
-    {
-        get;
-        set
-        {
-            field = value;
-            Invalidate();
-        }
-    }
+    public string? Title { get; set { field = value; Invalidate(); } }
 
     [DefaultValue("Description")]
     [Category("Material Skin"), DisplayName("Description")]
     [Description("Description to show in expansion panel's header")]
-    public string? Description
-    {
-        get;
-        set
-        {
-            field = value;
-            Invalidate();
-        }
-    }
+    public string? Description { get; set { field = value; Invalidate(); } }
 
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Draw Shadows")]
     [Description("Draw Shadows around control")]
-    public bool DrawShadows
-    {
-        get;
-        set { field = value; Invalidate(); }
-    }
+    public bool DrawShadows { get; set { field = value; Invalidate(); } }
 
     [DefaultValue(240)]
     [Category("Material Skin"), DisplayName("Expand Height")]
     [Description("Define control height when expanded")]
-    public int ExpandHeight
-    {
-        get => _expandHeight;
-        set { if (value < _minHeight) value = _minHeight; _expandHeight = value; Invalidate(); }
-    }
+    public int ExpandHeight { get => _expandHeight; set { if (value < _minHeight) value = _minHeight; _expandHeight = value; Invalidate(); } }
 
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show collapse/expand")]
     [Description("Show collapse/expand indicator")]
-    public bool ShowCollapseExpand
-    {
-        get;
-        set { field = value; Invalidate(); }
-    }
+    public bool ShowCollapseExpand { get; set { field = value; Invalidate(); } }
 
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show validation buttons")]
     [Description("Show save/cancel button")]
-    public bool ShowValidationButtons
-    {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
-    }
+    public bool ShowValidationButtons { get; set { field = value; UpdateRects(); Invalidate(); } }
 
     [DefaultValue("SAVE")]
     [Category("Material Skin"), DisplayName("Validation button text")]
     [Description("Set Validation button text")]
-    public string? ValidationButtonText
-    {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
-    }
+    public string? ValidationButtonText { get; set { field = value; UpdateRects(); Invalidate(); } }
 
     [DefaultValue("CANCEL")]
     [Category("Material Skin"), DisplayName("Cancel button text")]
     [Description("Set Cancel button text")]
-    public string? CancelButtonText
-    {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
-    }
+    public string? CancelButtonText { get; set { field = value; UpdateRects(); Invalidate(); } }
 
     [DefaultValue(false)]
     [Category("Material Skin"), DisplayName("Validation button enable")]
     [Description("Enable validation button")]
-    public bool ValidationButtonEnable
-    {
-        get;
-        set { field = value; UpdateRects(); Invalidate(); }
-    }
+    public bool ValidationButtonEnable { get; set { field = value; UpdateRects(); Invalidate(); } }
 
     [Category("Action")]
     private void CancelButton_Click(object? sender, EventArgs e)

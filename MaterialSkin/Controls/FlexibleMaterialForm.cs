@@ -120,7 +120,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _materialLabel1.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         _materialLabel1.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
         _materialLabel1.Location = new Point(56, 12);
-        _materialLabel1.MouseState = MouseState.HOVER;
         _materialLabel1.Name = "materialLabel1";
         _materialLabel1.Size = new Size(314, 65);
         _materialLabel1.TabIndex = 9;
@@ -148,7 +147,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
         _richTextBoxMessage.Location = new Point(56, 12);
         _richTextBoxMessage.Margin = new Padding(0);
-        _richTextBoxMessage.MouseState = MouseState.HOVER;
         _richTextBoxMessage.Name = "richTextBoxMessage";
         _richTextBoxMessage.ReadOnly = true;
         _richTextBoxMessage.ScrollBars = RichTextBoxScrollBars.Vertical;
@@ -170,7 +168,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _leftButton.Location = new Point(32, 163);
         _leftButton.Margin = new Padding(4, 6, 4, 6);
         _leftButton.MinimumSize = new Size(0, 24);
-        _leftButton.MouseState = MouseState.HOVER;
         _leftButton.Name = "leftButton";
         _leftButton.Size = new Size(108, 36);
         _leftButton.TabIndex = 14;
@@ -192,7 +189,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _middleButton.Location = new Point(148, 163);
         _middleButton.Margin = new Padding(4, 6, 4, 6);
         _middleButton.MinimumSize = new Size(0, 24);
-        _middleButton.MouseState = MouseState.HOVER;
         _middleButton.Name = "middleButton";
         _middleButton.Size = new Size(102, 36);
         _middleButton.TabIndex = 15;
@@ -214,7 +210,6 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _rightButton.Location = new Point(258, 163);
         _rightButton.Margin = new Padding(4, 6, 4, 6);
         _rightButton.MinimumSize = new Size(0, 24);
-        _rightButton.MouseState = MouseState.HOVER;
         _rightButton.Name = "rightButton";
         _rightButton.Size = new Size(106, 36);
         _rightButton.TabIndex = 13;

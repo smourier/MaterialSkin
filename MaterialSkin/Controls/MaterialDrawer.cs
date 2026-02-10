@@ -174,7 +174,7 @@ public class MaterialDrawer : Control, IMaterialControl
     public int IndicatorWidth { get; set; }
 
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
+    public MouseState MouseState { get; private set; }
 
     [Category("Behavior")]
     public MaterialTabControl? BaseTabControl
@@ -607,7 +607,7 @@ public class MaterialDrawer : Control, IMaterialControl
         if (DesignMode)
             return;
 
-        MouseState = MouseState.DOWN;
+        MouseState = MouseState.Down;
     }
 
     protected override void OnMouseUp(MouseEventArgs e)
@@ -616,7 +616,7 @@ public class MaterialDrawer : Control, IMaterialControl
         if (DesignMode)
             return;
 
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
     }
 
     protected override void OnMouseMove(MouseEventArgs e)
@@ -698,7 +698,7 @@ public class MaterialDrawer : Control, IMaterialControl
     {
         base.OnMouseLeave(e);
 
-        if (MouseState != MouseState.DOWN)
+        if (MouseState != MouseState.Down)
         {
             Cursor = Cursors.Default;
             CursorUpdate?.Invoke(this, Cursor);

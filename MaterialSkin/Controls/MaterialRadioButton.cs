@@ -16,12 +16,10 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
     // size related variables which should be recalculated onsizechanged
     private int _boxOffset;
     private bool _hovered;
+    private Point _mouseLocation;
 
     [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
-    [Browsable(false)]
-    public Point MouseLocation { get; set; }
+    public MouseState MouseState { get; private set; }
 
     [Category("Behavior")]
     public bool Ripple
@@ -81,7 +79,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         SizeChanged += OnSizeChanged;
 
         Ripple = true;
-        MouseLocation = new Point(-1, -1);
+        _mouseLocation = new Point(-1, -1);
     }
 
     private void OnSizeChanged(object? sender, EventArgs eventArgs) => _boxOffset = Height / 2 - _radioButtonSize / 2;
@@ -172,7 +170,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
             TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
-    private bool IsMouseInCheckArea() => ClientRectangle.Contains(MouseLocation);
+    private bool IsMouseInCheckArea() => ClientRectangle.Contains(_mouseLocation);
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
@@ -180,7 +178,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         if (DesignMode)
             return;
 
-        MouseState = MouseState.OUT;
+        MouseState = MouseState.Out;
 
         GotFocus += (sender, AddingNewEventArgs) =>
         {
@@ -202,18 +200,18 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
 
         MouseEnter += (sender, args) =>
         {
-            MouseState = MouseState.HOVER;
+            MouseState = MouseState.Hover;
         };
 
         MouseLeave += (sender, args) =>
         {
-            MouseLocation = new Point(-1, -1);
-            MouseState = MouseState.OUT;
+            _mouseLocation = new Point(-1, -1);
+            MouseState = MouseState.Out;
         };
 
         MouseDown += (sender, args) =>
         {
-            MouseState = MouseState.DOWN;
+            MouseState = MouseState.Down;
             if (Ripple)
             {
                 _rippleAM.SecondaryIncrement = 0;
@@ -234,7 +232,7 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         {
             if (Ripple)
             {
-                MouseState = MouseState.HOVER;
+                MouseState = MouseState.Hover;
                 _rippleAM.SecondaryIncrement = 0.08;
                 _hoverAM.StartNewAnimation(AnimationDirection.Out, [Checked]);
                 _hovered = false;
@@ -245,14 +243,14 @@ public class MaterialRadioButton : RadioButton, IMaterialControl
         {
             if (Ripple && (args.KeyCode == Keys.Space))
             {
-                MouseState = MouseState.HOVER;
+                MouseState = MouseState.Hover;
                 _rippleAM.SecondaryIncrement = 0.08;
             }
         };
 
         MouseMove += (sender, args) =>
         {
-            MouseLocation = args.Location;
+            _mouseLocation = args.Location;
             Cursor = IsMouseInCheckArea() ? Cursors.Hand : Cursors.Default;
         };
     }

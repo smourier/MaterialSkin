@@ -10,9 +10,6 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
         AutoScroll = true;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     public bool Striped { get; set; }
     public Color StripeDarkColor { get; set; }
     public ItemsList Items { get; set; }
@@ -41,9 +38,7 @@ public class MaterialCheckedListBox : Panel, IMaterialControl
     {
         private readonly Panel _parent = parent;
 
-        public void Add(string text) => Add(text, false);
-
-        public void Add(string text, bool defaultValue)
+        public void Add(string text, bool defaultValue = false)
         {
             var cb = new MaterialCheckbox();
             Add(cb);

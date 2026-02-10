@@ -42,9 +42,6 @@ public class MaterialSlider : Control, IMaterialControl
         DoubleBuffered = true;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [DefaultValue(50)]
     [Category("Material Skin")]
     [Description("Define control value")]

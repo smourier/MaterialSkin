@@ -37,9 +37,6 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         _showAnimationManager.OnAnimationFinished += ShowAnimationManager_OnAnimationFinished;
     }
 
-    [Browsable(false)]
-    public MouseState MouseState { get; set; }
-
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Draw Shadows")]
     [Description("Draw Shadows around control")]
