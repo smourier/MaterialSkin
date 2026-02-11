@@ -91,7 +91,14 @@ public partial class MaterialForm : Form, IMaterialControl
         }
     }
 
+    [Browsable(false)]
     public Rectangle UserArea => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight + _actionBarHeight, ClientSize.Width, ClientSize.Height - (_statusBarHeight + _actionBarHeight));
+
+    [Browsable(false)]
+    public Form DrawerOverlay => _drawerOverlay;
+
+    [Browsable(false)]
+    public MaterialDrawerForm DrawerForm => _drawerForm;
 
     [Category("Layout")]
     public bool Sizable { get; set; }
