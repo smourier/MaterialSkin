@@ -175,10 +175,9 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
         DrawHelper.DrawRoundShadow(g, _fabBounds);
 
         // draw fab
-        g.FillEllipse(Enabled ? _mouseHover ?
-            new SolidBrush(MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.25f)) :
-            MaterialSkinManager.Instance.ColorScheme.AccentBrush :
-            new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.ColorScheme.AccentColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
+        using var brush = new SolidBrush(MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.25f));
+        using var brush2 = new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.ColorScheme.AccentColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197));
+        g.FillEllipse(Enabled ? _mouseHover ? brush : MaterialSkinManager.Instance.ColorScheme.AccentBrush : brush2,
             _fabBounds);
 
         if (_animationManager.IsAnimating())
@@ -194,7 +193,7 @@ public class MaterialFloatingActionButton : Button, IMaterialControl
             {
                 var animationValue = _animationManager.GetProgress(i);
                 var animationSource = _animationManager.GetSource(i);
-                var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationValue * 50)), Color.White));
+                using var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationValue * 50)), Color.White));
                 var rippleSize = (int)(animationValue * Width * 2);
                 g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, animationSource.Y - rippleSize / 2, rippleSize, rippleSize));
             }

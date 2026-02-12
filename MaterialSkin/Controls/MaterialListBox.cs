@@ -23,15 +23,11 @@ public partial class MaterialListBox : Control, IMaterialControl
 
     [Category("Behavior")]
     [Description("Occurs when selected index change.")]
-    public event SelectedIndexChangedEventHandler? SelectedIndexChanged;
-
-    public delegate void SelectedIndexChangedEventHandler(object sender, MaterialListBoxItem selectedItem);
+    public event EventHandler? SelectedIndexChanged;
 
     [Category("Behavior")]
     [Description("Occurs when selected value change.")]
-    public event SelectedValueEventHandler? SelectedValueChanged;
-
-    public delegate void SelectedValueEventHandler(object sender, MaterialListBoxItem selectedItem);
+    public event EventHandler? SelectedValueChanged;
 
     [Category("Behavior")]
     [Description("Occurs when item is added or removed.")]
@@ -299,7 +295,7 @@ public partial class MaterialListBox : Control, IMaterialControl
             selectedColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
         }
 
-        var SelectedBrush = new SolidBrush(selectedColor);
+        using var selectedBrush = new SolidBrush(selectedColor);
 
         //Draw items
         for (var i = firstItem; i < lastItem; i++)
@@ -316,10 +312,8 @@ public partial class MaterialListBox : Control, IMaterialControl
                 }
                 else if (_indicates.Contains(i))
                 {
-                    g.FillRectangle(Enabled ?
-                        SelectedBrush :
-                        new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
-                        itemRect);
+                    using var offBrush = new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197));
+                    g.FillRectangle(Enabled ? selectedBrush : offBrush, itemRect);
                 }
             }
             else
@@ -330,10 +324,8 @@ public partial class MaterialListBox : Control, IMaterialControl
                 }
                 else if (i == SelectedIndex)
                 {
-                    g.FillRectangle(Enabled ?
-                        SelectedBrush :
-                        new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197)),
-                        itemRect);
+                    using var offBrush = new SolidBrush(DrawHelper.BlendColor(selectedColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197));
+                    g.FillRectangle(Enabled ? selectedBrush : offBrush, itemRect);
                 }
             }
 
@@ -358,8 +350,8 @@ public partial class MaterialListBox : Control, IMaterialControl
 
             var secondaryTextRect = new Rectangle(primaryTextRect.X, primaryTextRect.Y + primaryTextRect.Height + _primaryTextBottomPadding + _secondaryTextTopPadding, primaryTextRect.Width, _itemHeight - _secondaryTextBottomPadding - primaryTextRect.Height - (_primaryTextBottomPadding + _secondaryTextTopPadding));
 
-            using var NativeText = new NativeTextRenderer(g);
-            NativeText.DrawTransparentText(
+            using var renderer = new NativeTextRenderer(g);
+            renderer.DrawTransparentText(
                 itemText,
                 _primaryFont,
                 Enabled ? (i != SelectedIndex || UseAccentColor) ?
@@ -371,7 +363,7 @@ public partial class MaterialListBox : Control, IMaterialControl
                 primaryTextAlignFlags);
             if (Style == ListBoxStyle.TwoLine)
             {
-                NativeText.DrawTransparentText(
+                renderer.DrawTransparentText(
                     itemSecondaryText,
                     _secondaryFont,
                     Enabled ? (i != SelectedIndex || UseAccentColor) ?
@@ -384,7 +376,7 @@ public partial class MaterialListBox : Control, IMaterialControl
             }
             else if (Style == ListBoxStyle.ThreeLine)
             {
-                NativeText.DrawMultilineTransparentText(
+                renderer.DrawMultilineTransparentText(
                     itemSecondaryText,
                     _secondaryFont,
                     Enabled ? (i != SelectedIndex || UseAccentColor) ?
@@ -551,8 +543,8 @@ public partial class MaterialListBox : Control, IMaterialControl
                     _selectedIndex = index;
                     SelectedValue = Items[index];
                     SelectedText = Items[index].ToString();
-                    SelectedIndexChanged?.Invoke(this, _selectedItem);
-                    SelectedValueChanged?.Invoke(this, _selectedItem);
+                    SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+                    SelectedValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
             Invalidate();

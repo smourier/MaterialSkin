@@ -28,28 +28,25 @@ public class BaseMaskedTextBox : MaskedTextBox, IMaterialControl
     {
         base.WndProc(ref m);
 
-        if (m.Msg == Constants.WM_PAINT)
+        if (m.Msg == Constants.WM_PAINT && m.Msg == Constants.WM_ENABLE)
         {
-            if (m.Msg == Constants.WM_ENABLE)
-            {
-                Graphics g = Graphics.FromHwnd(Handle);
-                Rectangle bounds = new(0, 0, Width, Height);
-                g.FillRectangle(MaterialSkinManager.Instance.BackgroundDisabledBrush, bounds);
-            }
+            var g = Graphics.FromHwnd(Handle);
+            var bounds = new Rectangle(0, 0, Width, Height);
+            g.FillRectangle(MaterialSkinManager.Instance.BackgroundDisabledBrush, bounds);
         }
 
         if (m.Msg == Constants.WM_PAINT && string.IsNullOrEmpty(Text) && !Focused)
         {
-            using var NativeText = new NativeTextRenderer(Graphics.FromHwnd(m.HWnd));
-            NativeText.DrawTransparentText(
-                Hint,
-                MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
-                Enabled ?
-                ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextMediumEmphasisColor, BackColor) : // not focused
-                ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextDisabledOrHintColor, BackColor), // Disabled
-                ClientRectangle.Location,
-                ClientRectangle.Size,
-                TextAlignFlags.Left | TextAlignFlags.Top);
+            using var renderer = new NativeTextRenderer(Graphics.FromHwnd(m.HWnd));
+            renderer.DrawTransparentText(
+                    Hint,
+                    MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
+                    Enabled ?
+                    ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextMediumEmphasisColor, BackColor) : // not focused
+                    ColorHelper.RemoveAlpha(MaterialSkinManager.Instance.TextDisabledOrHintColor, BackColor), // Disabled
+                    ClientRectangle.Location,
+                    ClientRectangle.Size,
+                    TextAlignFlags.Left | TextAlignFlags.Top);
         }
 
         if (m.Msg == Constants.EM_SETBKGNDCOLOR)

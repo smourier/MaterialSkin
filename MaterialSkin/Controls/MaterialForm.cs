@@ -1016,9 +1016,9 @@ public partial class MaterialForm : Form, IMaterialControl
         if (ControlBox && FormStyle != FormStyles.ActionBar_None && FormStyle != FormStyles.StatusAndActionBar_None)
         {
             //Form title
-            using var NativeText = new NativeTextRenderer(g);
+            using var renderer = new NativeTextRenderer(g);
             var textLocation = new Rectangle(DrawerTabControl != null ? _titleLeftPadding : _titleLeftPadding - (_iconSize + (_actionBarPadding * 2)), _statusBarHeight, ClientSize.Width, _actionBarHeight);
-            NativeText.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
+            renderer.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
                 MaterialSkinManager.Instance.ColorScheme.TextColor,
                 textLocation.Location,
                 textLocation.Size,

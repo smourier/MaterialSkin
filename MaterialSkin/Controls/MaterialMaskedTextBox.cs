@@ -541,7 +541,7 @@ public class MaterialMaskedTextBox : Control, IMaterialControl
         var g = pevent.Graphics;
         g.TextRenderingHint = TextRenderingHint.AntiAlias;
         g.Clear(Parent.BackColor);
-        var backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
+        using var backBrush = new SolidBrush(DrawHelper.BlendColor(Parent.BackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(

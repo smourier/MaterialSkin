@@ -421,7 +421,7 @@ public partial class MaterialButton : Button, IMaterialControl
                 var animationValue = _animationManager.GetProgress(i);
                 var animationSource = _animationManager.GetSource(i);
 
-                using Brush rippleBrush = new SolidBrush(
+                using var rippleBrush = new SolidBrush(
                     Color.FromArgb((int)(100 - (animationValue * 100)), // Alpha animation
                     Type == MaterialButtonType.Contained && HighEmphasis ? (UseAccentColor ?
                         MaterialSkinManager.Instance.ColorScheme.AccentColor.Lighten(0.5f) : // Emphasis with accent
@@ -451,9 +451,9 @@ public partial class MaterialButton : Button, IMaterialControl
             MaterialSkinManager.Instance.TextHighEmphasisColor) : // Cointained and accent
             MaterialSkinManager.Instance.TextDisabledOrHintColor; // Disabled
 
-        using (var NativeText = new NativeTextRenderer(g))
+        using (var renderer = new NativeTextRenderer(g))
         {
-            NativeText.DrawMultilineTransparentText(
+            renderer.DrawMultilineTransparentText(
                 CharacterCasing == CharacterCasingEnum.Upper ? base.Text.ToUpper() : CharacterCasing == CharacterCasingEnum.Lower ? base.Text.ToLower() :
                     CharacterCasing == CharacterCasingEnum.Title ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(base.Text.ToLower()) : base.Text,
                 MaterialSkinManager.Instance.GetLogFontByType(FontType.Button),

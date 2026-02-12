@@ -75,11 +75,12 @@ public class MaterialListView : ListView, IMaterialControl
     {
         var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-        g.FillRectangle(new SolidBrush(BackColor), e.Bounds);
+        using var backBrush = new SolidBrush(BackColor);
+        g.FillRectangle(backBrush, e.Bounds);
 
         // Draw Text
-        using var NativeText = new NativeTextRenderer(g);
-        NativeText.DrawTransparentText(
+        using var renderer = new NativeTextRenderer(g);
+        renderer.DrawTransparentText(
             e.Header?.Text,
             MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle2),
             Enabled ? MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
@@ -113,8 +114,8 @@ public class MaterialListView : ListView, IMaterialControl
         foreach (ListViewItem.ListViewSubItem subItem in e.Item.SubItems)
         {
             // Draw Text
-            using var NativeText = new NativeTextRenderer(g);
-            NativeText.DrawTransparentText(
+            using var renderer = new NativeTextRenderer(g);
+            renderer.DrawTransparentText(
                 subItem.Text,
                 MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
                 Enabled ? MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,

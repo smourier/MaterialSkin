@@ -48,8 +48,8 @@ public class MaterialLabel : Label, IMaterialControl
     {
         if (AutoSize)
         {
-            using var NativeText = new NativeTextRenderer(CreateGraphics());
-            var strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType));
+            using var renderer = new NativeTextRenderer(CreateGraphics());
+            var strSize = renderer.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType));
             strSize.Width += 1; // necessary to avoid a bug when autosize = true
             return strSize;
         }
@@ -79,8 +79,8 @@ public class MaterialLabel : Label, IMaterialControl
         }
 
         // Draw Text
-        using var NativeText = new NativeTextRenderer(g);
-        NativeText.DrawMultilineTransparentText(
+        using var renderer = new NativeTextRenderer(g);
+        renderer.DrawMultilineTransparentText(
             Text,
             MaterialSkinManager.Instance.GetLogFontByType(FontType),
             Enabled ? HighEmphasis ? UseAccent ?

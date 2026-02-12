@@ -89,12 +89,8 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
 
     public override Size GetPreferredSize(Size proposedSize)
     {
-        Size strSize;
-        using (var NativeText = new NativeTextRenderer(CreateGraphics()))
-        {
-            strSize = NativeText.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1));
-        }
-
+        using var renderer = new NativeTextRenderer(CreateGraphics());
+        var strSize = renderer.MeasureLogString(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1));
         var w = _boxOffset + _textOffset + strSize.Width;
         return Ripple ? new Size(w, _heightRipple) : new Size(w, _heightNoRipple);
     }
@@ -176,15 +172,13 @@ public class MaterialCheckbox : CheckBox, IMaterialControl
         }
 
         // draw checkbox text
-        using (var NativeText = new NativeTextRenderer(g))
-        {
-            var textLocation = new Rectangle(_boxOffset + _textOffset, 0, Width - (_boxOffset + _textOffset), _heightRipple);
-            NativeText.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
-                Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
-                textLocation.Location,
-                textLocation.Size,
-                TextAlignFlags.Left | TextAlignFlags.Middle);
-        }
+        using var renderer = new NativeTextRenderer(g);
+        var textLocation = new Rectangle(_boxOffset + _textOffset, 0, Width - (_boxOffset + _textOffset), _heightRipple);
+        renderer.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+            Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
+            textLocation.Location,
+            textLocation.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     public override bool AutoSize

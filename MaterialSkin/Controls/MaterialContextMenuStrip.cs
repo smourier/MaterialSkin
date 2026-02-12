@@ -73,8 +73,8 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
         var itemRect = GetItemRect(e.Item);
         var textRect = new Rectangle(_leftPadding, itemRect.Y, itemRect.Width - _leftPadding, itemRect.Height);
 
-        using var NativeText = new NativeTextRenderer(g);
-        NativeText.DrawTransparentText(e.Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
+        using var renderer = new NativeTextRenderer(g);
+        renderer.DrawTransparentText(e.Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.Body2),
             e.Item.Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,
             textRect.Location,
             textRect.Size,
@@ -100,7 +100,7 @@ internal sealed class MaterialToolStripRender : ToolStripProfessionalRenderer, I
                 for (var i = 0; i < animationManager.GetAnimationCount(); i++)
                 {
                     var animationValue = animationManager.GetProgress(i);
-                    var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationValue * 50)), Color.Black));
+                    using var rippleBrush = new SolidBrush(Color.FromArgb((int)(51 - (animationValue * 50)), Color.Black));
                     var rippleSize = (int)(animationValue * itemRect.Width * 2.5);
                     g.FillEllipse(rippleBrush, new Rectangle(animationSource.X - rippleSize / 2, itemRect.Y - itemRect.Height, rippleSize, itemRect.Height * 3));
                 }

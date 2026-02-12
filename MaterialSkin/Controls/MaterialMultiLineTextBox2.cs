@@ -344,7 +344,7 @@ public class MaterialMultiLineTextBox2 : Control, IMaterialControl
         }
 
         g.Clear(parentBackColor);
-        var backBrush = new SolidBrush(DrawHelper.BlendColor(parentBackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
+        using var backBrush = new SolidBrush(DrawHelper.BlendColor(parentBackColor, MaterialSkinManager.Instance.BackgroundAlternativeColor, MaterialSkinManager.Instance.BackgroundAlternativeColor.A));
 
         //backColor
         g.FillRectangle(

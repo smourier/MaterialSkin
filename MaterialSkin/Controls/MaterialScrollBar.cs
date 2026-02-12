@@ -30,9 +30,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     private int _curValue = 0;
 
     public event ScrollEventHandler? Scroll;
-
-    public delegate void ScrollValueChangedDelegate(object sender, int newValue);
-    public event ScrollValueChangedDelegate? ValueChanged;
+    public event EventHandler? ValueChanged;
 
     public MaterialScrollBar(MaterialScrollOrientation orientation)
         : this()
@@ -71,7 +69,7 @@ public class MaterialScrollBar : Control, IMaterialControl
     {
         if (oldValue != newValue)
         {
-            ValueChanged?.Invoke(this, _curValue);
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
         if (Scroll == null)

@@ -155,7 +155,7 @@ public partial class MaterialTabSelector : Control, IMaterialControl
             if (TabLabel != TabLabelStyle.Icon)
             {
                 // Text
-                using var NativeText = new NativeTextRenderer(g);
+                using var renderer = new NativeTextRenderer(g);
                 var textSize = TextRenderer.MeasureText(BaseTabControl.TabPages[currentTabIndex].Text, Font);
                 var textLocation = new Rectangle(_tabRects[currentTabIndex].X + (_tabHeaderPadding / 2), _tabRects[currentTabIndex].Y, _tabRects[currentTabIndex].Width - _tabHeaderPadding, _tabRects[currentTabIndex].Height);
 
@@ -167,15 +167,15 @@ public partial class MaterialTabSelector : Control, IMaterialControl
 
                 if ((_tabHeaderPadding * 2) + textSize.Width < _tabWidthMax)
                 {
-                    NativeText.DrawTransparentText(
-                    CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
-                    CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                    CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
-                    Font,
-                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
-                    textLocation.Location,
-                    textLocation.Size,
-                    TextAlignFlags.Center | TextAlignFlags.Middle);
+                    renderer.DrawTransparentText(
+                        CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
+                        CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
+                        CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                        Font,
+                        Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
+                        textLocation.Location,
+                        textLocation.Size,
+                        TextAlignFlags.Center | TextAlignFlags.Middle);
                 }
                 else
                 {
@@ -185,15 +185,15 @@ public partial class MaterialTabSelector : Control, IMaterialControl
                         textLocation.Height = 26;
                     }
 
-                    NativeText.DrawMultilineTransparentText(
-                    CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
-                    CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
-                    CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
-                    MaterialSkinManager.Instance.GetFontByType(FontType.Body2),
-                    Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
-                    textLocation.Location,
-                    textLocation.Size,
-                    TextAlignFlags.Center | TextAlignFlags.Middle);
+                    renderer.DrawMultilineTransparentText(
+                        CharacterCasing == CustomCharacterCasing.Upper ? tabPage.Text.ToUpper() :
+                        CharacterCasing == CustomCharacterCasing.Lower ? tabPage.Text.ToLower() :
+                        CharacterCasing == CustomCharacterCasing.Proper ? _textInfo.ToTitleCase(tabPage.Text.ToLower()) : tabPage.Text,
+                        MaterialSkinManager.Instance.GetFontByType(FontType.Body2),
+                        Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), MaterialSkinManager.Instance.ColorScheme.TextColor),
+                        textLocation.Location,
+                        textLocation.Size,
+                        TextAlignFlags.Center | TextAlignFlags.Middle);
                 }
             }
 

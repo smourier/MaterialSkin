@@ -195,17 +195,15 @@ public class MaterialDialog : MaterialForm
             _header_Height);
 
         //Draw title
-        using (var NativeText = new NativeTextRenderer(g))
-        {
-            // Draw header text
-            NativeText.DrawTransparentText(
-                _title,
-                MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
-                MaterialSkinManager.Instance.TextHighEmphasisColor,
-                titleRect.Location,
-                titleRect.Size,
-                TextAlignFlags.Left | TextAlignFlags.Bottom);
-        }
+        using var renderer = new NativeTextRenderer(g);
+        // Draw header text
+        renderer.DrawTransparentText(
+            _title,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
+            MaterialSkinManager.Instance.TextHighEmphasisColor,
+            titleRect.Location,
+            titleRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Bottom);
 
         // Calc text Rect
 
@@ -220,17 +218,14 @@ public class MaterialDialog : MaterialForm
             RectHeight + 19);
 
         //Draw  Text
-        using (var NativeText = new NativeTextRenderer(g))
-        {
-            // Draw header text
-            NativeText.DrawMultilineTransparentText(
-                _text,
-                MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
-                MaterialSkinManager.Instance.TextHighEmphasisColor,
-                textRect.Location,
-                textRect.Size,
-                TextAlignFlags.Left | TextAlignFlags.Middle);
-        }
+        // Draw header text
+        renderer.DrawMultilineTransparentText(
+            _text,
+            MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
+            MaterialSkinManager.Instance.TextHighEmphasisColor,
+            textRect.Location,
+            textRect.Size,
+            TextAlignFlags.Left | TextAlignFlags.Middle);
     }
 
     // Overrides the Closing Event to Animate the Slide Out

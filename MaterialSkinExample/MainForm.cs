@@ -8,6 +8,7 @@ public partial class MainForm : MaterialForm
     public MainForm()
     {
         InitializeComponent();
+        KeyPreview = true;
 
         Icon = MaterialSinkExtensions.LoadApplicationIcon(32);
 
@@ -61,6 +62,8 @@ public partial class MainForm : MaterialForm
         item1ToolStripMenuItem.Image = MaterialSinkExtensions.GetBitmapFromResource("minus.png");
 
         materialLabel8.Text = "Here is a list of every variant a Material Button can be. Contained button's shadows are only drawn at run-time.\r\nClick on them and checkout those sweet animations. Oh yeah, the buttons follow the theme and colors, try changing those too.\r\nNormally the buttons should be AutoSize = true, but for the sake of my OCD, it's set to false here\r\nIf any of the buttons looks weird while designing, change the tab background color from transparent to white.";
+        materialSlider1.ValueFormat = "{0}%";
+
 
         // Initialize MaterialSkinManager
         _materialSkinManager = MaterialSkinManager.Instance;
@@ -98,10 +101,10 @@ public partial class MainForm : MaterialForm
 
         materialListBoxFormStyle.SelectedIndexChanged += (s, e) =>
         {
-            if (e.Text == null)
+            if (materialListBoxFormStyle.Text == null)
                 return;
 
-            var SelectedStyle = Enum.Parse<FormStyles>(e.Text);
+            var SelectedStyle = Enum.Parse<FormStyles>(materialListBoxFormStyle.Text);
             if (FormStyle != SelectedStyle)
             {
                 FormStyle = SelectedStyle;
@@ -118,6 +121,17 @@ public partial class MainForm : MaterialForm
             components?.Dispose();
         }
         base.Dispose(disposing);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.KeyCode == Keys.F11)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            MessageBox.Show(this, "Garbage collection completed", "MaterialSkin");
+        }
     }
 
     private void SeedListView()

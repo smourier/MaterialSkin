@@ -2060,7 +2060,6 @@ namespace MaterialSkinExample
             this.materialSlider1.Size = new System.Drawing.Size(300, 40);
             this.materialSlider1.TabIndex = 66;
             this.materialSlider1.Text = "materialSlider1";
-            this.materialSlider1.ValueSuffix = "%";
             // 
             // materialLabel49
             // 

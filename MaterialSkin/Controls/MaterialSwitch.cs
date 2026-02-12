@@ -178,25 +178,21 @@ public class MaterialSwitch : CheckBox, IMaterialControl
 
         // draw Thumb Shadow
         var thumbBounds = new RectangleF(_traceCenterXBegin + OffsetX - _thumbSizeHalf, _trackCenterY - _thumbSizeHalf, _thumbSize, _thumbSize);
-        using (var shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0)))
-        {
-            g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 2, thumbBounds.Y - 1, thumbBounds.Width + 4, thumbBounds.Height + 6));
-            g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 1, thumbBounds.Y - 1, thumbBounds.Width + 2, thumbBounds.Height + 4));
-            g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y - 0, thumbBounds.Width + 0, thumbBounds.Height + 2));
-            g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y + 2, thumbBounds.Width + 0, thumbBounds.Height + 0));
-            g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y + 1, thumbBounds.Width + 0, thumbBounds.Height + 0));
-        }
+        using var shadowBrush = new SolidBrush(Color.FromArgb(12, 0, 0, 0));
+        g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 2, thumbBounds.Y - 1, thumbBounds.Width + 4, thumbBounds.Height + 6));
+        g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 1, thumbBounds.Y - 1, thumbBounds.Width + 2, thumbBounds.Height + 4));
+        g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y - 0, thumbBounds.Width + 0, thumbBounds.Height + 2));
+        g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y + 2, thumbBounds.Width + 0, thumbBounds.Height + 0));
+        g.FillEllipse(shadowBrush, new RectangleF(thumbBounds.X - 0, thumbBounds.Y + 1, thumbBounds.Width + 0, thumbBounds.Height + 0));
 
         // draw Thumb
-        using (var thumbBrush = new SolidBrush(thumbColor))
-        {
-            g.FillEllipse(thumbBrush, thumbBounds);
-        }
+        using var thumbBrush = new SolidBrush(thumbColor);
+        g.FillEllipse(thumbBrush, thumbBounds);
 
         // draw text
-        using var NativeText = new NativeTextRenderer(g);
+        using var renderer = new NativeTextRenderer(g);
         var textLocation = new Rectangle(_textOffset + _trackSizeWidth, 0, Width - (_textOffset + _trackSizeWidth), Height);
-        NativeText.DrawTransparentText(
+        renderer.DrawTransparentText(
             Text,
             MaterialSkinManager.Instance.GetLogFontByType(FontType.Body1),
             Enabled ? MaterialSkinManager.Instance.TextHighEmphasisColor : MaterialSkinManager.Instance.TextDisabledOrHintColor,

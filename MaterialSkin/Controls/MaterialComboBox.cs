@@ -167,17 +167,17 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             MaterialSkinManager.Instance.BackgroundDisabledBrush // Disabled
             , ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, _lineY);
 
-        Color SelectedColor;
+        Color selectedColor;
         if (UseAccent)
         {
-            SelectedColor = MaterialSkinManager.Instance.ColorScheme.AccentColor;
+            selectedColor = MaterialSkinManager.Instance.ColorScheme.AccentColor;
         }
         else
         {
-            SelectedColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
+            selectedColor = MaterialSkinManager.Instance.ColorScheme.PrimaryColor;
         }
 
-        var SelectedBrush = new SolidBrush(SelectedColor);
+        using var selectedBrush = new SolidBrush(selectedColor);
 
         // Create and Draw the arrow
         var pth = new GraphicsPath();
@@ -188,10 +188,11 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         pth.AddLine(TopRight, MidBottom);
 
         g.SmoothingMode = SmoothingMode.AntiAlias;
+        using var pathBrush = new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.TextHighEmphasisColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197));
         g.FillPath((SolidBrush)(Enabled ? DroppedDown || Focused ?
-            SelectedBrush : //DroppedDown or Focused
+            selectedBrush : //DroppedDown or Focused
             MaterialSkinManager.Instance.TextHighEmphasisBrush : //Not DroppedDown and not Focused
-            new SolidBrush(DrawHelper.BlendColor(MaterialSkinManager.Instance.TextHighEmphasisColor, MaterialSkinManager.Instance.SwitchOffDisabledThumbColor, 197))  //Disabled
+            pathBrush  //Disabled
             ), pth);
         g.SmoothingMode = SmoothingMode.None;
 
@@ -216,7 +217,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             // bottom line
             if (DroppedDown || Focused)
             {
-                g.FillRectangle(SelectedBrush, 0, _lineY, Width, 2);
+                g.FillRectangle(selectedBrush, 0, _lineY, Width, 2);
             }
         }
         else
@@ -238,7 +239,7 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             // Line Animation
             var LineAnimationWidth = (int)(Width * animationProgress);
             var LineAnimationX = (Width / 2) - (LineAnimationWidth / 2);
-            g.FillRectangle(SelectedBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
+            g.FillRectangle(selectedBrush, LineAnimationX, _lineY, LineAnimationWidth, 2);
         }
 
         // Calc text Rect
@@ -267,12 +268,12 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         // Draw hint text
         if (_hasHint && (UseTallSize || string.IsNullOrEmpty(Text)))
         {
-            using var NativeText = new NativeTextRenderer(g);
-            NativeText.DrawTransparentText(
+            using var renderer = new NativeTextRenderer(g);
+            renderer.DrawTransparentText(
                 Hint,
                 MaterialSkinManager.Instance.GetTextBoxFontBySize(hintTextSize),
                 Enabled ? DroppedDown || Focused ?
-                SelectedColor : // Focus 
+                selectedColor : // Focus 
                 MaterialSkinManager.Instance.TextMediumEmphasisColor : // not focused
                 MaterialSkinManager.Instance.TextDisabledOrHintColor, // Disabled
                 hintRect.Location,
@@ -320,8 +321,8 @@ public class MaterialComboBox : ComboBox, IMaterialControl
             text = Items[e.Index]?.ToString();
         }
 
-        using var NativeText = new NativeTextRenderer(g);
-        NativeText.DrawTransparentText(
+        using var renderer = new NativeTextRenderer(g);
+        renderer.DrawTransparentText(
             text,
             MaterialSkinManager.Instance.GetFontByType(FontType.Subtitle1),
             MaterialSkinManager.Instance.TextHighEmphasisNoAlphaColor,
@@ -368,19 +369,17 @@ public class MaterialComboBox : ComboBox, IMaterialControl
         var vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
 
         var g = CreateGraphics();
-        using (var NativeText = new NativeTextRenderer(g))
+        using var renderer = new NativeTextRenderer(g);
+        var itemsList = Items.Cast<object>().Select(item => item.ToString());
+        foreach (var s in itemsList)
         {
-            var itemsList = Items.Cast<object>().Select(item => item.ToString());
-            foreach (var s in itemsList)
-            {
-                if (s == null)
-                    continue;
+            if (s == null)
+                continue;
 
-                var newWidth = NativeText.MeasureLogString(s, MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
-                if (w < newWidth)
-                {
-                    w = newWidth;
-                }
+            var newWidth = renderer.MeasureLogString(s, MaterialSkinManager.Instance.GetLogFontByType(FontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+            if (w < newWidth)
+            {
+                w = newWidth;
             }
         }
 
