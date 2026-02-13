@@ -64,6 +64,13 @@ public partial class MainForm : MaterialForm
         materialLabel8.Text = "Here is a list of every variant a Material Button can be. Contained button's shadows are only drawn at run-time.\r\nClick on them and checkout those sweet animations. Oh yeah, the buttons follow the theme and colors, try changing those too.\r\nNormally the buttons should be AutoSize = true, but for the sake of my OCD, it's set to false here\r\nIf any of the buttons looks weird while designing, change the tab background color from transparent to white.";
         materialSlider1.ValueFormat = "{0}%";
 
+        // example of a custom value update function for the slider, which makes the slider value increase exponentially with the mouse position, instead of linearly.
+        // This is useful when you want to have a large range of values, but still want to be able to select small values with precision.
+
+        //materialSlider1.ValueMin = 0;
+        //materialSlider1.ValueMax = 10000;
+        //materialSlider1.ValueUpdateFunc = (mouseX) => (int)(materialSlider1.ValueMin + (materialSlider1.ValueMax - materialSlider1.ValueMin) * mouseX * mouseX * mouseX);
+        //materialSlider1.ValueUpdateFunc = (mouseX) => (int)(materialSlider1.ValueMin + (materialSlider1.ValueMax - materialSlider1.ValueMin) * (Math.Exp(mouseX) - 1));
 
         // Initialize MaterialSkinManager
         _materialSkinManager = MaterialSkinManager.Instance;

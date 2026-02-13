@@ -26,8 +26,7 @@ public class MaterialSlider : Control, IMaterialControl
     {
         SetStyle(ControlStyles.Selectable, true);
         ForeColor = MaterialSkinManager.Instance.TextHighEmphasisColor; // Color.Black;
-        RangeMax = 100;
-        RangeMin = 0;
+        ValueMax = 100;
         Size = new Size(250, _thumbRadiusHoverPressed);
         Text = Functions.LoadDllString("shell32.dll", 4256) ?? "(None)";
         Value = 50;
@@ -37,6 +36,9 @@ public class MaterialSlider : Control, IMaterialControl
         DoubleBuffered = true;
     }
 
+    [Browsable(false)]
+    public Func<double, int>? ValueUpdateFunc { get; set; } // Optional function to update value based on mouse X position (between 0 and 1), if not set, default linear mapping is used
+
     [DefaultValue(50)]
     [Category("Material Skin")]
     [Description("Define control value")]
@@ -45,27 +47,31 @@ public class MaterialSlider : Control, IMaterialControl
         get;
         set
         {
-            value = Math.Max(RangeMin, Math.Min(RangeMax, value));
+            value = Math.Max(ValueMin, Math.Min(ValueMax, value));
             if (field == value)
                 return;
 
             field = value;
             OnValueChanged?.Invoke(this, EventArgs.Empty);
-            _mouseX = _sliderRectangle.X + ((int)(field / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
-            RecalculateIndicator();
+            _mouseX = _sliderRectangle.X + ((int)(field / (double)(ValueMax - ValueMin) * (_sliderRectangle.Width - _thumbRadius)));
+            UpdateRects();
         }
     }
 
     [DefaultValue(100)]
     [Category("Material Skin")]
-    [Description("Define control range maximum value")]
-    public int RangeMax
+    [Description("Define control maximum value")]
+    public int ValueMax
     {
         get;
         set
         {
             field = value;
-            _mouseX = _sliderRectangle.X + ((int)(Value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
+            if (ValueMin >= ValueMax)
+            {
+                ValueMin = ValueMax - 1;
+            }
+
 #pragma warning disable CA2245 // Do not assign a property to itself
             Value = Value; // Ensure value is within new range
 #pragma warning restore CA2245 // Do not assign a property to itself
@@ -75,14 +81,17 @@ public class MaterialSlider : Control, IMaterialControl
 
     [DefaultValue(0)]
     [Category("Material Skin")]
-    [Description("Define control range minimum value")]
-    public int RangeMin
+    [Description("Define control minimum value")]
+    public int ValueMin
     {
         get;
         set
         {
             field = value;
-            _mouseX = _sliderRectangle.X + ((int)(Value / (double)(RangeMax - RangeMin) * (_sliderRectangle.Width - _thumbRadius)));
+            if (ValueMax <= ValueMin)
+            {
+                ValueMax = ValueMin + 1;
+            }
 #pragma warning disable CA2245 // Do not assign a property to itself
             Value = Value; // Ensure value is within new range
 #pragma warning restore CA2245 // Do not assign a property to itself
@@ -94,7 +103,7 @@ public class MaterialSlider : Control, IMaterialControl
     [Category("Material Skin")]
     [Description("Set control text")]
     [AllowNull]
-    public override string Text { get => _text ?? string.Empty; set { _text = value; UpdateRects(); Invalidate(); } }
+    public override string Text { get => _text ?? string.Empty; set { _text = value; UpdateRects(); } }
 
     [DefaultValue("")]
     [Category("Material Skin")]
@@ -104,12 +113,12 @@ public class MaterialSlider : Control, IMaterialControl
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show text")]
     [Description("Show text")]
-    public bool ShowText { get; set { field = value; UpdateRects(); Invalidate(); } }
+    public bool ShowText { get; set { field = value; UpdateRects(); } }
 
     [DefaultValue(true)]
     [Category("Material Skin"), DisplayName("Show value")]
     [Description("Show value")]
-    public bool ShowValue { get; set { field = value; UpdateRects(); Invalidate(); } }
+    public bool ShowValue { get; set { field = value; UpdateRects(); } }
 
     [Category("Material Skin"), DefaultValue(false), DisplayName("Use Accent Color")]
     public bool UseAccentColor { get; set { field = value; Invalidate(); } }
@@ -202,22 +211,30 @@ public class MaterialSlider : Control, IMaterialControl
 
     private void UpdateValue(MouseEventArgs e)
     {
-        var v = 0;
-        if (e.X >= _sliderRectangle.X + (_thumbRadius / 2) && e.X <= _sliderRectangle.Right - _thumbRadius / 2)
+        // Calculate normalized position (0 to 1)
+        double normalizedPosition;
+        if (e.X <= _sliderRectangle.X + (_thumbRadius / 2))
         {
-            _mouseX = e.X - _thumbRadius / 2;
-            var valuePerPx = ((double)(RangeMax - RangeMin)) / (_sliderRectangle.Width - _thumbRadius);
-            v = (int)(valuePerPx * (_mouseX - _sliderRectangle.X));
+            normalizedPosition = 0;
         }
-        else if (e.X < _sliderRectangle.X)
+        else if (e.X >= _sliderRectangle.Right - _thumbRadius / 2)
         {
-            _mouseX = _sliderRectangle.X;
-            v = RangeMin;
+            normalizedPosition = 1;
         }
-        else if (e.X > _sliderRectangle.Right - _thumbRadius)
+        else
         {
-            _mouseX = _sliderRectangle.Right - _thumbRadius;
-            v = RangeMax;
+            normalizedPosition = (e.X - _sliderRectangle.X - (_thumbRadius / 2)) / (double)(_sliderRectangle.Width - _thumbRadius);
+        }
+
+        // Use custom function if provided, otherwise use default linear mapping
+        int v;
+        if (ValueUpdateFunc != null)
+        {
+            v = ValueUpdateFunc(normalizedPosition);
+        }
+        else
+        {
+            v = (int)(normalizedPosition * (ValueMax - ValueMin) + ValueMin);
         }
 
         Value = v;
@@ -225,23 +242,22 @@ public class MaterialSlider : Control, IMaterialControl
 
     private void UpdateRects()
     {
-        Size textSize;
-        Size valueSize;
         using var renderer = new NativeTextRenderer(CreateGraphics());
-        textSize = renderer.MeasureLogString(ShowText ? Text : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
+        var textSize = renderer.MeasureLogString(ShowText ? Text : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
 
         var format = ValueFormat ?? "{0}";
-        valueSize = renderer.MeasureLogString(ShowValue ? string.Format(format, RangeMax) : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
+        var valueSize = renderer.MeasureLogString(ShowValue ? string.Format(format, ValueMax) : string.Empty, MaterialSkinManager.Instance.GetLogFontByType(FontType));
+
+        // drawn as:
+        // text | slider | value
 
         _valueRectangle = new Rectangle(Width - valueSize.Width - _thumbRadiusHoverPressed / 4, 0, valueSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _textRectangle = new Rectangle(0, 0, textSize.Width + _thumbRadiusHoverPressed / 4, Height);
         _sliderRectangle = new Rectangle(_textRectangle.Right, 0, _valueRectangle.Left - _textRectangle.Right, _thumbRadius);
-        _mouseX = _sliderRectangle.X + ((int)(Value / (double)(RangeMax - RangeMin) * _sliderRectangle.Width - _thumbRadius / 2));
-        RecalculateIndicator();
-    }
 
-    private void RecalculateIndicator()
-    {
+        // recalculate _mouseX based on the updated _sliderRectangle
+        _mouseX = _sliderRectangle.X + (int)((Value - ValueMin) / (double)(ValueMax - ValueMin) * (_sliderRectangle.Width - _thumbRadius));
+
         _indicatorRectangle = new Rectangle(_mouseX, (Height - _thumbRadius) / 2, _thumbRadius, _thumbRadius);
         _indicatorRectangleNormal = new Rectangle(_indicatorRectangle.X, Height / 2 - _thumbRadius / 2, _thumbRadius, _thumbRadius);
         _indicatorRectanglePressed = new Rectangle(_indicatorRectangle.X + _thumbRadius / 2 - _thumbRadiusHoverPressed / 2, Height / 2 - _thumbRadiusHoverPressed / 2, _thumbRadiusHoverPressed, _thumbRadiusHoverPressed);
@@ -351,6 +367,5 @@ public class MaterialSlider : Control, IMaterialControl
                 _valueRectangle.Size,
                 TextAlignFlags.Right | TextAlignFlags.Middle);
         }
-
     }
 }
