@@ -1,58 +1,18 @@
 ﻿namespace MaterialSkin.Animations;
 
-/// <summary>
-/// Defines the <see cref="AnimationEaseInOut" />
-/// </summary>
 internal static class AnimationEaseInOut
 {
-    /// <summary>
-    /// Defines the PI
-    /// </summary>
-    public static double PI = Math.PI;
-
-    /// <summary>
-    /// Defines the PI_HALF
-    /// </summary>
-    public static double PI_HALF = Math.PI / 2;
-
-    /// <summary>
-    /// The CalculateProgress
-    /// </summary>
-    /// <param name="progress">The progress<see cref="double"/></param>
-    /// <returns>The <see cref="double"/></returns>
     public static double CalculateProgress(double progress) => EaseInOut(progress);
-
-    /// <summary>
-    /// The EaseInOut
-    /// </summary>
-    /// <param name="s">The s<see cref="double"/></param>
-    /// <returns>The <see cref="double"/></returns>
-    private static double EaseInOut(double s) => s - Math.Sin(s * 2 * PI) / (2 * PI);
+    private static double EaseInOut(double s) => s - Math.Sin(s * 2 * Math.PI) / (2 * Math.PI);
 }
 
-/// <summary>
-/// Defines the <see cref="AnimationEaseOut" />
-/// </summary>
 public static class AnimationEaseOut
 {
-    /// <summary>
-    /// The CalculateProgress
-    /// </summary>
-    /// <param name="progress">The progress<see cref="double"/></param>
-    /// <returns>The <see cref="double"/></returns>
     public static double CalculateProgress(double progress) => -1 * progress * (progress - 2);
 }
 
-/// <summary>
-/// Defines the <see cref="AnimationCustomQuadratic" />
-/// </summary>
 public static class AnimationCustomQuadratic
 {
-    /// <summary>
-    /// The CalculateProgress
-    /// </summary>
-    /// <param name="progress">The progress<see cref="double"/></param>
-    /// <returns>The <see cref="double"/></returns>
     public static double CalculateProgress(double progress)
     {
         var kickoff = 0.6;

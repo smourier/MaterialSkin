@@ -140,11 +140,11 @@ public partial class FlexibleMaterialForm : MaterialForm, IMaterialControl
         _richTextBoxMessage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
         | AnchorStyles.Left
         | AnchorStyles.Right;
-        _richTextBoxMessage.BackColor = Color.FromArgb((byte)255, (byte)255, (byte)255);
+        _richTextBoxMessage.BackColor = Color.FromArgb(255, 255, 255);
         _richTextBoxMessage.BorderStyle = BorderStyle.None;
         _richTextBoxMessage.DataBindings.Add(new Binding("Text", _flexibleMaterialFormBindingSource, "MessageText", true, DataSourceUpdateMode.OnPropertyChanged));
         _richTextBoxMessage.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        _richTextBoxMessage.ForeColor = Color.FromArgb((byte)222, (byte)0, (byte)0, (byte)0);
+        _richTextBoxMessage.ForeColor = Color.FromArgb(222, 0, 0, 0);
         _richTextBoxMessage.Location = new Point(56, 12);
         _richTextBoxMessage.Margin = new Padding(0);
         _richTextBoxMessage.Name = "richTextBoxMessage";

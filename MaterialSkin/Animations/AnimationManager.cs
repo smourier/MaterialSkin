@@ -21,10 +21,6 @@ internal class AnimationManager
         _animationDirections = [];
         _animationDatas = [];
 
-        Increment = 0.03;
-        SecondaryIncrement = 0.03;
-        AnimationType = AnimationType.Linear;
-        InterruptAnimation = true;
         Singular = singular;
 
         if (Singular)
@@ -37,9 +33,9 @@ internal class AnimationManager
         _animationTimer.Tick += AnimationTimerOnTick;
     }
 
-    public bool InterruptAnimation { get; set; }
-    public double Increment { get; set; }
-    public double SecondaryIncrement { get; set; }
+    public bool InterruptAnimation { get; set; } = true;
+    public double Increment { get; set; } = 0.03;
+    public double SecondaryIncrement { get; set; } = 0.03;
     public AnimationType AnimationType { get; set; }
     public bool Singular { get; set; }
 

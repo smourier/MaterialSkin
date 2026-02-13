@@ -10,56 +10,56 @@ public partial class MainForm : MaterialForm
         InitializeComponent();
         KeyPreview = true;
 
-        Icon = MaterialSinkExtensions.LoadApplicationIcon(32);
+        Icon = MaterialSkinExtensions.LoadApplicationIcon(32);
 
         menuIconList.ImageSize = new Size(24, 24);
         menuIconList.TransparentColor = Color.Transparent;
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_assessment_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_assessment_white_24dp.png")!);
         menuIconList.Images.SetKeyName(0, "round_assessment_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_backup_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_backup_white_24dp.png")!);
         menuIconList.Images.SetKeyName(1, "round_backup_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_bluetooth_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_bluetooth_white_24dp.png")!);
         menuIconList.Images.SetKeyName(2, "round_bluetooth_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_bookmark_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_bookmark_white_24dp.png")!);
         menuIconList.Images.SetKeyName(3, "round_bookmark_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_build_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_build_white_24dp.png")!);
         menuIconList.Images.SetKeyName(4, "round_build_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_gps_fixed_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_gps_fixed_white_24dp.png")!);
         menuIconList.Images.SetKeyName(5, "round_gps_fixed_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_http_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_http_white_24dp.png")!);
         menuIconList.Images.SetKeyName(6, "round_http_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_report_problem_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_report_problem_white_24dp.png")!);
         menuIconList.Images.SetKeyName(7, "round_report_problem_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_swap_vert_white_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_swap_vert_white_24dp.png")!);
         menuIconList.Images.SetKeyName(8, "round_swap_vert_white_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_phone_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_phone_black_24dp.png")!);
         menuIconList.Images.SetKeyName(9, "round_phone_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_push_pin_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_push_pin_black_24dp.png")!);
         menuIconList.Images.SetKeyName(10, "round_push_pin_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_mail_outline_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_mail_outline_black_24dp.png")!);
         menuIconList.Images.SetKeyName(11, "round_mail_outline_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_person_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_person_black_24dp.png")!);
         menuIconList.Images.SetKeyName(12, "round_person_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_add_a_photo_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_add_a_photo_black_24dp.png")!);
         menuIconList.Images.SetKeyName(13, "round_add_a_photo_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_alternate_email_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_alternate_email_black_24dp.png")!);
         menuIconList.Images.SetKeyName(14, "round_alternate_email_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_cancel_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_cancel_black_24dp.png")!);
         menuIconList.Images.SetKeyName(15, "round_cancel_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_error_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_error_black_24dp.png")!);
         menuIconList.Images.SetKeyName(16, "round_error_black_24dp.png");
-        menuIconList.Images.Add(MaterialSinkExtensions.GetBitmapFromResource("round_event_black_24dp.png")!);
+        menuIconList.Images.Add(MaterialSkinExtensions.GetBitmapFromResource("round_event_black_24dp.png")!);
         menuIconList.Images.SetKeyName(17, "round_event_black_24dp.png");
 
-        materialButton23.Icon = MaterialSinkExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
-        materialFloatingActionButton1.Icon = MaterialSinkExtensions.GetBitmapFromResource("plus.png");
-        materialButton24.Icon = MaterialSinkExtensions.GetBitmapFromResource("baseline_bluetooth_black_24dp.png");
-        materialButton22.Icon = MaterialSinkExtensions.GetBitmapFromResource("baseline_favorite_border_black_24dp.png");
-        materialMaskedTextBox1.LeadingIcon = MaterialSinkExtensions.GetBitmapFromResource("round_phone_black_24dp.png");
-        materialTextBox2.LeadingIcon = MaterialSinkExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
-        materialFlatButton2.Icon = MaterialSinkExtensions.GetBitmapFromResource("minus.png");
-        MaterialButton2.Icon = MaterialSinkExtensions.GetBitmapFromResource("round_add_black_24dp.png");
-        item1ToolStripMenuItem.Image = MaterialSinkExtensions.GetBitmapFromResource("minus.png");
+        materialButton23.Icon = MaterialSkinExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
+        materialFloatingActionButton1.Icon = MaterialSkinExtensions.GetBitmapFromResource("plus.png");
+        materialButton24.Icon = MaterialSkinExtensions.GetBitmapFromResource("baseline_bluetooth_black_24dp.png");
+        materialButton22.Icon = MaterialSkinExtensions.GetBitmapFromResource("baseline_favorite_border_black_24dp.png");
+        materialMaskedTextBox1.LeadingIcon = MaterialSkinExtensions.GetBitmapFromResource("round_phone_black_24dp.png");
+        materialTextBox2.LeadingIcon = MaterialSkinExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
+        materialFlatButton2.Icon = MaterialSkinExtensions.GetBitmapFromResource("minus.png");
+        MaterialButton2.Icon = MaterialSkinExtensions.GetBitmapFromResource("round_add_black_24dp.png");
+        item1ToolStripMenuItem.Image = MaterialSkinExtensions.GetBitmapFromResource("minus.png");
 
         materialLabel8.Text = "Here is a list of every variant a Material Button can be. Contained button's shadows are only drawn at run-time.\r\nClick on them and checkout those sweet animations. Oh yeah, the buttons follow the theme and colors, try changing those too.\r\nNormally the buttons should be AutoSize = true, but for the sake of my OCD, it's set to false here\r\nIf any of the buttons looks weird while designing, change the tab background color from transparent to white.";
         materialSlider1.ValueFormat = "{0}%";
@@ -274,7 +274,7 @@ public partial class MainForm : MaterialForm
     {
         if (materialSwitch14.Checked)
         {
-            materialTextBox21.LeadingIcon = MaterialSinkExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
+            materialTextBox21.LeadingIcon = MaterialSkinExtensions.GetBitmapFromResource("baseline_fingerprint_black_24dp.png");
         }
         else
         {
@@ -286,7 +286,7 @@ public partial class MainForm : MaterialForm
     {
         if (materialSwitch15.Checked)
         {
-            materialTextBox21.TrailingIcon = MaterialSinkExtensions.GetBitmapFromResource("baseline_build_black_24dp.png");
+            materialTextBox21.TrailingIcon = MaterialSkinExtensions.GetBitmapFromResource("baseline_build_black_24dp.png");
         }
         else
         {

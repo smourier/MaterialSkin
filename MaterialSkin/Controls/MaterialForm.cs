@@ -2,15 +2,6 @@ namespace MaterialSkin.Controls;
 
 public partial class MaterialForm : Form, IMaterialControl
 {
-    private const int _borderWidth = 7;
-    private const int _statusBarButtonWidth = 24;
-    private const int _statusBarHeightDefault = 24;
-    private const int _iconSize = 24;
-    private const int _paddingMinimum = 3;
-    private const int _titleLeftPadding = 72;
-    private const int _actionBarPadding = 16;
-    private const int _actionBarHeightDefault = 40;
-
     private readonly Cursor[] _resizeCursors = [Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS];
     private readonly MaterialDrawer _drawerControl = new();
     private readonly AnimationManager _clickAnimManager;
@@ -25,8 +16,8 @@ public partial class MaterialForm : Form, IMaterialControl
 
     // Drawer overlay and speed improvements
     private AnimationManager? _drawerShowHideAnimManager;
-    private int _statusBarHeight = 24;
-    private int _actionBarHeight = 40;
+    private int _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
+    private int _actionBarHeight = MaterialSkinManager.Instance.FormActionBarHeight;
 
     public MaterialForm()
     {
@@ -45,7 +36,7 @@ public partial class MaterialForm : Form, IMaterialControl
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         FormStyle = FormStyles.ActionBar_40;
 
-        Padding = new Padding(_paddingMinimum, _statusBarHeight + _actionBarHeight, _paddingMinimum, _paddingMinimum);      //Keep space for resize by mouse
+        Padding = new Padding(MaterialSkinManager.Instance.FormPaddingMinimum, _statusBarHeight + _actionBarHeight, MaterialSkinManager.Instance.FormPaddingMinimum, MaterialSkinManager.Instance.FormPaddingMinimum);      //Keep space for resize by mouse
 
         _clickAnimManager = new AnimationManager()
         {
@@ -65,11 +56,11 @@ public partial class MaterialForm : Form, IMaterialControl
         };
     }
 
-    private Rectangle MinButtonBounds => new(ClientSize.Width - 3 * _statusBarButtonWidth, ClientRectangle.Y, _statusBarButtonWidth, _statusBarHeight);
-    private Rectangle MaxButtonBounds => new(ClientSize.Width - 2 * _statusBarButtonWidth, ClientRectangle.Y, _statusBarButtonWidth, _statusBarHeight);
-    private Rectangle XButtonBounds => new(ClientSize.Width - _statusBarButtonWidth, ClientRectangle.Y, _statusBarButtonWidth, _statusBarHeight);
+    private Rectangle MinButtonBounds => new(ClientSize.Width - 3 * MaterialSkinManager.Instance.FormStatusBarButtonWidth, ClientRectangle.Y, MaterialSkinManager.Instance.FormStatusBarButtonWidth, _statusBarHeight);
+    private Rectangle MaxButtonBounds => new(ClientSize.Width - 2 * MaterialSkinManager.Instance.FormStatusBarButtonWidth, ClientRectangle.Y, MaterialSkinManager.Instance.FormStatusBarButtonWidth, _statusBarHeight);
+    private Rectangle XButtonBounds => new(ClientSize.Width - MaterialSkinManager.Instance.FormStatusBarButtonWidth, ClientRectangle.Y, MaterialSkinManager.Instance.FormStatusBarButtonWidth, _statusBarHeight);
     private Rectangle ActionBarBounds => new(ClientRectangle.X, ClientRectangle.Y + _statusBarHeight, ClientSize.Width, _actionBarHeight);
-    private Rectangle DrawerButtonBounds => new(ClientRectangle.X + (MaterialSkinManager.Instance.FormPadding / 2) + 3, _statusBarHeight + (_actionBarHeight / 2) - (_actionBarHeightDefault / 2), _actionBarHeightDefault, _actionBarHeightDefault);
+    private Rectangle DrawerButtonBounds => new(ClientRectangle.X + (MaterialSkinManager.Instance.FormPadding / 2) + 3, _statusBarHeight + (_actionBarHeight / 2) - (MaterialSkinManager.Instance.FormActionBarHeight / 2), MaterialSkinManager.Instance.FormActionBarHeight, MaterialSkinManager.Instance.FormActionBarHeight);
     private Rectangle StatusBarBounds => new(ClientRectangle.X, ClientRectangle.Y, ClientSize.Width, _statusBarHeight);
 
     private bool Maximized
@@ -405,7 +396,7 @@ public partial class MaterialForm : Form, IMaterialControl
         }
         else
         {
-            Padding = new Padding(_paddingMinimum, _originalPadding.Top, _originalPadding.Right, _originalPadding.Bottom);
+            Padding = new Padding(MaterialSkinManager.Instance.FormPaddingMinimum, _originalPadding.Top, _originalPadding.Right, _originalPadding.Bottom);
         }
     }
 
@@ -560,36 +551,36 @@ public partial class MaterialForm : Form, IMaterialControl
 
             case FormStyles.ActionBar_None:
                 _actionBarHeight = 0;
-                _statusBarHeight = _statusBarHeightDefault;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
 
             case FormStyles.ActionBar_40:
-                _actionBarHeight = _actionBarHeightDefault;
-                _statusBarHeight = _statusBarHeightDefault;
+                _actionBarHeight = MaterialSkinManager.Instance.FormActionBarHeight;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
 
             case FormStyles.ActionBar_48:
                 _actionBarHeight = 48;
-                _statusBarHeight = _statusBarHeightDefault;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
 
             case FormStyles.ActionBar_56:
                 _actionBarHeight = 56;
-                _statusBarHeight = _statusBarHeightDefault;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
 
             case FormStyles.ActionBar_64:
                 _actionBarHeight = 64;
-                _statusBarHeight = _statusBarHeightDefault;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
 
             default:
-                _actionBarHeight = _actionBarHeightDefault;
-                _statusBarHeight = _statusBarHeightDefault;
+                _actionBarHeight = MaterialSkinManager.Instance.FormActionBarHeight;
+                _statusBarHeight = MaterialSkinManager.Instance.FormStatusBarHeight;
                 break;
         }
 
-        Padding = new Padding(DrawerShowIconsWhenHidden ? _drawerControl.MinWidth : _paddingMinimum, _statusBarHeight + _actionBarHeight, Padding.Right, Padding.Bottom);
+        Padding = new Padding(DrawerShowIconsWhenHidden ? _drawerControl.MinWidth : MaterialSkinManager.Instance.FormPaddingMinimum, _statusBarHeight + _actionBarHeight, Padding.Right, Padding.Bottom);
         _originalPadding = Padding;
 
         if (DrawerTabControl != null)
@@ -749,43 +740,44 @@ public partial class MaterialForm : Form, IMaterialControl
 
         //True if the mouse is hovering over a child control
         var isChildUnderMouse = GetChildAtPoint(coords) != null;
+        var borderWidth = MaterialSkinManager.Instance.FormBorderWidth;
 
-        if (!isChildUnderMouse && !Maximized && coords.Y < _borderWidth && coords.X > _borderWidth && coords.X < ClientSize.Width - _borderWidth)
+        if (!isChildUnderMouse && !Maximized && coords.Y < borderWidth && coords.X > borderWidth && coords.X < ClientSize.Width - borderWidth)
         {
             _resizeDir = ResizeDirection.Top;
             Cursor = Cursors.SizeNS;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.X <= _borderWidth && coords.Y < _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.X <= borderWidth && coords.Y < borderWidth)
         {
             _resizeDir = ResizeDirection.TopLeft;
             Cursor = Cursors.SizeNWSE;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - _borderWidth && coords.Y < _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - borderWidth && coords.Y < borderWidth)
         {
             _resizeDir = ResizeDirection.TopRight;
             Cursor = Cursors.SizeNESW;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.X <= _borderWidth && coords.Y >= ClientSize.Height - _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.X <= borderWidth && coords.Y >= ClientSize.Height - borderWidth)
         {
             _resizeDir = ResizeDirection.BottomLeft;
             Cursor = Cursors.SizeNESW;
         }
-        else if ((!isChildUnderMouse || DrawerTabControl != null) && !Maximized && coords.X <= _borderWidth)
+        else if ((!isChildUnderMouse || DrawerTabControl != null) && !Maximized && coords.X <= borderWidth)
         {
             _resizeDir = ResizeDirection.Left;
             Cursor = Cursors.SizeWE;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - _borderWidth && coords.Y >= ClientSize.Height - _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - borderWidth && coords.Y >= ClientSize.Height - borderWidth)
         {
             _resizeDir = ResizeDirection.BottomRight;
             Cursor = Cursors.SizeNWSE;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - borderWidth)
         {
             _resizeDir = ResizeDirection.Right;
             Cursor = Cursors.SizeWE;
         }
-        else if (!isChildUnderMouse && !Maximized && coords.Y >= ClientSize.Height - _borderWidth)
+        else if (!isChildUnderMouse && !Maximized && coords.Y >= ClientSize.Height - borderWidth)
         {
             _resizeDir = ResizeDirection.Bottom;
             Cursor = Cursors.SizeNS;
@@ -974,7 +966,7 @@ public partial class MaterialForm : Form, IMaterialControl
                 g.FillRectangle(downBrush, DrawerButtonBounds);
             }
 
-            _drawerIconRect = new Rectangle(MaterialSkinManager.Instance.FormPadding / 2, _statusBarHeight, _actionBarHeightDefault, _actionBarHeight);
+            _drawerIconRect = new Rectangle(MaterialSkinManager.Instance.FormPadding / 2, _statusBarHeight, MaterialSkinManager.Instance.FormActionBarHeight, _actionBarHeight);
             // Ripple
             if (_clickAnimManager.IsAnimating())
             {
@@ -1017,7 +1009,7 @@ public partial class MaterialForm : Form, IMaterialControl
         {
             //Form title
             using var renderer = new NativeTextRenderer(g);
-            var textLocation = new Rectangle(DrawerTabControl != null ? _titleLeftPadding : _titleLeftPadding - (_iconSize + (_actionBarPadding * 2)), _statusBarHeight, ClientSize.Width, _actionBarHeight);
+            var textLocation = new Rectangle(DrawerTabControl != null ? MaterialSkinManager.Instance.FormTitleLeftPadding : MaterialSkinManager.Instance.FormTitleLeftPadding - (MaterialSkinManager.Instance.FormIconSize + (MaterialSkinManager.Instance.FormActionBarPadding * 2)), _statusBarHeight, ClientSize.Width, _actionBarHeight);
             renderer.DrawTransparentText(Text, MaterialSkinManager.Instance.GetLogFontByType(FontType.H6),
                 MaterialSkinManager.Instance.ColorScheme.TextColor,
                 textLocation.Location,

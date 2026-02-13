@@ -67,7 +67,16 @@ public partial class MaterialSkinManager : IDisposable
     /// Set this property to false to stop enforcing the backcolor on non-materialSkin components
     /// </summary>
     public virtual bool EnforceBackcolorOnAllComponents { get; set; } = true;
+
     public virtual int FormPadding { get; set; } = 14;
+    public virtual int FormBorderWidth { get; set; } = 7;
+    public virtual int FormStatusBarButtonWidth { get; set; } = 24;
+    public virtual int FormStatusBarHeight { get; set; } = 24;
+    public virtual int FormIconSize { get; set; } = 24;
+    public virtual int FormPaddingMinimum { get; set; } = 3;
+    public virtual int FormTitleLeftPadding { get; set; } = 72;
+    public virtual int FormActionBarPadding { get; set; } = 16;
+    public virtual int FormActionBarHeight { get; set; } = 40;
 
     public virtual Themes Theme
     {

@@ -1,0 +1,1454 @@
+NormalizeLineEndings - Copyright (C) 2024-2026 Simon Mourier. All rights reserved.
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Animations\AnimationManager.cs
+ Found hardcoded value: 5
+  Member declaration could be const:     private readonly Timer _animationTimer = new() { Interval = 5, Enabled = false };
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Animations\Animations.cs
+ Found hardcoded value: 0.6
+  Local declaration contains at least one non const value:         var kickoff = 0.6;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\ColorHelper.cs
+ Found hardcoded value: 0.1f
+  Expression uses a non const value:             lighting = 0.1f
+
+ Found hardcoded value: 0.5
+  Expression uses a non const value: 0.5 < lighting
+
+ Found hardcoded value: 60f
+  Expression uses a non const value: hue / 60f
+
+ Found hardcoded value: 300f
+  Expression uses a non const value: 300f <= hue
+
+ Found hardcoded value: 360f
+  Expression uses a non const value:             hue -= 360f
+
+ Found hardcoded value: 60f
+  Expression uses a non const value: 
+        hue /= 60f
+
+ Found hardcoded value: 2f
+  Expression uses a non const value: 2f * (float)Math.Floor((iSextant + 1f) % 6f / 2f)
+
+ Found hardcoded value: 6f
+  Expression uses a non const value: (iSextant + 1f) % 6f 
+
+ Found hardcoded value: 2f
+  Expression uses a non const value: (iSextant + 1f) % 6f / 2f
+
+ Found hardcoded value: 255.0
+  Local declaration contains at least one non const value: 
+        var alpha = foreground.A / 255.0;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\FlexibleMaterialForm.cs
+ Found hardcoded value: 65
+  Expression uses a non const value: new Point(1, 65)
+
+ Found hardcoded value: 382
+  Expression uses a non const value: new Size(382, 89)
+
+ Found hardcoded value: 89
+  Expression uses a non const value: new Size(382, 89)
+
+ Found hardcoded value: 14F
+  Expression uses a non const value: new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 56
+  Expression uses a non const value: new Point(56, 12)
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Point(56, 12)
+
+ Found hardcoded value: 314
+  Expression uses a non const value: new Size(314, 65)
+
+ Found hardcoded value: 65
+  Expression uses a non const value: new Size(314, 65)
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Point(12, 12)
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Point(12, 12)
+
+ Found hardcoded value: 32
+  Expression uses a non const value: new Size(32, 32)
+
+ Found hardcoded value: 32
+  Expression uses a non const value: new Size(32, 32)
+
+ Found hardcoded value: 9F
+  Expression uses a non const value: new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0)
+
+ Found hardcoded value: 222
+  Expression uses a non const value: (byte)222
+
+ Found hardcoded value: 56
+  Expression uses a non const value: new Point(56, 12)
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Point(56, 12)
+
+ Found hardcoded value: 314
+  Expression uses a non const value: new Size(314, 65)
+
+ Found hardcoded value: 65
+  Expression uses a non const value: new Size(314, 65)
+
+ Found hardcoded value: 32
+  Expression uses a non const value: new Point(32, 163)
+
+ Found hardcoded value: 163
+  Expression uses a non const value: new Point(32, 163)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Size(0, 24)
+
+ Found hardcoded value: 108
+  Expression uses a non const value: new Size(108, 36)
+
+ Found hardcoded value: 36
+  Expression uses a non const value: new Size(108, 36)
+
+ Found hardcoded value: 148
+  Expression uses a non const value: new Point(148, 163)
+
+ Found hardcoded value: 163
+  Expression uses a non const value: new Point(148, 163)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Size(0, 24)
+
+ Found hardcoded value: 102
+  Expression uses a non const value: new Size(102, 36)
+
+ Found hardcoded value: 36
+  Expression uses a non const value: new Size(102, 36)
+
+ Found hardcoded value: 258
+  Expression uses a non const value: new Point(258, 163)
+
+ Found hardcoded value: 163
+  Expression uses a non const value: new Point(258, 163)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Size(0, 24)
+
+ Found hardcoded value: 106
+  Expression uses a non const value: new Size(106, 36)
+
+ Found hardcoded value: 36
+  Expression uses a non const value: new Size(106, 36)
+
+ Found hardcoded value: 384
+  Expression uses a non const value: new Size(384, 208)
+
+ Found hardcoded value: 208
+  Expression uses a non const value: new Size(384, 208)
+
+ Found hardcoded value: 276
+  Expression uses a non const value: new Size(276, 140)
+
+ Found hardcoded value: 140
+  Expression uses a non const value: new Size(276, 140)
+
+ Found hardcoded value: 600
+  Local declaration contains at least one non const value: 
+        //Calculate whole text height
+        var textHeight = Math.Min(TextRenderer.MeasureText(text, _font).Height, 600);
+
+
+ Found hardcoded value: 8
+  Local declaration contains at least one non const value: 
+        var minimumHeight = FlexibleMaterialForm._messageContainer.Top + FlexibleMaterialForm._pictureBoxForIcon.Height + 2 * 8 + 54;
+
+
+ Found hardcoded value: 54
+  Local declaration contains at least one non const value: 
+        var minimumHeight = FlexibleMaterialForm._messageContainer.Top + FlexibleMaterialForm._pictureBoxForIcon.Height + 2 * 8 + 54;
+
+
+ Found hardcoded value: 3
+  Expression uses a non const value:                 FlexibleMaterialForm._visibleButtonsCount = 3
+
+ Found hardcoded value: 3
+  Expression uses a non const value:                 FlexibleMaterialForm._visibleButtonsCount = 3
+
+ Found hardcoded value: 3
+  Expression uses a non const value: _defaultButton switch
+        {
+            MessageBoxDefaultButton.Button2 => 2,
+            MessageBoxDefaultButton.Button3 => 3,
+            _ => 1,
+        }
+
+ Found hardcoded value: 3
+  Expression uses a non const value: buttonIndexToFocus == 3
+
+ Found hardcoded value: 6
+  Expression uses a non const value: padding * 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: padding * 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: padding * 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: padding * 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: padding * 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: padding * 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: padding * 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: padding * 4
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialButton.cs
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: new Padding(4, 6, 4, 6)
+
+ Found hardcoded value: 8
+  Local declaration contains at least one non const value: 
+        // Translate the brushes to the correct positions
+        var iconRect = new Rectangle(8, Height / 2 - _iconSize / 2, _iconSize, _iconSize);
+
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         buttonRectF.X -= 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         buttonRectF.Y -= 0.5f
+
+ Found hardcoded value: 4
+  Local declaration contains at least one non const value:         var buttonPath = DrawHelper.CreateRoundRect(buttonRectF, 4);
+
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:             buttonRectF.X += 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:             buttonRectF.Y += 0.5f
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _iconSize 
+
+ Found hardcoded value: 4
+  Expression uses a non const value: 8 + _iconSize + 4 
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _iconSize + 4 + 8
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _iconSize 
+
+ Found hardcoded value: 4
+  Expression uses a non const value: 8 + _iconSize + 4
+
+ Found hardcoded value: 8
+  Local declaration contains at least one non const value: 
+        //Icon
+        var iconRect = new Rectangle(8, (Height / 2) - (_iconSize / 2), _iconSize, _iconSize);
+
+
+ Found hardcoded value: 16
+  Local declaration contains at least one non const value: 
+        // Provides extra space for proper padding for content
+        var extra = 16;
+
+
+ Found hardcoded value: 4
+  Expression uses a non const value: _iconSize + 4
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialCard.cs
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         cardRectF.X -= 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         cardRectF.Y -= 0.5f
+
+ Found hardcoded value: 4
+  Local declaration contains at least one non const value:         var cardPath = DrawHelper.CreateRoundRect(cardRectF, 4);
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialCheckBox.cs
+ Found hardcoded value: 9
+  Expression uses a non const value: _heightRipple / 2 - 9
+
+ Found hardcoded value: 3
+  Local declaration contains at least one non const value:         var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
+
+
+ Found hardcoded value: 10
+  Expression uses a non const value: new Size(10, 10)
+
+ Found hardcoded value: 10
+  Expression uses a non const value: new Size(10, 10)
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialComboBox.cs
+ Found hardcoded value: 50
+  Member declaration could be const:     private int _height = 50;
+
+
+ Found hardcoded value: 4
+  Expression uses a non const value:         MaxDropDownItems = 4
+
+ Found hardcoded value: 0.5f
+  Local declaration contains at least one non const value:         var TopRight = new PointF(Width - 0.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
+
+
+ Found hardcoded value: 2.5f
+  Local declaration contains at least one non const value:         var TopRight = new PointF(Width - 0.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
+
+
+ Found hardcoded value: 4.5f
+  Local declaration contains at least one non const value:         var MidBottom = new PointF(Width - 4.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) + 2.5f);
+
+
+ Found hardcoded value: 2.5f
+  Local declaration contains at least one non const value:         var MidBottom = new PointF(Width - 4.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) + 2.5f);
+
+
+ Found hardcoded value: 8.5f
+  Local declaration contains at least one non const value:         var TopLeft = new PointF(Width - 8.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
+
+
+ Found hardcoded value: 2.5f
+  Local declaration contains at least one non const value:         var TopLeft = new PointF(Width - 8.5f - MaterialSkinManager.Instance.FormPadding, (Height >> 1) - 2.5f);
+
+
+ Found hardcoded value: 16
+  Local declaration contains at least one non const value:         var hintTextSize = 16;
+
+
+ Found hardcoded value: 12
+  Expression uses a non const value:                 hintTextSize = 12
+
+ Found hardcoded value: 12
+  Expression uses a non const value: userTextPresent && !_animationManager.IsAnimating() ? 12 : (int)(16 + (12 - 16) * animationProgress)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: 16 + (12 - 16) * animationProgress
+
+ Found hardcoded value: 12
+  Expression uses a non const value: 12 - 16
+
+ Found hardcoded value: 16
+  Expression uses a non const value: 12 - 16
+
+ Found hardcoded value: 3
+  Local declaration contains at least one non const value: 
+        // Calc text Rect
+        var textRect = new Rectangle(
+            MaterialSkinManager.Instance.FormPadding,
+            _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+            ClientRectangle.Width - MaterialSkinManager.Instance.FormPadding * 3 - 8,
+            _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
+
+
+ Found hardcoded value: 8
+  Local declaration contains at least one non const value: 
+        // Calc text Rect
+        var textRect = new Rectangle(
+            MaterialSkinManager.Instance.FormPadding,
+            _hasHint && UseTallSize ? hintRect.Y + hintRect.Height - 2 : ClientRectangle.Y,
+            ClientRectangle.Width - MaterialSkinManager.Instance.FormPadding * 3 - 8,
+            _hasHint && UseTallSize ? _lineY - (hintRect.Y + hintRect.Height) : _lineY);
+
+
+ Found hardcoded value: 7
+  Expression uses a non const value: _height - 7
+
+ Found hardcoded value: 50
+  Expression uses a non const value: UseTallSize ? 50 : 36
+
+ Found hardcoded value: 36
+  Expression uses a non const value: UseTallSize ? 50 : 36
+
+ Found hardcoded value: 7
+  Expression uses a non const value: _height - 7
+
+ Found hardcoded value: 3
+  Local declaration contains at least one non const value:         var padding = MaterialSkinManager.Instance.FormPadding * 3;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialContextMenuStrip.cs
+ Found hardcoded value: 2.5
+  Local declaration contains at least one non const value:                     var rippleSize = (int)(animationValue * itemRect.Width * 2.5);
+
+
+ Found hardcoded value: 3
+  Expression uses a non const value: itemRect.Height * 3
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialDialog.cs
+ Found hardcoded value: 40
+  Member declaration could be const:     private readonly int _header_Height = 40;
+
+
+ Found hardcoded value: 0.5
+  Expression uses a non const value:             Opacity = 0.5
+
+ Found hardcoded value: 40
+  Expression uses a non const value:             _header_Height = 40
+
+ Found hardcoded value: 560
+  Expression uses a non const value: 
+        Width = 560
+
+ Found hardcoded value: 19
+  Local declaration contains at least one non const value:         var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
+
+
+ Found hardcoded value: 9
+  Local declaration contains at least one non const value:         var textRect = new Rectangle(
+            _leftRightPadding,
+            _header_Height + _textTopPadding,
+            RectWidth,
+            RectHeight + 9);
+
+
+ Found hardcoded value: 52
+  Expression uses a non const value: _header_Height + _textTopPadding + textRect.Height + _textBottomPadding + 52
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 32
+  Local declaration contains at least one non const value: 
+        var _buttonWidth = TextRenderer.MeasureText(validationButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
+
+
+ Found hardcoded value: 32
+  Expression uses a non const value: TextRenderer.MeasureText(cancelButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32
+
+ Found hardcoded value: 19
+  Local declaration contains at least one non const value:         var RectHeight = ((TextWidth / RectWidth) + 1) * 19;
+
+
+ Found hardcoded value: 17
+  Local declaration contains at least one non const value: 
+        var textRect = new Rectangle(
+            _leftRightPadding,
+            _header_Height + 17,
+            RectWidth,
+            RectHeight + 19);
+
+
+ Found hardcoded value: 19
+  Local declaration contains at least one non const value: 
+        var textRect = new Rectangle(
+            _leftRightPadding,
+            _header_Height + 17,
+            RectWidth,
+            RectHeight + 19);
+
+
+ Found hardcoded value: 0xfff0
+  Local declaration contains at least one non const value:                 var command = message.WParam.ToInt32() & 0xfff0;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialDrawer.cs
+ Found hardcoded value: 120
+  Expression uses a non const value:         Height = 120
+
+ Found hardcoded value: 250
+  Expression uses a non const value:         Width = 250
+
+ Found hardcoded value: 20
+  Local declaration contains at least one non const value:         var step = 20;
+
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _drawerItemHeight
+
+ Found hardcoded value: 1.5
+  Expression uses a non const value: MaterialSkinManager.Instance.FormPadding * 1.5 
+
+ Found hardcoded value: 1.75
+  Local declaration contains at least one non const value:         var rSize = (int)(clickAnimProgress * _rippleSize * 1.75);
+
+
+ Found hardcoded value: 0.75
+  Expression uses a non const value: MaterialSkinManager.Instance.FormPadding * 0.75
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _drawerItemHeight
+
+ Found hardcoded value: 8
+  Expression uses a non const value: 8 + _drawerItemHeight
+
+ Found hardcoded value: 0.75
+  Expression uses a non const value: MaterialSkinManager.Instance.FormPadding * 0.75
+
+ Found hardcoded value: 1.5
+  Expression uses a non const value: MaterialSkinManager.Instance.FormPadding * 1.5
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value: _drawerItemRects[i].X - 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value: _drawerItemRects[i].Y - 0.5f
+
+ Found hardcoded value: 4
+  Expression uses a non const value: DrawHelper.CreateRoundRect(new RectangleF(_drawerItemRects[i].X - 0.5f, _drawerItemRects[i].Y - 0.5f, _drawerItemRects[i].Width, _drawerItemRects[i].Height), 4)
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialExpansionPanel.cs
+ Found hardcoded value: 240
+  Expression uses a non const value:         ExpandHeight = 240
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Padding(24, 64, 24, 16)
+
+ Found hardcoded value: 64
+  Expression uses a non const value: new Padding(24, 64, 24, 16)
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Padding(24, 64, 24, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(24, 64, 24, 16)
+
+ Found hardcoded value: 3
+  Expression uses a non const value: new Padding(3, 16, 3, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(3, 16, 3, 16)
+
+ Found hardcoded value: 3
+  Expression uses a non const value: new Padding(3, 16, 3, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(3, 16, 3, 16)
+
+ Found hardcoded value: 480
+  Expression uses a non const value: new Size(480, ExpandHeight)
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         expansionPanelRectF.X -= 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:         expansionPanelRectF.Y -= 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:                 expansionPanelBorderRectF.X -= 0.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value:                 expansionPanelBorderRectF.Y -= 0.5f
+
+ Found hardcoded value: 6
+  Local declaration contains at least one non const value:                 var topLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 9
+  Local declaration contains at least one non const value:                 var topLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 12
+  Local declaration contains at least one non const value:                 var midBottom = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 15
+  Local declaration contains at least one non const value:                 var midBottom = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 18
+  Local declaration contains at least one non const value:                 var topRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 9
+  Local declaration contains at least one non const value:                 var topRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 6
+  Local declaration contains at least one non const value:                 var bottomLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 15
+  Local declaration contains at least one non const value:                 var bottomLeft = new PointF(_expandcollapseBounds.X + 6, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 12
+  Local declaration contains at least one non const value:                 var midTop = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 9
+  Local declaration contains at least one non const value:                 var midTop = new PointF(_expandcollapseBounds.X + 12, _expandcollapseBounds.Y + 9);
+
+
+ Found hardcoded value: 18
+  Local declaration contains at least one non const value:                 var bottomRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 15
+  Local declaration contains at least one non const value:                 var bottomRight = new PointF(_expandcollapseBounds.X + 18, _expandcollapseBounds.Y + 15);
+
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 1, 16, 0)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 1, 16, 0)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 16, 16, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 16, 16, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 16, 16, 16)
+
+ Found hardcoded value: 16
+  Expression uses a non const value: new Padding(16, 16, 16, 16)
+
+ Found hardcoded value: 32
+  Local declaration contains at least one non const value:             var _buttonWidth = TextRenderer.MeasureText(ValidationButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
+
+
+ Found hardcoded value: 32
+  Expression uses a non const value: TextRenderer.MeasureText(CancelButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialFloatingActionButton.cs
+ Found hardcoded value: 3
+  Expression uses a non const value: _fabBounds.Width + 3
+
+ Found hardcoded value: 11
+  Expression uses a non const value: _fabBounds.Width / 2 - 11
+
+ Found hardcoded value: 11
+  Expression uses a non const value: _fabBounds.Height / 2 - 11
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Rectangle(_fabBounds.Width / 2 - 11, _fabBounds.Height / 2 - 11, 24, 24)
+
+ Found hardcoded value: 24
+  Expression uses a non const value: new Rectangle(_fabBounds.Width / 2 - 11, _fabBounds.Height / 2 - 11, 24, 24)
+
+ Found hardcoded value: 3
+  Expression uses a non const value: _fabBounds.Width + 3
+
+ Found hardcoded value: 3
+  Expression uses a non const value: _fabBounds.Height + 3
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialForm.cs
+ Found hardcoded value: 200
+  Expression uses a non const value:         DrawerWidth = 200
+
+ Found hardcoded value: 3
+  Expression uses a non const value: 3 * MaterialSkinManager.Instance.FormStatusBarButtonWidth
+
+ Found hardcoded value: 3
+  Expression uses a non const value: ClientRectangle.X + (MaterialSkinManager.Instance.FormPadding / 2) + 3
+
+ Found hardcoded value: 0.55f
+  Expression uses a non const value: _drawerShowHideAnimManager.GetProgress() * 0.55f
+
+ Found hardcoded value: 48
+  Expression uses a non const value:                 _actionBarHeight = 48
+
+ Found hardcoded value: 56
+  Expression uses a non const value:                 _actionBarHeight = 56
+
+ Found hardcoded value: 64
+  Expression uses a non const value:                 _actionBarHeight = 64
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: MinButtonBounds.Width * 0.33
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: MinButtonBounds.Height * 0.66
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: MinButtonBounds.Width * 0.66
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: MinButtonBounds.Height * 0.66
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: MaxButtonBounds.Width * 0.33
+
+ Found hardcoded value: 0.36
+  Expression uses a non const value: MaxButtonBounds.Height * 0.36
+
+ Found hardcoded value: 0.39
+  Expression uses a non const value: MaxButtonBounds.Width * 0.39
+
+ Found hardcoded value: 0.31
+  Expression uses a non const value: MaxButtonBounds.Height * 0.31
+
+ Found hardcoded value: 0.30
+  Expression uses a non const value: MaxButtonBounds.Width * 0.30
+
+ Found hardcoded value: 0.42
+  Expression uses a non const value: MaxButtonBounds.Height * 0.42
+
+ Found hardcoded value: 0.40
+  Expression uses a non const value: MaxButtonBounds.Width * 0.40
+
+ Found hardcoded value: 0.32
+  Expression uses a non const value: MaxButtonBounds.Height * 0.32
+
+ Found hardcoded value: 0.42
+  Expression uses a non const value: MaxButtonBounds.Width * 0.42
+
+ Found hardcoded value: 0.30
+  Expression uses a non const value: MaxButtonBounds.Height * 0.30
+
+ Found hardcoded value: 0.42
+  Expression uses a non const value: MaxButtonBounds.Width * 0.42
+
+ Found hardcoded value: 0.38
+  Expression uses a non const value: MaxButtonBounds.Height * 0.38
+
+ Found hardcoded value: 0.40
+  Expression uses a non const value: MaxButtonBounds.Width * 0.40
+
+ Found hardcoded value: 0.30
+  Expression uses a non const value: MaxButtonBounds.Height * 0.30
+
+ Found hardcoded value: 0.86
+  Expression uses a non const value: MaxButtonBounds.Width * 0.86
+
+ Found hardcoded value: 0.30
+  Expression uses a non const value: MaxButtonBounds.Width * 0.30
+
+ Found hardcoded value: 0.82
+  Expression uses a non const value: MaxButtonBounds.Width * 0.82
+
+ Found hardcoded value: 0.28
+  Expression uses a non const value: MaxButtonBounds.Height * 0.28
+
+ Found hardcoded value: 0.82
+  Expression uses a non const value: MaxButtonBounds.Width * 0.82
+
+ Found hardcoded value: 0.64
+  Expression uses a non const value: MaxButtonBounds.Width * 0.64
+
+ Found hardcoded value: 0.70
+  Expression uses a non const value: MaxButtonBounds.Width * 0.70
+
+ Found hardcoded value: 0.62
+  Expression uses a non const value: MaxButtonBounds.Height * 0.62
+
+ Found hardcoded value: 0.84
+  Expression uses a non const value: MaxButtonBounds.Width * 0.84
+
+ Found hardcoded value: 0.62
+  Expression uses a non const value: MaxButtonBounds.Width * 0.62
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: XButtonBounds.Width * 0.33
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: XButtonBounds.Height * 0.33
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: XButtonBounds.Width * 0.66
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: XButtonBounds.Height * 0.66
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: XButtonBounds.Width * 0.66
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: XButtonBounds.Height * 0.33
+
+ Found hardcoded value: 0.33
+  Expression uses a non const value: XButtonBounds.Width * 0.33
+
+ Found hardcoded value: 0.66
+  Expression uses a non const value: XButtonBounds.Height * 0.66
+
+ Found hardcoded value: 1.75
+  Local declaration contains at least one non const value:                 var rippleSize = (int)(clickAnimProgress * _drawerIconRect.Width * 1.75);
+
+
+ Found hardcoded value: 18
+  Expression uses a non const value:                _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18
+
+ Found hardcoded value: 6
+  Expression uses a non const value:                _drawerIconRect.Y + _actionBarHeight / 2 - 6
+
+ Found hardcoded value: 18
+  Expression uses a non const value:                _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18
+
+ Found hardcoded value: 6
+  Expression uses a non const value:                _drawerIconRect.Y + _actionBarHeight / 2 - 6
+
+ Found hardcoded value: 6
+  Expression uses a non const value:                _drawerIconRect.Y + _actionBarHeight / 2 + 6
+
+ Found hardcoded value: 18
+  Expression uses a non const value:                _drawerIconRect.X + MaterialSkinManager.Instance.FormPadding + 18
+
+ Found hardcoded value: 6
+  Expression uses a non const value:                _drawerIconRect.Y + _actionBarHeight / 2 + 6
+
+ Found hardcoded value: 8
+  Expression uses a non const value: nint.Size == 8
+
+ Found hardcoded value: 8
+  Expression uses a non const value: nint.Size == 8
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialListBox.cs
+ Found hardcoded value: 12
+  Expression uses a non const value: new Size(12, Height)
+
+ Found hardcoded value: 4
+  Expression uses a non const value:             _secondaryTextTopPadding = 4
+
+ Found hardcoded value: 60
+  Expression uses a non const value:                 _itemHeight = 60
+
+ Found hardcoded value: 10
+  Expression uses a non const value:                 _secondaryTextBottomPadding = 10
+
+ Found hardcoded value: 72
+  Expression uses a non const value:                 _itemHeight = 72
+
+ Found hardcoded value: 16
+  Expression uses a non const value:                 _secondaryTextBottomPadding = 16
+
+ Found hardcoded value: 4
+  Expression uses a non const value:                 _primaryTextBottomPadding = 4
+
+ Found hardcoded value: 4
+  Expression uses a non const value:             _primaryTextBottomPadding = 4
+
+ Found hardcoded value: 4
+  Expression uses a non const value:             _secondaryTextTopPadding = 4
+
+ Found hardcoded value: 76
+  Expression uses a non const value:                 _itemHeight = 76
+
+ Found hardcoded value: 16
+  Expression uses a non const value:                 _secondaryTextBottomPadding = 16
+
+ Found hardcoded value: 88
+  Expression uses a non const value:                 _itemHeight = 88
+
+ Found hardcoded value: 12
+  Expression uses a non const value:                 _secondaryTextBottomPadding = 12
+
+ Found hardcoded value: 40
+  Expression uses a non const value:                 _itemHeight = 40
+
+ Found hardcoded value: 48
+  Expression uses a non const value:                 _itemHeight = 48
+
+ Found hardcoded value: 36
+  Expression uses a non const value: 36 - _primaryTextBottomPadding
+
+ Found hardcoded value: 30
+  Expression uses a non const value: 30 - _primaryTextBottomPadding
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Size(12, Height - (ShowBorder ? 2 : 0))
+
+ Found hardcoded value: 12
+  Expression uses a non const value: new Size(12, Height - (ShowBorder ? 2 : 0))
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialListView.cs
+ Found hardcoded value: 200
+  Expression uses a non const value: new Size(200, 100)
+
+ Found hardcoded value: 100
+  Expression uses a non const value: new Size(200, 100)
+
+ Found hardcoded value: 50
+  Local declaration contains at least one non const value: 
+        // Height
+        var h = 50; //Header size
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialMaskedTextBox.cs
+ Found hardcoded value: 48
+  Member declaration could be const:     private int _height = 48;
+
+
+ Found hardcoded value: 250
+  Expression uses a non const value: new Size(250, _height)
+
+ Found hardcoded value: 12
+  Local declaration contains at least one non const value:         var hintTextSize = 12;
+
+
+ Found hardcoded value: 48
+  Expression uses a non const value: UseTallSize ? 48 : 36
+
+ Found hardcoded value: 36
+  Expression uses a non const value: UseTallSize ? 48 : 36
+
+ Found hardcoded value: 22
+  Expression uses a non const value: new Point(_leftPadding, 22)
+
+ Found hardcoded value: 8
+  Expression uses a non const value: new Rectangle(8, ((_lineY + _activationIndicatorHeight) / 2) - (_iconSize / 2), _iconSize, _iconSize)
+
+ Found hardcoded value: 8
+  Expression uses a non const value: _iconSize + 8
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialMultiLineTextBox2.cs
+ Found hardcoded value: 250
+  Expression uses a non const value: new Size(250, 100)
+
+ Found hardcoded value: 100
+  Expression uses a non const value: new Size(250, 100)
+
+ Found hardcoded value: 120
+  Local declaration contains at least one non const value: 
+            //Calculate number of notches mouse wheel moved
+            var v = e.Delta / 120;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialProgressBar.cs
+ Found hardcoded value: 5
+  Expression uses a non const value: base.SetBoundsCore(x, y, width, 5, specified)
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialRadioButton.cs
+ Found hardcoded value: 9f
+  Local declaration contains at least one non const value:         var animationSize = (float)(animationProgress * 9f);
+
+
+ Found hardcoded value: 3
+  Local declaration contains at least one non const value:         var rippleHeight = (_heightRipple % 2 == 0) ? _heightRipple - 3 : _heightRipple - 2;
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:             var rippleSize = (int)(rippleHeight * (0.7 + (0.3 * animationValue)));
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:                 var rippleSize = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleHeight * (0.7 + (0.3 * animationValue))) : rippleHeight;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialScrollBar.cs
+ Found hardcoded value: 6
+  Member declaration could be const:     private int _thumbWidth = 6;
+
+
+ Found hardcoded value: 10
+  Member declaration could be const:     private int _largeChange = 10;
+
+
+ Found hardcoded value: 200
+  Expression uses a non const value:         Height = 200
+
+ Found hardcoded value: 20
+  Expression uses a non const value: 
+        _progressTimer.Interval = 20
+
+ Found hardcoded value: 1000
+  Expression uses a non const value:                         Interval = 1000
+
+
+ Found hardcoded value: 120
+  Local declaration contains at least one non const value: 
+        var v = e.Delta / 120 * (Maximum - Minimum) / MouseWheelBarPartitions;
+
+
+ Found hardcoded value: 10
+  Expression uses a non const value: Width > 0 ? Width : 10
+
+ Found hardcoded value: 10
+  Expression uses a non const value: Height > 0 ? Height : 10
+
+ Found hardcoded value: 10f
+  Expression uses a non const value: Math.Max(newThumbSize, 10f)
+
+ Found hardcoded value: 600
+  Expression uses a non const value:             _progressTimer.Interval = 600
+
+ Found hardcoded value: 10
+  Expression uses a non const value:             _progressTimer.Interval = 10
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialSlider.cs
+ Found hardcoded value: 100
+  Expression uses a non const value:         RangeMax = 100
+
+ Found hardcoded value: 250
+  Expression uses a non const value: new Size(250, _thumbRadiusHoverPressed)
+
+ Found hardcoded value: 50
+  Expression uses a non const value:         Value = 50
+
+ Found hardcoded value: 4
+  Expression uses a non const value: _thumbRadiusHoverPressed / 4
+
+ Found hardcoded value: 4
+  Expression uses a non const value: _thumbRadiusHoverPressed / 4
+
+ Found hardcoded value: 4
+  Expression uses a non const value: _thumbRadiusHoverPressed / 4
+
+ Found hardcoded value: 2.55
+  Expression uses a non const value: 2.55 * 30
+
+ Found hardcoded value: 30
+  Expression uses a non const value: 2.55 * 30
+
+ Found hardcoded value: 2.55
+  Expression uses a non const value: 2.55 * (_hovered ? 38 : 26)
+
+ Found hardcoded value: 38
+  Expression uses a non const value: _hovered ? 38 : 26
+
+ Found hardcoded value: 26
+  Expression uses a non const value: _hovered ? 38 : 26
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialSnackBar.cs
+ Found hardcoded value: 48
+  Expression uses a non const value:         Height = 48
+
+ Found hardcoded value: 344
+  Expression uses a non const value: new Size(344, 48)
+
+ Found hardcoded value: 48
+  Expression uses a non const value: new Size(344, 48)
+
+ Found hardcoded value: 568
+  Expression uses a non const value: new Size(568, 48)
+
+ Found hardcoded value: 48
+  Expression uses a non const value: new Size(568, 48)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 32
+  Local declaration contains at least one non const value:             var _buttonWidth = TextRenderer.MeasureText(ActionButtonText, MaterialSkinManager.Instance.GetFontByType(FontType.Button)).Width + 32;
+
+
+ Found hardcoded value: 48
+  Expression uses a non const value: TextRenderer.MeasureText(Text, MaterialSkinManager.Instance.GetFontByType(FontType.Body2)).Width + (2 * _leftRightPadding) + _actionButton.Width + 48
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 6
+  Expression uses a non const value: Functions.CreateRoundRectRgn(0, 0, Width, Height, 6, 6)
+
+ Found hardcoded value: 60
+  Expression uses a non const value: Owner.Location.Y + Owner.Height - 60
+
+ Found hardcoded value: 0xfff0
+  Local declaration contains at least one non const value:                 var command = message.WParam.ToInt32() & 0xfff0;
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialSwitch.cs
+ Found hardcoded value: 3
+  Local declaration contains at least one non const value: 
+        // Ripple
+        var rippleSize = (Height % 2 == 0) ? Height - 2 : Height - 3;
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:                 var rippleAnimatedDiameter = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress))) : rippleSize;
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:                 var rippleAnimatedDiameter = (_rippleAM.GetDirection(i) == AnimationDirection.InOutIn) ? (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress))) : rippleSize;
+
+
+ Found hardcoded value: 0.7
+  Local declaration contains at least one non const value:             var rippleAnimatedDiameter = (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress)));
+
+
+ Found hardcoded value: 0.3
+  Local declaration contains at least one non const value:             var rippleAnimatedDiameter = (int)(rippleSize * (0.7 + (0.3 * rippleAnimProgress)));
+
+
+ Found hardcoded value: 4
+  Expression uses a non const value: thumbBounds.Width + 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: thumbBounds.Height + 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: thumbBounds.Height + 4
+
+ Found hardcoded value: 10
+  Expression uses a non const value: new Size(10, 10)
+
+ Found hardcoded value: 10
+  Expression uses a non const value: new Size(10, 10)
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialTabSelector.cs
+ Found hardcoded value: 480
+  Expression uses a non const value: new Size(480, 48)
+
+ Found hardcoded value: 48
+  Expression uses a non const value: new Size(480, 48)
+
+ Found hardcoded value: 72
+  Expression uses a non const value:                 Height = 72
+
+ Found hardcoded value: 48
+  Expression uses a non const value:                 Height = 48
+
+ Found hardcoded value: 1.75
+  Local declaration contains at least one non const value:             var rippleSize = (int)(animationProgress * _tabRects[BaseTabControl.SelectedIndex].Width * 1.75);
+
+
+ Found hardcoded value: 46
+  Expression uses a non const value:                     textLocation.Y = 46
+
+ Found hardcoded value: 10
+  Expression uses a non const value:                     textLocation.Height = 10
+
+ Found hardcoded value: 40
+  Expression uses a non const value:                         textLocation.Y = 40
+
+ Found hardcoded value: 26
+  Expression uses a non const value:                         textLocation.Height = 26
+
+ Found hardcoded value: 12
+  Expression uses a non const value:                         iconRect.Y = 12
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialTextBox.cs
+ Found hardcoded value: 48
+  Member declaration could be const:     private int _height = 48;
+
+
+ Found hardcoded value: 250
+  Expression uses a non const value: new Size(250, _height)
+
+ Found hardcoded value: 12
+  Local declaration contains at least one non const value:         var hintTextSize = 12;
+
+
+ Found hardcoded value: 48
+  Expression uses a non const value: UseTallSize ? 48 : 36
+
+ Found hardcoded value: 36
+  Expression uses a non const value: UseTallSize ? 48 : 36
+
+ Found hardcoded value: 22
+  Expression uses a non const value: new Point(_left_padding, 22)
+
+ Found hardcoded value: 8
+  Expression uses a non const value: new Rectangle(8, ((_lineY + _activationIndicatorHeight) / 2) - (_iconSize / 2), _iconSize, _iconSize)
+
+ Found hardcoded value: 8
+  Expression uses a non const value: _iconSize + 8
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\Controls\MaterialToolStripMenuItem.cs
+ Found hardcoded value: 128
+  Expression uses a non const value: new Size(128, 32)
+
+ Found hardcoded value: 32
+  Expression uses a non const value: new Size(128, 32)
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\DrawHelper.cs
+ Found hardcoded value: 270
+  Expression uses a non const value:         gp.AddArc(x + width - (radius * 2), y, radius * 2, radius * 2, 270, 90)
+
+ Found hardcoded value: 90
+  Expression uses a non const value:         gp.AddArc(x + width - (radius * 2), y, radius * 2, radius * 2, 270, 90)
+
+ Found hardcoded value: 90
+  Expression uses a non const value:         gp.AddArc(x + width - (radius * 2), y + height - (radius * 2), radius * 2, radius * 2, 0, 90)
+
+ Found hardcoded value: 90
+  Expression uses a non const value:         gp.AddArc(x, y + height - (radius * 2), radius * 2, radius * 2, 90, 90)
+
+ Found hardcoded value: 90
+  Expression uses a non const value:         gp.AddArc(x, y + height - (radius * 2), radius * 2, radius * 2, 90, 90)
+
+ Found hardcoded value: 180
+  Expression uses a non const value:         gp.AddArc(x, y, radius * 2, radius * 2, 180, 90)
+
+ Found hardcoded value: 90
+  Expression uses a non const value:         gp.AddArc(x, y, radius * 2, radius * 2, 180, 90)
+
+ Found hardcoded value: 3.5f
+  Expression uses a non const value: bounds.X - 3.5f
+
+ Found hardcoded value: 1.5f
+  Expression uses a non const value: bounds.Y - 1.5f
+
+ Found hardcoded value: 6
+  Expression uses a non const value: bounds.Width + 6
+
+ Found hardcoded value: 6
+  Expression uses a non const value: bounds.Height + 6
+
+ Found hardcoded value: 8
+  Expression uses a non const value: CreateRoundRect(new RectangleF(bounds.X - 3.5f, bounds.Y - 1.5f, bounds.Width + 6, bounds.Height + 6), 8)
+
+ Found hardcoded value: 2.5f
+  Expression uses a non const value: bounds.X - 2.5f
+
+ Found hardcoded value: 1.5f
+  Expression uses a non const value: bounds.Y - 1.5f
+
+ Found hardcoded value: 4
+  Expression uses a non const value: bounds.Width + 4
+
+ Found hardcoded value: 4
+  Expression uses a non const value: bounds.Height + 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: CreateRoundRect(new RectangleF(bounds.X - 2.5f, bounds.Y - 1.5f, bounds.Width + 4, bounds.Height + 4), 6)
+
+ Found hardcoded value: 1.5f
+  Expression uses a non const value: bounds.X - 1.5f
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value: bounds.Y - 0.5f
+
+ Found hardcoded value: 4
+  Expression uses a non const value: CreateRoundRect(new RectangleF(bounds.X - 1.5f, bounds.Y - 0.5f, bounds.Width + 2, bounds.Height + 2), 4)
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value: bounds.X - 0.5f
+
+ Found hardcoded value: 1.5f
+  Expression uses a non const value: bounds.Y + 1.5f
+
+ Found hardcoded value: 4
+  Expression uses a non const value: CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 1.5f, bounds.Width + 0, bounds.Height + 0), 4)
+
+ Found hardcoded value: 0.5f
+  Expression uses a non const value: bounds.X - 0.5f
+
+ Found hardcoded value: 2.5f
+  Expression uses a non const value: bounds.Y + 2.5f
+
+ Found hardcoded value: 4
+  Expression uses a non const value: CreateRoundRect(new RectangleF(bounds.X - 0.5f, bounds.Y + 2.5f, bounds.Width + 0, bounds.Height + 0), 4)
+
+ Found hardcoded value: 4
+  Expression uses a non const value: bounds.Width + 4
+
+ Found hardcoded value: 6
+  Expression uses a non const value: bounds.Height + 6
+
+ Found hardcoded value: 4
+  Expression uses a non const value: bounds.Height + 4
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\MaterialSkinManager.cs
+ Found hardcoded value: 18
+  Expression uses a non const value: new Dictionary<string, nint>(18)
+        {
+            { "H1", AreateLogicalFont("Roboto Light", 96, LogFontWeight.FW_LIGHT) },
+            { "H2", AreateLogicalFont("Roboto Light", 60, LogFontWeight.FW_LIGHT) },
+            { "H3", AreateLogicalFont("Roboto", 48, LogFontWeight.FW_REGULAR) },
+            { "H4", AreateLogicalFont("Roboto", 34, LogFontWeight.FW_REGULAR) },
+            { "H5", AreateLogicalFont("Roboto", 24, LogFontWeight.FW_REGULAR) },
+            { "H6", AreateLogicalFont("Roboto Medium", 20, LogFontWeight.FW_MEDIUM) },
+            { "Subtitle1", AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) },
+            { "Subtitle2", AreateLogicalFont("Roboto Medium", 14, LogFontWeight.FW_MEDIUM) },
+            { "SubtleEmphasis", AreateLogicalFont("Roboto", 12, LogFontWeight.FW_NORMAL, 1) },
+            { "Body1", AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) },
+            { "Body2", AreateLogicalFont("Roboto", 14, LogFontWeight.FW_REGULAR) },
+            { "Button", AreateLogicalFont("Roboto Medium", 14, LogFontWeight.FW_MEDIUM) },
+            { "Caption", AreateLogicalFont("Roboto", 12, LogFontWeight.FW_REGULAR) },
+            { "Overline", AreateLogicalFont("Roboto", 10, LogFontWeight.FW_REGULAR) },
+            // Logical fonts for textbox animation
+            { "textBox16", AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) },
+            { "textBox15", AreateLogicalFont("Roboto", 15, LogFontWeight.FW_REGULAR) },
+            { "textBox14", AreateLogicalFont("Roboto", 14, LogFontWeight.FW_REGULAR) },
+            { "textBox13", AreateLogicalFont("Roboto Medium", 13, LogFontWeight.FW_MEDIUM) },
+            { "textBox12", AreateLogicalFont("Roboto Medium", 12, LogFontWeight.FW_MEDIUM) }
+        }
+
+ Found hardcoded value: 96
+  Expression uses a non const value: AreateLogicalFont("Roboto Light", 96, LogFontWeight.FW_LIGHT) 
+
+ Found hardcoded value: 60
+  Expression uses a non const value: AreateLogicalFont("Roboto Light", 60, LogFontWeight.FW_LIGHT) 
+
+ Found hardcoded value: 48
+  Expression uses a non const value: AreateLogicalFont("Roboto", 48, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 34
+  Expression uses a non const value: AreateLogicalFont("Roboto", 34, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 24
+  Expression uses a non const value: AreateLogicalFont("Roboto", 24, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 20
+  Expression uses a non const value: AreateLogicalFont("Roboto Medium", 20, LogFontWeight.FW_MEDIUM) 
+
+ Found hardcoded value: 16
+  Expression uses a non const value: AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 14
+  Expression uses a non const value: AreateLogicalFont("Roboto Medium", 14, LogFontWeight.FW_MEDIUM) 
+
+ Found hardcoded value: 12
+  Expression uses a non const value: AreateLogicalFont("Roboto", 12, LogFontWeight.FW_NORMAL, 1) 
+
+ Found hardcoded value: 16
+  Expression uses a non const value: AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 14
+  Expression uses a non const value: AreateLogicalFont("Roboto", 14, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 14
+  Expression uses a non const value: AreateLogicalFont("Roboto Medium", 14, LogFontWeight.FW_MEDIUM) 
+
+ Found hardcoded value: 12
+  Expression uses a non const value: AreateLogicalFont("Roboto", 12, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 10
+  Expression uses a non const value: AreateLogicalFont("Roboto", 10, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 16
+  Expression uses a non const value: AreateLogicalFont("Roboto", 16, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 15
+  Expression uses a non const value: AreateLogicalFont("Roboto", 15, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 14
+  Expression uses a non const value: AreateLogicalFont("Roboto", 14, LogFontWeight.FW_REGULAR) 
+
+ Found hardcoded value: 13
+  Expression uses a non const value: AreateLogicalFont("Roboto Medium", 13, LogFontWeight.FW_MEDIUM) 
+
+ Found hardcoded value: 12
+  Expression uses a non const value: AreateLogicalFont("Roboto Medium", 12, LogFontWeight.FW_MEDIUM) 
+
+ Found hardcoded value: 96f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto_Light"], 96f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 60f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto_Light"], 60f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 48f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 48f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 34f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 34f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 24f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 24f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 20f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto_Medium"], 20f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 16f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 16f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 14f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto_Medium"], 14f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 12f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 12f, FontStyle.Italic, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 14f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 14f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 12f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 12f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 14f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 14f, FontStyle.Bold, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 12f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 12f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 10f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 10f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 14f
+  Expression uses a non const value: new Font(_robotoFontFamilies["Roboto"], 14f, FontStyle.Regular, GraphicsUnit.Pixel)
+
+ Found hardcoded value: 16
+  Local declaration contains at least one non const value:         var name = "textBox" + Math.Min(16, Math.Max(12, size)).ToString();
+
+
+ Found hardcoded value: 12
+  Local declaration contains at least one non const value:         var name = "textBox" + Math.Min(16, Math.Max(12, size)).ToString();
+
+
+Document: E:\smo\GitHub\MaterialSkin\MaterialSkin\NativeTextRenderer.cs
+ Found hardcoded value: 32
+  Expression uses a non const value:         info.bmiHeader.biBitCount = 32
+

@@ -4,7 +4,7 @@ public partial class MaterialButton : Button, IMaterialControl
 {
     private const int _iconSize = 24;
     private const int _minimumWidth = 64;
-    private const int _minimumWidthThisIconOnly = 36; //64;
+    private const int _minimumWidthThisIconOnly = 36;
     private const int _heightDefault = 36;
     private const int _heightDense = 32;
 
