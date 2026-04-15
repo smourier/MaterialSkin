@@ -13,6 +13,7 @@ internal static class Program
         Application.ThreadException += (s, e) => HandleError(e.Exception);
 
         Application.EnableVisualStyles();
+        Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
         Application.SetCompatibleTextRenderingDefault(true);
         Application.Run(new MainForm());
         MaterialSkinManager.Instance.Dispose();
