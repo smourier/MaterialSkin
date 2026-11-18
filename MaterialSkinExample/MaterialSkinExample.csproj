@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net10.0-windows</TargetFramework>
+		<TargetFramework>net11.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<CustomResourceTypesSupport>true</CustomResourceTypesSupport>
@@ -25,11 +25,11 @@
 		<PackageTags>material design materialdesign google forms theme skin</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
-		<Version>3.0.1</Version>
-		<ProductVersion>3.0.1</ProductVersion>
-		<FileVersion>3.0.1</FileVersion>
-		<InformationalVersion>3.0.1</InformationalVersion>
-		<SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+		<Version>3.0.3</Version>
+		<ProductVersion>3.0.3</ProductVersion>
+		<FileVersion>3.0.3</FileVersion>
+		<InformationalVersion>3.0.3</InformationalVersion>
+		<SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyyyMMddHH"))</SourceRevisionId>
 
 	</PropertyGroup>
 
